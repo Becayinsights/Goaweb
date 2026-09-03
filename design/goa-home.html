@@ -11,6 +11,8 @@
   --accent:#1F5A4E; --accent-text:#1B5045; --accent-dim:rgba(31,90,78,.10);
   --rule:rgba(18,32,31,.14); --rule-2:rgba(18,32,31,.32);
   --btn-ink:#F3F4EF;
+  --glass:rgba(247,247,242,.72); --glass-bd:rgba(18,32,31,.10); --glass-hi:rgba(255,255,255,.75);
+  --glass-shadow:0 10px 34px rgba(18,32,31,.07); --glass-shadow-on:0 14px 40px rgba(18,32,31,.13);
   --hatch:rgba(18,32,31,.055);
   --shadow:0 1px 0 rgba(255,255,255,.75) inset, 0 20px 46px rgba(18,32,31,.07);
   color-scheme:light;
@@ -22,6 +24,8 @@
     --accent:#6FB39D; --accent-text:#84C3AD; --accent-dim:rgba(111,179,157,.13);
     --rule:rgba(233,235,228,.15); --rule-2:rgba(233,235,228,.32);
     --btn-ink:#0E1615;
+    --glass:rgba(21,31,30,.72); --glass-bd:rgba(233,235,228,.12); --glass-hi:rgba(255,255,255,.07);
+    --glass-shadow:0 12px 36px rgba(0,0,0,.34); --glass-shadow-on:0 16px 44px rgba(0,0,0,.5);
     --hatch:rgba(233,235,228,.06);
     --shadow:0 1px 0 rgba(255,255,255,.05) inset, 0 22px 54px rgba(0,0,0,.45);
     color-scheme:dark;
@@ -33,6 +37,8 @@
   --accent:#6FB39D; --accent-text:#84C3AD; --accent-dim:rgba(111,179,157,.13);
   --rule:rgba(233,235,228,.15); --rule-2:rgba(233,235,228,.32);
   --btn-ink:#0E1615;
+  --glass:rgba(21,31,30,.72); --glass-bd:rgba(233,235,228,.12); --glass-hi:rgba(255,255,255,.07);
+  --glass-shadow:0 12px 36px rgba(0,0,0,.34); --glass-shadow-on:0 16px 44px rgba(0,0,0,.5);
   --hatch:rgba(233,235,228,.06);
   --shadow:0 1px 0 rgba(255,255,255,.05) inset, 0 22px 54px rgba(0,0,0,.45);
   color-scheme:dark;
@@ -54,9 +60,9 @@ a{color:inherit}
 
 /* ═══════════ REJILLA ═══════════ */
 .shell{max-width:1240px;margin:0 auto;padding:0 clamp(20px,5vw,64px)}
-.band{padding:clamp(60px,8.5vw,124px) 0;border-top:1px solid var(--rule)}
+.band{padding:clamp(60px,8.5vw,124px) 0;border-top:1px solid var(--rule);scroll-margin-top:104px}
 .grid{display:grid;grid-template-columns:150px minmax(0,1fr);gap:clamp(24px,4vw,56px)}
-.rail{position:sticky;top:98px;align-self:start;display:flex;flex-direction:column;gap:7px}
+.rail{position:sticky;top:118px;align-self:start;display:flex;flex-direction:column;gap:7px}
 .rail-mark{width:20px;height:1px;background:var(--accent);margin-bottom:9px}
 .rail-k{font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--ink)}
 .rail-v{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);line-height:1.7}
@@ -88,38 +94,64 @@ em{font-style:italic}
 }
 .micro{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;color:var(--ink-3);line-height:1.7}
 
-/* ═══════════ CABECERA ═══════════ */
-.topbar{
-  position:sticky;top:0;z-index:40;
-  background:color-mix(in srgb,var(--paper) 84%,transparent);
-  backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%);
-  border-bottom:1px solid var(--rule);
+/* ═══════════ CABECERA — isla flotante ═══════════
+   Una sola página: la isla es la única navegación y no tiene submenús. */
+.hbar{position:sticky;top:0;z-index:50;padding:14px clamp(12px,3vw,28px) 0;pointer-events:none}
+.island{
+  pointer-events:auto;max-width:1180px;margin:0 auto;
+  display:flex;align-items:center;gap:clamp(12px,2vw,26px);
+  padding:7px 7px 7px 15px;border-radius:6px;
+  border:1px solid var(--glass-bd);background:var(--glass);
+  backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);
+  box-shadow:inset 0 1px 0 var(--glass-hi), var(--glass-shadow);
+  transition:box-shadow .35s ease, border-color .35s ease;
 }
-.topbar-in{max-width:1240px;margin:0 auto;padding:12px clamp(20px,5vw,64px);display:flex;align-items:center;gap:20px}
-.nav{display:flex;gap:22px;margin-left:auto;align-items:center}
-.nav a{
-  font-size:14px;font-weight:400;color:var(--ink-2);text-decoration:none;
-  padding:6px 0;position:relative;white-space:nowrap;
+.island.on{box-shadow:inset 0 1px 0 var(--glass-hi), var(--glass-shadow-on);border-color:var(--rule-2)}
+.nav{display:flex;gap:clamp(14px,1.7vw,22px);margin-left:auto;align-items:center}
+.nav a:not(.btn){
+  font-size:13px;font-weight:400;color:var(--ink-2);text-decoration:none;
+  padding:6px 0;position:relative;white-space:nowrap;transition:color .22s ease;
 }
-.nav a::after{content:"";position:absolute;left:0;right:100%;bottom:0;height:1px;background:var(--accent);transition:right .3s cubic-bezier(.22,.61,.18,1)}
-.nav a:hover{color:var(--ink)}
-.nav a:hover::after{right:0}
-@media (max-width:1100px){.nav a.opt{display:none}}
-@media (max-width:1240px){.nav{gap:17px}}
-@media (max-width:640px){.nav{gap:13px}.nav a{font-size:13px}}
+.nav a:not(.btn)::after{
+  content:"";position:absolute;left:0;right:100%;bottom:0;height:1px;background:var(--accent);
+  transition:right .3s cubic-bezier(.22,.61,.18,1);
+}
+.nav a:not(.btn):hover{color:var(--ink)}
+.nav a:not(.btn):hover::after,.nav a.here::after{right:0}
+.nav a.here{color:var(--ink)}
+.hact{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.island .menu-btn{display:none}
+@media (max-width:980px){
+  .nav{
+    display:none;position:absolute;top:calc(100% + 8px);left:0;right:0;
+    flex-direction:column;align-items:stretch;gap:0;padding:6px;
+    border:1px solid var(--glass-bd);border-radius:6px;background:var(--paper-2);
+    box-shadow:var(--glass-shadow-on);
+  }
+  .island{position:relative;flex-wrap:wrap}
+  .island.open .nav{display:flex}
+  .nav a:not(.btn){padding:12px 12px;font-size:15px;border-bottom:1px solid var(--rule)}
+  .nav a:not(.btn):last-child{border-bottom:none}
+  .nav a:not(.btn)::after{display:none}
+  .island .menu-btn{display:flex}
+}
+@media (max-width:560px){
+  .island{padding:7px}
+  .island .theme-btn{display:none}   /* en el móvil manda el CTA, no el conmutador */
+}
 
 /* ═══════════ MARCA ═══════════ */
 .mark{display:flex;align-items:center;gap:11px;text-decoration:none;flex-shrink:0}
 .mark svg{display:block;flex-shrink:0}
 .mark-w{
-  font-family:"Instrument Serif",serif;font-size:25px;line-height:1;letter-spacing:.11em;
+  font-family:"Instrument Serif",serif;font-size:22px;line-height:1;letter-spacing:.11em;
   color:var(--ink);padding-left:1px;
 }
 .mark-sub{
   font-family:"IBM Plex Mono",monospace;font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;
   color:var(--ink-3);border-left:1px solid var(--rule-2);padding-left:11px;line-height:1.5;
 }
-@media (max-width:860px){.mark-sub{display:none}}
+@media (max-width:1300px){.mark-sub{display:none}}
 
 /* ═══════════ BOTONES ═══════════ */
 .btn{
@@ -134,13 +166,13 @@ em{font-style:italic}
 .btn-line{background:transparent;color:var(--ink);border-color:var(--rule-2)}
 .btn-line:hover{border-color:var(--accent);color:var(--accent-text)}
 .btn:active{transform:translateY(1px)}
-.btn-sm{padding:9px 15px;font-size:13px}
+.btn-sm{padding:9px 16px;font-size:12.5px;font-weight:500;letter-spacing:.02em}
 .link{font-size:14px;color:var(--ink-2);text-decoration:none;display:inline-flex;align-items:center;gap:8px}
 .link:hover{color:var(--accent-text)}
 .link .arw{transition:transform .25s cubic-bezier(.22,.61,.18,1)}
 .link:hover .arw{transform:translateX(4px)}
 .icon-btn{
-  width:34px;height:34px;flex-shrink:0;border-radius:2px;background:transparent;
+  width:32px;height:32px;flex-shrink:0;border-radius:2px;background:transparent;
   border:1px solid var(--rule);color:var(--ink-3);cursor:pointer;
   display:flex;align-items:center;justify-content:center;font-size:14px;line-height:1;
   transition:border-color .2s ease,color .2s ease;
@@ -159,9 +191,10 @@ em{font-style:italic}
 .hero-side{border-left:1px solid var(--rule);padding-left:clamp(18px,2.4vw,30px);display:flex;flex-direction:column;gap:22px}
 @media (max-width:980px){.hero-side{border-left:none;border-top:1px solid var(--rule);padding-left:0;padding-top:26px}}
 .hero-side p{font-size:15px;line-height:1.6;color:var(--ink-2)}
-.stats{display:flex;gap:24px;flex-wrap:wrap}
-.stat-k{font-family:"Instrument Serif",serif;font-size:30px;line-height:1;font-variant-numeric:tabular-nums}
-.stat-v{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-top:7px}
+.stats{display:flex;flex-direction:column}
+.stat{display:flex;align-items:baseline;justify-content:space-between;gap:14px;padding:10px 0;border-top:1px solid var(--rule)}
+.stat-v{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.stat-k{font-family:"Instrument Serif",serif;font-size:24px;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
 
 /* ═══════════ ESPECIALIDADES ═══════════ */
 .areas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--rule);margin-top:36px}
@@ -320,27 +353,30 @@ details .ans{padding:0 0 20px 28px;color:var(--ink-2);font-size:16px;line-height
 }
 </style>
 
-<header class="topbar">
-  <div class="topbar-in">
+<div class="hbar">
+  <header class="island" id="island">
     <a class="mark" href="#top" aria-label="GOA Medical Aesthetics — inicio">
-      <svg width="30" height="30" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="4.5" aria-hidden="true" style="color:var(--ink)">
+      <svg width="28" height="28" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="4.5" aria-hidden="true" style="color:var(--ink)">
         <circle cx="50" cy="50" r="31"/>
         <path d="M33 68 L50 30 L67 68" stroke-linecap="round" stroke-linejoin="miter"/>
       </svg>
       <span class="mark-w">GOA</span>
       <span class="mark-sub">Medical Aesthetics<br>Dr. Bengoa</span>
     </a>
-    <nav class="nav" aria-label="Principal">
+    <nav class="nav" id="nav" aria-label="Secciones de la página">
       <a href="#especialidades">Especialidades</a>
-      <a href="#tratamientos" class="opt">Tratamientos</a>
+      <a href="#tratamientos">Tratamientos</a>
       <a href="#resultados">Antes y después</a>
-      <a href="#sobre-mi" class="opt">Sobre mí</a>
-      <a href="#faq" class="opt">FAQ</a>
-      <a class="btn btn-solid btn-sm" href="#contacto">Pedir valoración</a>
-      <button class="icon-btn" id="theme" type="button" title="Cambiar tema" aria-label="Cambiar tema">◐</button>
+      <a href="#sobre-mi">Sobre mí</a>
+      <a href="#faq">FAQ</a>
     </nav>
-  </div>
-</header>
+    <div class="hact">
+      <a class="btn btn-solid btn-sm cta-top" href="#contacto">Pedir valoración</a>
+      <button class="icon-btn menu-btn" id="menu" type="button" aria-label="Abrir el menú" aria-expanded="false" aria-controls="nav">☰</button>
+      <button class="icon-btn theme-btn" id="theme" type="button" title="Cambiar tema" aria-label="Cambiar tema">◐</button>
+    </div>
+  </header>
+</div>
 
 <main id="top">
 
@@ -364,18 +400,9 @@ details .ans{padding:0 0 20px 28px;color:var(--ink-2);font-size:16px;line-height
       </svg>
       <p>Tratamientos faciales, capilares y cirugía capilar diseñados según tu anatomía, tus objetivos y el resultado que realmente encaja contigo.</p>
       <div class="stats">
-        <div>
-          <div class="stat-k">3</div>
-          <div class="stat-v">Áreas médicas</div>
-        </div>
-        <div>
-          <div class="stat-k">2 años</div>
-          <div class="stat-v">Cirugía en Suiza</div>
-        </div>
-        <div>
-          <div class="stat-k">1:1</div>
-          <div class="stat-v">Valoración médica</div>
-        </div>
+        <div class="stat"><span class="stat-v">Áreas médicas</span><span class="stat-k">3</span></div>
+        <div class="stat"><span class="stat-v">Cirugía en Suiza</span><span class="stat-k">2 años</span></div>
+        <div class="stat"><span class="stat-v">Valoración</span><span class="stat-k">1:1</span></div>
       </div>
     </aside>
   </div>
@@ -558,32 +585,32 @@ details .ans{padding:0 0 20px 28px;color:var(--ink-2);font-size:16px;line-height
         <div>
           <h4>Medicina estética</h4>
           <ul class="tlist">
-            <li><a href="#">Neuromoduladores <span class="arw" aria-hidden="true">→</span></a></li>
-            <li><a href="#">Ácido hialurónico <span class="arw" aria-hidden="true">→</span></a></li>
-            <li><a href="#">Armonización facial <span class="arw" aria-hidden="true">→</span></a></li>
-            <li><a href="#">Ojeras <span class="arw" aria-hidden="true">→</span></a></li>
-            <li><a href="#">Labios <span class="arw" aria-hidden="true">→</span></a></li>
-            <li><a href="#">Bioestimulación / skin quality <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="#tratamientos">Neuromoduladores <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="#tratamientos">Ácido hialurónico <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="#tratamientos">Armonización facial <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="#tratamientos">Ojeras <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="#tratamientos">Labios <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="#tratamientos">Bioestimulación / skin quality <span class="arw" aria-hidden="true">→</span></a></li>
           </ul>
         </div>
         <div>
           <h4>Medicina capilar</h4>
           <ul class="tlist">
-            <li><a href="#">Primera valoración capilar <span class="arw" aria-hidden="true">→</span></a></li>
-            <li><a href="#">Mesoterapia capilar <span class="arw" aria-hidden="true">→</span></a></li>
-            <li><a href="#">PRP / bioestimulación <span class="arw" aria-hidden="true">→</span></a></li>
-            <li><a href="#">Tratamiento médico de la alopecia <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="#tratamientos">Primera valoración capilar <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="#tratamientos">Mesoterapia capilar <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="#tratamientos">PRP / bioestimulación <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="#tratamientos">Tratamiento médico de la alopecia <span class="arw" aria-hidden="true">→</span></a></li>
           </ul>
           <p class="micro" style="margin-top:16px">No todos los pacientes necesitan cirugía. Un buen diagnóstico puede frenar la evolución y mejorar densidad, calibre y calidad capilar.</p>
         </div>
         <div>
           <h4>Cirugía capilar</h4>
           <ul class="tlist">
-            <li><a href="#">Injerto capilar FUE <span class="arw" aria-hidden="true">→</span></a></li>
-            <li><a href="#">Diseño de línea frontal <span class="arw" aria-hidden="true">→</span></a></li>
-            <li><a href="#">Injerto en coronilla <span class="arw" aria-hidden="true">→</span></a></li>
-            <li><a href="#">Injerto de cejas / barba <span class="arw" aria-hidden="true">→</span></a></li>
-            <li><a href="#">Postoperatorio y evolución <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="#tratamientos">Injerto capilar FUE <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="#tratamientos">Diseño de línea frontal <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="#tratamientos">Injerto en coronilla <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="#tratamientos">Injerto de cejas / barba <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="#tratamientos">Postoperatorio y evolución <span class="arw" aria-hidden="true">→</span></a></li>
           </ul>
         </div>
       </div>
@@ -829,7 +856,7 @@ details .ans{padding:0 0 20px 28px;color:var(--ink-2);font-size:16px;line-height
     </div>
   </div>
   <div class="pending">
-    <span class="micro">Maqueta de diseño v2</span>
+    <span class="micro">Maqueta de diseño v3</span>
     <span class="micro">Falta: fotografía clínica, testimonios, datos de contacto</span>
     <span class="micro">Nº de registro sanitario pendiente</span>
   </div>
@@ -850,6 +877,41 @@ details .ans{padding:0 0 20px 28px;color:var(--ink-2);font-size:16px;line-height
     root.setAttribute("data-theme",next);
     try{ localStorage.setItem("goa-theme",next); }catch(e){}
   });
+
+  /* La isla se asienta en cuanto la página se mueve */
+  var island=document.getElementById("island");
+  function onScroll(){ island.classList.toggle("on", window.scrollY > 12); }
+  onScroll();
+  addEventListener("scroll", onScroll, {passive:true});
+
+  /* Menú de una sola página en móvil: la isla se despliega, sin submenús */
+  var menu=document.getElementById("menu"), nav=document.getElementById("nav");
+  function closeMenu(){ island.classList.remove("open"); menu.setAttribute("aria-expanded","false"); menu.textContent="☰"; }
+  menu.addEventListener("click",function(){
+    var open=island.classList.toggle("open");
+    menu.setAttribute("aria-expanded", String(open));
+    menu.textContent = open ? "×" : "☰";
+  });
+  nav.addEventListener("click",function(e){ if(e.target.closest("a")) closeMenu(); });
+  addEventListener("keydown",function(e){ if(e.key==="Escape") closeMenu(); });
+
+  /* Sección activa: en una sola página, el menú tiene que decir dónde estás */
+  var links=Array.prototype.slice.call(nav.querySelectorAll("a"));
+  var targets=links.map(function(a){ return document.querySelector(a.getAttribute("href")); });
+  if("IntersectionObserver" in window){
+    var seen={};
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ seen[en.target.id]=en.isIntersecting ? en.intersectionRatio : 0; });
+      var best="", top=0;
+      targets.forEach(function(t){ if(t && (seen[t.id]||0)>top){ top=seen[t.id]; best=t.id; } });
+      links.forEach(function(a){
+        var on = a.getAttribute("href")==="#"+best;
+        a.classList.toggle("here", on);
+        if(on){ a.setAttribute("aria-current","true"); } else { a.removeAttribute("aria-current"); }
+      });
+    },{rootMargin:"-104px 0px -55% 0px",threshold:[0,.25,.5,1]});
+    targets.forEach(function(t){ if(t) io.observe(t); });
+  }
 
   var chips=Array.prototype.slice.call(document.querySelectorAll(".chip"));
   var cases=Array.prototype.slice.call(document.querySelectorAll("#cases .case"));
