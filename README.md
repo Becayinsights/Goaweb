@@ -7,15 +7,15 @@ Proyecto independiente. **No comparte código, datos ni despliegue con Becay Ren
 
 | Fase | Estado |
 |---|---|
-| Diseño (home + sistema visual) | v1 publicada para revisión |
+| Diseño (home + sistema visual) | v2 publicada para revisión |
 | Contenido real (fotos, testimonios, datos de contacto) | pendiente del cliente |
 | Implementación Next.js | no empezada |
 | Área privada (fichas médicas, usuarios) | fuera de alcance en esta fase |
 
 ## Maquetas v1
 
-- Home: https://claude.ai/code/artifact/c712173e-2492-44ea-a81a-39d80f49a903
-- Sistema visual: https://claude.ai/code/artifact/6a9c460d-0b21-4a93-88a0-55312eacb5a3
+- Home (v2, con propuesta de marca): https://claude.ai/code/artifact/c712173e-2492-44ea-a81a-39d80f49a903
+- Sistema visual (v1, pendiente de actualizar a la paleta v2): https://claude.ai/code/artifact/6a9c460d-0b21-4a93-88a0-55312eacb5a3
 
 Los dos ficheros fuente están en `design/`. Se abren en cualquier navegador sin build.
 
@@ -25,10 +25,16 @@ Los dos ficheros fuente están en `design/`. Se abren en cualquier navegador sin
 estilos. El sistema visual está escrito ya como CSS de producción, así que la maqueta se porta
 sin reescribir. Despliegue en Vercel.
 
-**Identidad**: papel crema, tinta gris azulada y bronce, los tres tomados del logo.
-Tipografía Jost (geométrica del logo) para titulares y navegación, Newsreader para texto corrido,
-IBM Plex Mono para metadatos clínicos. El logo GOΛ se ha redibujado en SVG (`design/`) para que
-escale limpio en cabecera, favicon y Open Graph.
+**Identidad (v2)**: hueso mineral `#EFEEE8`, negro petróleo `#12201F` y verde quirófano `#1F5A4E`.
+Se descarta el crema con dorado del logo original: es el uniforme de casi toda la medicina estética
+y escora a femenino cuando media consulta es cirugía capilar masculina.
+Tipografía Instrument Serif para titulares, Instrument Sans para texto y UI, IBM Plex Mono para
+metadatos clínicos.
+
+**Marca (v2, propuesta)**: símbolo nuevo — el vértice Λ del logo original metido dentro del círculo,
+la O y la A del nombre en un solo trazo. El original es un texto muy fino y muy espaciado que se
+rompe en favicon, avatar de Instagram y bordado. Tres versiones dibujadas en SVG: símbolo suelto,
+horizontal con wordmark serif y apilada para papelería. Se ven al final de la maqueta.
 
 **Contenido**: todo el copy sale del esquema del cliente. Donde no hay material real —fotografía
 clínica, testimonios, teléfono— hay un hueco tramado y etiquetado, nunca contenido inventado.
@@ -63,3 +69,4 @@ Ver `docs/seo.md`.
 - Teléfono, WhatsApp, dirección y sistema de reserva de cita
 - Número de registro sanitario del centro (obligatorio en publicidad sanitaria)
 - Dominio definitivo
+- Decisión sobre la marca: se aprueba el símbolo nuevo o se mantiene el logo actual
