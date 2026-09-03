@@ -1,0 +1,449 @@
+<title>Sistema GOΛ</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&family=Newsreader:opsz,wght@6..72,300;6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* ══ TOKENS ── mismos que la web. Claro por defecto: el papel del logo. ══ */
+:root{
+  --paper:#F7F3EE; --paper-2:#FCFAF6; --paper-3:#EFE9E1;
+  --ink:#1E2428; --ink-2:#4C555A; --ink-3:#8C877E;
+  --bronze:#A9885E; --bronze-text:#8A6C46; --bronze-dim:rgba(169,136,94,.13);
+  --rule:rgba(30,36,40,.14); --rule-2:rgba(30,36,40,.30);
+  --btn-ink:#F7F3EE; --hatch:rgba(30,36,40,.055);
+  --ok:#3F7D5A; --warn:#B07F2E; --stop:#A8453F;
+  --shadow:0 1px 0 rgba(255,255,255,.7) inset, 0 18px 44px rgba(40,32,20,.07);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#15181A; --paper-2:#1B1F21; --paper-3:#202426;
+    --ink:#EDE7DE; --ink-2:#B3AFA6; --ink-3:#7C7A73;
+    --bronze:#C9A874; --bronze-text:#D2B586; --bronze-dim:rgba(201,168,116,.14);
+    --rule:rgba(237,231,222,.15); --rule-2:rgba(237,231,222,.32);
+    --btn-ink:#14181A; --hatch:rgba(237,231,222,.06);
+    --ok:#79BE95; --warn:#DCB165; --stop:#DE8C87;
+    --shadow:0 1px 0 rgba(255,255,255,.05) inset, 0 20px 50px rgba(0,0,0,.4);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#15181A; --paper-2:#1B1F21; --paper-3:#202426;
+  --ink:#EDE7DE; --ink-2:#B3AFA6; --ink-3:#7C7A73;
+  --bronze:#C9A874; --bronze-text:#D2B586; --bronze-dim:rgba(201,168,116,.14);
+  --rule:rgba(237,231,222,.15); --rule-2:rgba(237,231,222,.32);
+  --btn-ink:#14181A; --hatch:rgba(237,231,222,.06);
+  --ok:#79BE95; --warn:#DCB165; --stop:#DE8C87;
+  --shadow:0 1px 0 rgba(255,255,255,.05) inset, 0 20px 50px rgba(0,0,0,.4);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html,body{overflow-x:clip;max-width:100%}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:"Newsreader",Georgia,serif;font-size:16px;line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--bronze);outline-offset:3px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 clamp(20px,5vw,48px) 96px}
+
+/* ══ CABECERA ══ */
+.topbar{
+  position:sticky;top:0;z-index:30;border-bottom:1px solid var(--rule);
+  background:color-mix(in srgb,var(--paper) 84%,transparent);
+  backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%);
+}
+.topbar-in{max-width:1040px;margin:0 auto;padding:12px clamp(20px,5vw,48px);display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand span{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3)}
+.icon-btn{
+  width:34px;height:34px;border-radius:2px;background:transparent;border:1px solid var(--rule);
+  color:var(--ink-3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;
+  transition:border-color .2s ease,color .2s ease;
+}
+.icon-btn:hover{border-color:var(--rule-2);color:var(--ink)}
+
+/* ══ TIPOS ══ */
+h1,h2,h3{font-family:"Jost",ui-sans-serif,system-ui,sans-serif;margin:0;text-wrap:balance}
+h1{font-size:clamp(34px,5vw,54px);font-weight:200;letter-spacing:-.022em;line-height:1.05;margin:36px 0 14px}
+h2{font-size:clamp(24px,3vw,32px);font-weight:300;letter-spacing:-.018em;margin:0 0 12px}
+h3{font-size:15px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-2);margin:34px 0 14px}
+p{margin:0}
+.lede{font-size:19px;font-weight:300;color:var(--ink-2);max-width:60ch;line-height:1.55}
+.note{font-size:15.5px;color:var(--ink-2);max-width:66ch;margin:0 0 18px}
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:500;text-transform:uppercase;
+  letter-spacing:.2em;color:var(--bronze-text);display:flex;align-items:center;gap:12px;margin-bottom:10px;
+}
+.eyebrow::after{content:"";flex:1;height:1px;background:var(--rule)}
+.micro{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em;color:var(--ink-3);line-height:1.7}
+section{margin-top:64px;scroll-margin-top:80px}
+
+/* ══ TABLA DE TOKENS ══ */
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:520px}
+th{
+  font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:500;text-transform:uppercase;
+  letter-spacing:.16em;color:var(--ink-3);text-align:left;padding:0 10px 10px;border-bottom:1px solid var(--rule-2);white-space:nowrap;
+}
+td{padding:10px;border-bottom:1px solid var(--rule);vertical-align:middle;color:var(--ink-2)}
+tr:last-child td{border-bottom:none}
+td.name,td.val{font-family:"IBM Plex Mono",monospace;font-size:11.5px;white-space:nowrap;color:var(--ink)}
+td.val{color:var(--ink-3);font-variant-numeric:tabular-nums}
+.sw{display:inline-block;width:22px;height:22px;vertical-align:middle;margin-right:9px;border:1px solid var(--rule-2)}
+
+/* ══ MUESTRAS ══ */
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.demo{border:1px solid var(--rule);background:var(--paper-2);padding:24px;box-shadow:var(--shadow)}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.grid2>*{min-width:0}
+@media (max-width:760px){.grid2{grid-template-columns:1fr}}
+
+/* ══ COMPONENTES REALES DE LA WEB ══ */
+.btn{
+  display:inline-flex;align-items:center;gap:9px;flex-shrink:0;
+  font-family:"Jost",sans-serif;font-size:13.5px;font-weight:400;letter-spacing:.06em;
+  padding:12px 22px;border-radius:2px;border:1px solid transparent;cursor:pointer;text-decoration:none;white-space:nowrap;
+  transition:background .25s ease,color .25s ease,border-color .25s ease,transform .16s ease;
+}
+.btn-solid{background:var(--ink);color:var(--btn-ink);border-color:var(--ink)}
+.btn-solid:hover{background:var(--bronze);border-color:var(--bronze)}
+.btn-line{background:transparent;color:var(--ink);border-color:var(--rule-2)}
+.btn-line:hover{border-color:var(--bronze);color:var(--bronze-text)}
+.btn:active{transform:translateY(1px)}
+.link{font-family:"Jost",sans-serif;font-size:13.5px;letter-spacing:.05em;color:var(--ink-2);text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.link:hover{color:var(--bronze-text)}
+.link .arw{transition:transform .25s cubic-bezier(.22,.61,.18,1)}
+.link:hover .arw{transform:translateX(4px)}
+.chip{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  padding:7px 13px;border:1px solid var(--rule);background:transparent;color:var(--ink-3);border-radius:2px;cursor:pointer;
+  transition:color .22s ease,border-color .22s ease,background .22s ease;
+}
+.chip:hover{color:var(--ink);border-color:var(--rule-2)}
+.chip[aria-pressed="true"]{color:var(--ink);border-color:var(--bronze);background:var(--bronze-dim)}
+.tlist{list-style:none;margin:0;padding:0}
+.tlist a{
+  display:flex;align-items:baseline;justify-content:space-between;gap:14px;padding:11px 0;
+  border-bottom:1px solid var(--rule);text-decoration:none;font-family:"Jost",sans-serif;font-size:15px;color:var(--ink);
+  transition:color .22s ease,padding-left .28s cubic-bezier(.22,.61,.18,1);
+}
+.tlist a:hover{color:var(--bronze-text);padding-left:8px}
+.tlist .arw{color:var(--ink-3);font-size:12px;opacity:0;transition:opacity .22s ease}
+.tlist a:hover .arw{opacity:1;color:var(--bronze)}
+.slot{
+  aspect-ratio:4/5;border:1px solid var(--rule);position:relative;
+  background:repeating-linear-gradient(-45deg,var(--hatch) 0 1px,transparent 1px 9px);
+  display:flex;align-items:center;justify-content:center;
+}
+.slot::after{content:"";position:absolute;top:12px;bottom:12px;left:50%;width:1px;background:var(--rule)}
+.slot-lbl{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);z-index:1;background:var(--paper-2);padding:3px 8px}
+.state{display:inline-flex;align-items:center;gap:7px;font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase}
+.state i{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.notice{padding:16px 18px;border-left:2px solid var(--bronze);background:var(--bronze-dim);font-size:15px;line-height:1.6;color:var(--ink-2)}
+details{border-bottom:1px solid var(--rule)}
+details>summary{list-style:none;cursor:pointer;padding:16px 0;display:flex;gap:16px;align-items:baseline;font-family:"Jost",sans-serif;font-size:16px;color:var(--ink)}
+details>summary::-webkit-details-marker{display:none}
+details>summary::before{content:"+";color:var(--bronze);font-size:15px;width:12px;flex-shrink:0}
+details[open]>summary::before{content:"–"}
+details .ans{padding:0 0 18px 28px;color:var(--ink-2);font-size:15.5px;max-width:62ch}
+
+/* ══ ESCALAS ══ */
+.scale{display:flex;align-items:baseline;gap:18px;padding:9px 0;border-bottom:1px solid var(--rule)}
+.scale:last-child{border-bottom:none}
+.scale-tag{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;color:var(--ink-3);width:120px;flex-shrink:0}
+.scale-sample{font-family:"Jost",sans-serif;color:var(--ink);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ══ MOVIMIENTO ══ */
+@keyframes riseIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes drawRule{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.anim-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule)}
+.anim{background:var(--paper);padding:16px;display:flex;flex-direction:column;gap:10px}
+.anim-stage{height:58px;display:flex;align-items:center;justify-content:center;background:var(--paper-3);overflow:hidden;padding:8px}
+.anim-name{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink)}
+.anim-use{font-size:13.5px;color:var(--ink-2);line-height:1.5}
+.pill{padding:7px 14px;border:1px solid var(--rule-2);font-family:"Jost",sans-serif;font-size:13px}
+.replay .pill{animation:riseIn .6s cubic-bezier(.22,.61,.18,1) both}
+.replay .bar{width:120px;height:1px;background:var(--bronze);transform-origin:left;animation:drawRule .8s cubic-bezier(.22,.61,.18,1) both}
+.underline{position:relative;font-family:"Jost",sans-serif;font-size:13.5px;color:var(--ink-2);text-decoration:none;padding-bottom:4px}
+.underline::after{content:"";position:absolute;left:0;right:100%;bottom:0;height:1px;background:var(--bronze);transition:right .3s cubic-bezier(.22,.61,.18,1)}
+.anim-stage:hover .underline::after{right:0}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+pre{
+  background:var(--paper-3);border:1px solid var(--rule);padding:16px 18px;overflow-x:auto;margin:0 0 16px;
+  font-family:"IBM Plex Mono",monospace;font-size:11.5px;line-height:1.75;color:var(--ink-2);
+}
+pre b{color:var(--bronze-text);font-weight:500}
+pre i{color:var(--ink-3);font-style:normal}
+ol.rules{margin:0;padding:0;list-style:none;counter-reset:r}
+ol.rules li{
+  counter-increment:r;display:flex;gap:16px;padding:15px 0;border-bottom:1px solid var(--rule);
+  font-size:15.5px;color:var(--ink-2);line-height:1.6;
+}
+ol.rules li:last-child{border-bottom:none}
+ol.rules li::before{
+  content:counter(r,decimal-leading-zero);font-family:"IBM Plex Mono",monospace;font-size:11px;
+  color:var(--bronze);flex-shrink:0;padding-top:4px;
+}
+ol.rules b{color:var(--ink);font-weight:400;font-family:"Jost",sans-serif}
+</style>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <svg width="62" height="22" viewBox="0 0 300 100" fill="none" stroke="currentColor" stroke-width="5" aria-hidden="true" style="color:var(--ink);display:block;overflow:visible">
+        <path d="M74 30 A34 34 0 1 0 74 52 L46 52" stroke-linecap="butt"/>
+        <circle cx="150" cy="50" r="34"/>
+        <path d="M222 84 L254 16 L286 84" stroke-linecap="butt"/>
+      </svg>
+      <span id="tag">Sistema visual · claro</span>
+    </div>
+    <button class="icon-btn" id="theme" type="button" title="Cambiar tema" aria-label="Cambiar tema">◐</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1>El sistema visual de GOΛ Medical Aesthetics</h1>
+  <p class="lede">Mismos principios que el sistema de Becay —todo por variable, semántica intocable, movimiento que se apaga— con el papel, la tinta y el bronce del logo, y una tipografía pensada para leer, no para operar un panel.</p>
+
+  <!-- ════ 1. COLOR ════ -->
+  <section id="color">
+    <p class="eyebrow">01 · Color</p>
+    <h2>Tres colores del logo y nada más</h2>
+    <p class="note">El papel crema, la tinta gris azulada del <em>GOΛ</em> y el bronce de <em>MEDICAL AESTHETICS</em>. Los neutros no son grises puros: llevan una pizca de cálido hacia el bronce, que es lo que hace que la página parezca elegida y no heredada del navegador. El bronce se reserva para filetes, un solo botón y el estado activo; en cuanto se usa como fondo grande, la web se abarata.</p>
+
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Token</th><th>Claro</th><th>Oscuro</th><th>Dónde se usa</th></tr></thead>
+        <tbody>
+          <tr><td class="name"><span class="sw" style="background:#F7F3EE"></span>--paper</td><td class="val">#F7F3EE</td><td class="val">#15181A</td><td>Fondo de página</td></tr>
+          <tr><td class="name"><span class="sw" style="background:#FCFAF6"></span>--paper-2</td><td class="val">#FCFAF6</td><td class="val">#1B1F21</td><td>Bloque elevado: cita, CTA, tarjeta</td></tr>
+          <tr><td class="name"><span class="sw" style="background:#1E2428"></span>--ink</td><td class="val">#1E2428</td><td class="val">#EDE7DE</td><td>Titulares y botón sólido</td></tr>
+          <tr><td class="name"><span class="sw" style="background:#4C555A"></span>--ink-2</td><td class="val">#4C555A</td><td class="val">#B3AFA6</td><td>Texto corrido</td></tr>
+          <tr><td class="name"><span class="sw" style="background:#8C877E"></span>--ink-3</td><td class="val">#8C877E</td><td class="val">#7C7A73</td><td>Metadatos, notas, mono</td></tr>
+          <tr><td class="name"><span class="sw" style="background:#A9885E"></span>--bronze</td><td class="val">#A9885E</td><td class="val">#C9A874</td><td>Filetes, subrayado, estado activo</td></tr>
+          <tr><td class="name"><span class="sw" style="background:#8A6C46"></span>--bronze-text</td><td class="val">#8A6C46</td><td class="val">#D2B586</td><td>Bronce cuando es texto (contraste AA)</td></tr>
+          <tr><td class="name"><span class="sw" style="background:rgba(30,36,40,.30)"></span>--rule-2</td><td class="val">30% tinta</td><td class="val">32% papel</td><td>Filete fuerte, borde de botón</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Semántica — solo para estados, nunca para decorar</h3>
+    <div class="row">
+      <span class="state" style="color:var(--ok)"><i style="background:var(--ok)"></i>Contenido listo</span>
+      <span class="state" style="color:var(--warn)"><i style="background:var(--warn)"></i>Pendiente de foto o texto</span>
+      <span class="state" style="color:var(--stop)"><i style="background:var(--stop)"></i>Bloqueado: falta consentimiento</span>
+    </div>
+    <p class="note" style="margin-top:16px">Verde, ámbar y rojo existen para el panel interno del doctor (fichas, consentimientos, estados de caso). En la web pública no aparecen: ahí manda el bronce.</p>
+
+<pre><i>/* Pégalo en el &lt;head&gt;. Claro por defecto, oscuro si el visitante lo tiene puesto. */</i>
+:root{
+  <b>--paper</b>:#F7F3EE; <b>--paper-2</b>:#FCFAF6; <b>--ink</b>:#1E2428;
+  <b>--ink-2</b>:#4C555A; <b>--ink-3</b>:#8C877E;
+  <b>--bronze</b>:#A9885E; <b>--bronze-text</b>:#8A6C46;
+  <b>--rule</b>:rgba(30,36,40,.14); <b>--rule-2</b>:rgba(30,36,40,.30);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){ <i>/* … mismos nombres, otros valores */</i> }
+}
+:root[data-theme="dark"]{ <i>/* … para que el conmutador gane en los dos sentidos */</i> }</pre>
+  </section>
+
+  <!-- ════ 2. TIPOGRAFÍA ════ -->
+  <section id="tipografia">
+    <p class="eyebrow">02 · Tipografía</p>
+    <h2>Jost dibuja, Newsreader explica, Plex Mono etiqueta</h2>
+    <p class="note"><b>Jost</b> es la geométrica fina del logo: titulares en peso 200–300 y tracking negativo, más navegación y botones. <b>Newsreader</b> lleva el texto corrido — una serif de revista da a la medicina estética el tono de criterio que una sans neutra no da. <b>IBM Plex Mono</b> solo para lo clínico: áreas, filtros, tiempos de evolución, notas de contenido pendiente.</p>
+
+    <div class="scale"><span class="scale-tag">80 / 200 / −.022</span><span class="scale-sample" style="font-size:38px;font-weight:200;letter-spacing:-.022em">Titular de portada</span></div>
+    <div class="scale"><span class="scale-tag">40 / 300 / −.018</span><span class="scale-sample" style="font-size:30px;font-weight:300;letter-spacing:-.018em">Titular de sección</span></div>
+    <div class="scale"><span class="scale-tag">22 / 300</span><span class="scale-sample" style="font-size:21px;font-weight:300;color:var(--ink-2)">Entradilla bajo el titular</span></div>
+    <div class="scale"><span class="scale-tag">20 / 400</span><span class="scale-sample" style="font-size:20px;font-weight:400">Nombre de tratamiento</span></div>
+    <div class="scale"><span class="scale-tag">17 / serif</span><span class="scale-sample" style="font-family:Newsreader,serif;font-size:17px;color:var(--ink-2)">Texto corrido, 62 caracteres por línea</span></div>
+    <div class="scale"><span class="scale-tag">15 / 400</span><span class="scale-sample" style="font-size:15px">Fila del índice de tratamientos</span></div>
+    <div class="scale"><span class="scale-tag">13.5 / 400 / .06</span><span class="scale-sample" style="font-size:13.5px;letter-spacing:.06em">Botón y navegación</span></div>
+    <div class="scale"><span class="scale-tag">11 / mono / .06</span><span class="scale-sample micro" style="font-family:'IBM Plex Mono',monospace">12 meses · pendiente de foto</span></div>
+    <div class="scale"><span class="scale-tag">10.5 / mono / .20</span><span class="scale-sample eyebrow" style="display:inline;font-family:'IBM Plex Mono',monospace">Medicina capilar</span></div>
+
+    <p class="note" style="margin-top:20px">Dos reglas: el tracking negativo solo de 20px hacia arriba, y toda etiqueta en mayúsculas lleva entre .13 y .20em de letter-spacing — sin eso, Jost en versalitas se lee apretada. Los tiempos de evolución (<span class="micro">12 meses</span>, <span class="micro">15 días</span>) van con <span class="micro">tabular-nums</span> para que alineen en columna.</p>
+  </section>
+
+  <!-- ════ 3. COMPONENTES ════ -->
+  <section id="componentes">
+    <p class="eyebrow">03 · Componentes</p>
+    <h2>Piezas y sus medidas exactas</h2>
+
+    <h3>Botones</h3>
+    <div class="demo row">
+      <a class="btn btn-solid" href="#componentes">Pedir valoración</a>
+      <a class="btn btn-line" href="#componentes">Ver tratamientos</a>
+      <a class="link" href="#componentes">Antes y después <span class="arw" aria-hidden="true">→</span></a>
+    </div>
+    <p class="micro" style="margin-top:10px">12px 22px · radio 2px · Jost 13.5/.06em · el sólido pasa a bronce al pasar el ratón. Un solo botón sólido por pantalla.</p>
+
+    <h3>Filtros de casos</h3>
+    <div class="demo row">
+      <button class="chip" type="button" aria-pressed="true">Todos</button>
+      <button class="chip" type="button" aria-pressed="false">Medicina estética</button>
+      <button class="chip" type="button" aria-pressed="false">Injerto capilar</button>
+      <button class="chip" type="button" aria-pressed="false">Labios</button>
+    </div>
+    <p class="micro" style="margin-top:10px">7px 13px · mono 10.5/.10em · activo = borde bronce + fondo bronce al 13%. El estado vive en <span class="micro">aria-pressed</span>, no en una clase, para que un lector de pantalla lo cante.</p>
+
+    <h3>Hueco de antes y después</h3>
+    <div class="grid2">
+      <div class="demo" style="padding:16px">
+        <div class="slot"><span class="slot-lbl">Antes · Después</span></div>
+        <div style="display:flex;justify-content:space-between;margin-top:10px;align-items:baseline">
+          <span style="font-family:Jost,sans-serif;font-size:14.5px">Injerto capilar FUE</span>
+          <span class="micro">12 meses</span>
+        </div>
+      </div>
+      <div>
+        <p class="note">Proporción 4:5 y filete central que separa el antes del después. Mientras no haya foto real, el hueco se ve tramado y etiquetado: es honesto con el cliente y evita que una maqueta parezca un resultado.</p>
+        <div class="notice">Las imágenes muestran resultados reales, pero cada caso requiere una valoración individual y no todos los pacientes obtienen la misma evolución.</div>
+        <p class="micro" style="margin-top:12px">Este aviso es obligatorio junto a la galería por normativa de publicidad sanitaria.</p>
+      </div>
+    </div>
+
+    <h3>Índice de tratamientos</h3>
+    <div class="demo">
+      <ul class="tlist">
+        <li><a href="#componentes">Neuromoduladores <span class="arw" aria-hidden="true">→</span></a></li>
+        <li><a href="#componentes">Ácido hialurónico <span class="arw" aria-hidden="true">→</span></a></li>
+        <li><a href="#componentes">Armonización facial <span class="arw" aria-hidden="true">→</span></a></li>
+      </ul>
+    </div>
+    <p class="micro" style="margin-top:10px">Fila de 11px arriba y abajo, filete inferior, y al pasar el ratón la fila se desplaza 8px y aparece la flecha. Nada de tarjetas: el índice es una lista, no un catálogo de productos.</p>
+
+    <h3>Pregunta frecuente</h3>
+    <div class="demo" style="padding:6px 24px">
+      <details open>
+        <summary>¿Todos los pacientes capilares necesitan injerto?</summary>
+        <div class="ans">No. En muchos casos es fundamental empezar por un diagnóstico médico y un plan de tratamiento.</div>
+      </details>
+      <details>
+        <summary>¿La medicina estética cambia la cara?</summary>
+        <div class="ans">Bien indicada, no. El objetivo es armonizar, prevenir y rejuvenecer manteniendo la naturalidad.</div>
+      </details>
+    </div>
+    <p class="micro" style="margin-top:10px">&lt;details&gt; nativo: funciona sin JavaScript, es accesible por teclado y Google lo lee como FAQ. El signo + / – en bronce es el único adorno.</p>
+  </section>
+
+  <!-- ════ 4. GEOMETRÍA ════ -->
+  <section id="geometria">
+    <p class="eyebrow">04 · Geometría</p>
+    <h2>Radio 2, filete de 1px, aire de sobra</h2>
+    <p class="note">Aquí es donde este sistema se separa del de Becay: un panel de datos pide radios grandes y cristal; una web de medicina estética pide esquinas casi rectas y filetes. El radio codifica poco porque casi todo es rectangular — la jerarquía la dan el espacio y el filete.</p>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Contexto</th><th>Valor</th><th>Nota</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Radio</td><td class="val">2px</td><td>Botones, chips, bloques. El único radio del sistema</td></tr>
+          <tr><td class="name">Filete</td><td class="val">1px</td><td>--rule normal, --rule-2 cuando separa de verdad</td></tr>
+          <tr><td class="name">Aire de sección</td><td class="val">64 → 132px</td><td>clamp(64px, 9vw, 132px) arriba y abajo</td></tr>
+          <tr><td class="name">Margen de página</td><td class="val">20 → 64px</td><td>clamp(20px, 5vw, 64px)</td></tr>
+          <tr><td class="name">Ancho máximo</td><td class="val">1240px</td><td>Texto corrido cortado a 62ch</td></tr>
+          <tr><td class="name">Rail de metadatos</td><td class="val">148px</td><td>Sticky a 96px del borde superior</td></tr>
+          <tr><td class="name">Gap de rejilla</td><td class="val">24 → 56px</td><td>Constante en todos los cortes</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Cortes</h3>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Corte</th><th>Qué cambia</th></tr></thead>
+        <tbody>
+          <tr><td class="name">≤ 1240px</td><td>La navegación aprieta el gap a 18px</td></tr>
+          <tr><td class="name">≤ 1100px</td><td>Desaparece el texto del logo, queda el símbolo</td></tr>
+          <tr><td class="name">≤ 1080px</td><td>Se ocultan los enlaces secundarios del menú</td></tr>
+          <tr><td class="name">≤ 960px</td><td>El hero pasa a una columna</td></tr>
+          <tr><td class="name">≤ 900px</td><td>El rail se convierte en etiqueta horizontal; las tres áreas se apilan</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-top:18px">Dos defensas contra desbordes: <span class="micro">html,body{overflow-x:clip;max-width:100%}</span> global y <span class="micro">min-width:0</span> en todo hijo de rejilla. Las tablas anchas van en su propio contenedor con scroll, nunca mueven la página.</p>
+  </section>
+
+  <!-- ════ 5. MOVIMIENTO ════ -->
+  <section id="movimiento">
+    <p class="eyebrow">05 · Movimiento</p>
+    <h2>Tres gestos, y ninguno se repite en bucle</h2>
+    <p class="note">Una web de salud que se mueve mucho parece una landing de infoproducto. Solo hay una secuencia de entrada en el hero y dos microinteracciones. Nada parpadea, nada aparece al hacer scroll: todo está visible desde el primer fotograma.</p>
+    <div class="anim-grid">
+      <div class="anim">
+        <div class="anim-stage replay"><span class="pill">Pedir valoración</span></div>
+        <div class="anim-name">riseIn · 600ms</div>
+        <div class="anim-use">Entrada del hero, escalonada 60ms entre línea y línea. Se ejecuta una vez.</div>
+      </div>
+      <div class="anim">
+        <div class="anim-stage replay"><i class="bar"></i></div>
+        <div class="anim-name">drawRule · 800ms</div>
+        <div class="anim-use">El vértice Λ y los filetes se dibujan de izquierda a derecha al cargar.</div>
+      </div>
+      <div class="anim">
+        <div class="anim-stage"><a class="underline" href="#movimiento">Antes y después</a></div>
+        <div class="anim-name">underline · 300ms</div>
+        <div class="anim-use">Subrayado bronce que crece al pasar el ratón. Pruébalo aquí encima.</div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:18px">Todas las curvas son <span class="micro">cubic-bezier(.22,.61,.18,1)</span>. Y todo se apaga en bloque bajo <span class="micro">prefers-reduced-motion</span>, incluido el scroll suave.</p>
+  </section>
+
+  <!-- ════ 6. REGLAS ════ -->
+  <section id="reglas">
+    <p class="eyebrow">06 · Reglas</p>
+    <h2>Lo que hace que se parezca</h2>
+    <ol class="rules">
+      <li><b>Ningún color literal en un componente.</b> Todo pasa por variable declarada en los dos temas. Es lo que permite cambiar de tema sin tocar una línea de componente.</li>
+      <li><b>El bronce se gasta poco.</b> Filetes, un botón, el estado activo y el vértice. En cuanto se usa como fondo grande, la marca se abarata.</li>
+      <li><b>Ni una foto inventada.</b> Los huecos de imagen se ven tramados y etiquetados hasta que llegue fotografía clínica propia con consentimiento firmado.</li>
+      <li><b>Ni un testimonio inventado.</b> Los huecos llevan el formato indicado (texto, vídeo, foto) y se rellenan solo con material real.</li>
+      <li><b>El aviso legal viaja con la galería.</b> Donde hay antes y después, hay advertencia de variabilidad de resultados. No es letra pequeña, es parte del componente.</li>
+      <li><b>Nada aparece al hacer scroll.</b> La página se lee entera desde el primer fotograma; el movimiento es entrada, no revelado.</li>
+      <li><b>Estructura significa algo.</b> Las etiquetas mono nombran el área médica real (facial, capilar médico, quirúrgico). No se numeran secciones que no son una secuencia.</li>
+    </ol>
+  </section>
+
+  <p class="micro" style="margin-top:56px;padding-top:18px;border-top:1px solid var(--rule)">Sistema visual GOΛ v1 · adaptado del sistema de Becay Rentabilidad · septiembre 2026</p>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var root=document.documentElement, btn=document.getElementById("theme"), tag=document.getElementById("tag");
+  function current(){
+    var s=root.getAttribute("data-theme");
+    if(s) return s;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+  function label(){ tag.textContent = "Sistema visual · " + (current()==="dark" ? "oscuro" : "claro"); }
+  try{ var saved=localStorage.getItem("goa-theme"); if(saved){ root.setAttribute("data-theme",saved); } }catch(e){}
+  label();
+  btn.addEventListener("click",function(){
+    var next = current()==="dark" ? "light" : "dark";
+    root.setAttribute("data-theme",next);
+    try{ localStorage.setItem("goa-theme",next); }catch(e){}
+    label();
+  });
+  /* Los chips de la muestra se comportan como en la web */
+  var chips=Array.prototype.slice.call(document.querySelectorAll(".chip"));
+  chips.forEach(function(c){
+    c.addEventListener("click",function(){
+      chips.forEach(function(o){ o.setAttribute("aria-pressed", String(o===c)); });
+    });
+  });
+  /* Repetir las dos animaciones al pasar el ratón, para poder verlas cuantas veces haga falta */
+  Array.prototype.slice.call(document.querySelectorAll(".replay")).forEach(function(stage){
+    stage.addEventListener("mouseenter",function(){
+      var el=stage.firstElementChild;
+      if(!el) return;
+      var clone=el.cloneNode(true);
+      stage.replaceChild(clone, el);
+    });
+  });
+})();
+</script>
