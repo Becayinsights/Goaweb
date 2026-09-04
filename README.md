@@ -14,7 +14,12 @@ Proyecto independiente. **No comparte código, datos ni despliegue con Becay Ren
 
 ## Maquetas
 
-- Home (con propuesta de marca): https://claude.ai/code/artifact/c712173e-2492-44ea-a81a-39d80f49a903
+- Home, enlace de trabajo (se actualiza en cada versión): https://claude.ai/code/artifact/c712173e-2492-44ea-a81a-39d80f49a903
+- Home v9, enlace limpio para enviar al cliente: https://claude.ai/code/artifact/4b7968b8-ce53-408c-a953-0ea11b479884
+
+WhatsApp y las redes cachean la vista previa por URL: para enviar una versión nueva a alguien que
+ya recibió el enlace, se publica una copia con otro nombre de fichero (`design/goa-home-vN.html`),
+que genera una URL nueva. El enlace de trabajo se sigue actualizando en el mismo sitio.
 - Sistema visual (v1, pendiente de actualizar a la paleta v2): https://claude.ai/code/artifact/6a9c460d-0b21-4a93-88a0-55312eacb5a3
 
 Los dos ficheros fuente están en `design/`. Se abren en cualquier navegador sin build.
