@@ -60,14 +60,15 @@ a{color:inherit}
 
 /* ═══════════ REJILLA ═══════════ */
 .shell{max-width:1240px;margin:0 auto;padding:0 clamp(20px,5vw,64px)}
-.band{padding:clamp(60px,8.5vw,124px) 0;border-top:1px solid var(--rule);scroll-margin-top:104px}
+.band{padding-top:clamp(60px,8.5vw,124px);padding-bottom:clamp(60px,8.5vw,124px);border-top:1px solid var(--rule);scroll-margin-top:104px}
 .grid{display:grid;grid-template-columns:150px minmax(0,1fr);gap:clamp(24px,4vw,56px)}
+.grid>*{min-width:0}   /* sin esto, la tira de filtros ensancha su columna y recorta por la derecha */
 .rail{position:sticky;top:118px;align-self:start;display:flex;flex-direction:column;gap:7px}
 .rail-mark{width:20px;height:1px;background:var(--accent);margin-bottom:9px}
 .rail-k{font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--ink)}
 .rail-v{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);line-height:1.7}
 @media (max-width:900px){
-  .grid{grid-template-columns:1fr;gap:20px}
+  .grid{grid-template-columns:minmax(0,1fr);gap:20px}
   .rail{position:static;flex-direction:row;flex-wrap:wrap;align-items:center;gap:10px}
   .rail-mark{display:none}
   .rail-v::before{content:"·";margin-right:10px;color:var(--rule-2)}
@@ -145,8 +146,11 @@ em{font-style:italic}
 .mark svg{display:block;flex-shrink:0}
 .mark-w{
   font-family:"Instrument Serif",serif;font-size:22px;line-height:1;letter-spacing:.11em;
-  color:var(--ink);padding-left:1px;
+  color:var(--ink);padding-left:1px;display:inline-flex;align-items:baseline;
 }
+/* El símbolo hace de A: se apoya en la línea base y desborda un pelo por arriba
+   y por abajo, como cualquier letra redonda junto a una recta. */
+.mark-a{width:.74em;height:.74em;flex-shrink:0;transform:translateY(.03em)}
 .mark-sub{
   font-family:"IBM Plex Mono",monospace;font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;
   color:var(--ink-3);border-left:1px solid var(--rule-2);padding-left:11px;line-height:1.5;
@@ -181,7 +185,7 @@ em{font-style:italic}
 .actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
 
 /* ═══════════ HERO ═══════════ */
-.hero{padding:clamp(52px,7vw,96px) 0 clamp(48px,6vw,84px)}
+.hero{padding-top:clamp(52px,7vw,96px);padding-bottom:clamp(48px,6vw,84px)}
 .hero-in{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:clamp(28px,5vw,72px);align-items:end}
 @media (max-width:980px){.hero-in{grid-template-columns:1fr;gap:34px;align-items:start}}
 .hero h1{margin:20px 0 0}
@@ -325,13 +329,13 @@ details .ans{padding:0 0 20px 28px;color:var(--ink-2);font-size:16px;line-height
 .bcell.dark .micro{color:rgba(239,238,232,.6)}
 .bstage{display:flex;align-items:center;justify-content:center;width:100%;min-height:96px}
 .stack{display:flex;flex-direction:column;align-items:center;gap:9px;text-align:center}
-.stack-w{font-family:"Instrument Serif",serif;font-size:30px;letter-spacing:.14em;line-height:1;padding-left:.14em}
+.stack-w{font-family:"Instrument Serif",serif;font-size:38px;letter-spacing:.14em;line-height:1;padding-left:.14em;display:inline-flex;align-items:baseline}
 .stack-s{font-family:"IBM Plex Mono",monospace;font-size:8px;letter-spacing:.28em;text-transform:uppercase;opacity:.72}
 .swatches{display:flex;gap:0;width:100%;height:34px;border:1px solid var(--rule)}
 .swatches>i{flex:1}
 
 /* ═══════════ PIE ═══════════ */
-.foot{border-top:1px solid var(--rule);padding:42px 0 56px;margin-top:clamp(56px,7vw,96px)}
+.foot{border-top:1px solid var(--rule);padding-top:42px;padding-bottom:56px;margin-top:clamp(56px,7vw,96px)}
 .foot-in{display:flex;flex-wrap:wrap;gap:30px;justify-content:space-between;align-items:flex-start}
 .foot-links{display:flex;flex-wrap:wrap;gap:18px}
 .foot-links a{font-size:14px;color:var(--ink-3);text-decoration:none}
@@ -351,16 +355,84 @@ details .ans{padding:0 0 20px 28px;color:var(--ink-2);font-size:16px;line-height
   html{scroll-behavior:auto}
   *,*::before,*::after{animation:none!important;transition:none!important}
 }
+
+/* ═══════════ MÓVIL ═══════════
+   No es el escritorio encogido: cambian los objetivos táctiles, el orden de
+   lectura de la galería y dónde está el CTA. */
+a,button{-webkit-tap-highlight-color:transparent}
+
+@media (max-width:760px){
+  body{font-size:16px}
+  .hbar{padding-top:10px}
+  .band{padding-top:clamp(48px,10vw,76px);padding-bottom:clamp(48px,10vw,76px);scroll-margin-top:88px}
+  h1{font-size:clamp(38px,10.4vw,54px);line-height:1.04}
+  h2{font-size:clamp(26px,7vw,34px)}
+  h3{font-size:21px}
+  .lead{max-width:none;font-size:17px}
+  .copy{max-width:none}
+  .hero{padding-top:32px;padding-bottom:42px}
+  .hero-side{gap:18px}
+  .hero .actions{gap:10px}
+  .hero .actions .btn{flex:1 1 100%;justify-content:center;padding:14px 20px;font-size:15px}
+  .stat-k{font-size:22px}
+  .areas{margin-top:26px}
+  .area{padding:22px 0 24px}
+  .steps{margin-top:28px}
+  .index{gap:28px;margin-top:26px}
+  .tlist a{padding:14px 0;font-size:16px}
+  .tlist .arw{opacity:1;color:var(--ink-3)}
+  details>summary{padding:16px 0;font-size:19px;gap:12px}
+  details .ans{padding:0 0 16px 24px;font-size:15.5px}
+  .portrait{aspect-ratio:4/3}
+  .pull{font-size:20px;padding-left:16px;margin-top:22px;max-width:none}
+  .quotes{gap:12px;margin-top:26px}
+  .quote{padding:20px}
+  .cta{padding:26px 20px}
+  .cta .actions{gap:10px}
+  .cta .actions .btn{flex:1 1 100%;justify-content:center;padding:14px 20px;font-size:15px}
+  .notice{font-size:14.5px;padding:14px 16px}
+  .bcell{padding:24px 20px}
+  .foot{padding-bottom:112px}          /* hueco para la barra fija */
+  .foot-in{gap:22px}
+}
+
+@media (max-width:700px){
+  /* Nueve filtros no caben legibles en tres líneas: se deslizan de lado,
+     sangrando hasta el borde para que se vea que hay más. */
+  .filters{
+    flex-wrap:nowrap;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none;
+    margin:22px calc(-1*clamp(20px,5vw,64px)) 20px;
+    padding:0 clamp(20px,5vw,64px) 8px;
+  }
+  .filters::-webkit-scrollbar{display:none}
+  .chip{flex-shrink:0;scroll-snap-align:start;padding:9px 14px}
+}
+
+@media (max-width:600px){
+  /* La galería en dos columnas: ocho fichas en una sola columna son un scroll eterno */
+  .cases{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .case-meta{flex-direction:column;align-items:flex-start;gap:1px}
+  .case-name{font-size:13.5px;line-height:1.3}
+  .slot-lbl{font-size:8px;letter-spacing:.12em}
+}
+
+/* Barra fija de acciones: en el móvil el pulgar llega abajo, no a la cabecera */
+.dock{display:none}
+@media (max-width:760px){
+  .dock{
+    display:flex;gap:8px;position:fixed;left:0;right:0;bottom:0;z-index:45;
+    padding:10px clamp(12px,4vw,20px) calc(10px + env(safe-area-inset-bottom));
+    border-top:1px solid var(--glass-bd);background:var(--glass);
+    backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);
+  }
+  .dock .btn{flex:1 1 0;justify-content:center;padding:13px 8px;font-size:14px}
+}
 </style>
 
 <div class="hbar">
   <header class="island" id="island">
     <a class="mark" href="#top" aria-label="GOA Medical Aesthetics — inicio">
-      <svg width="28" height="28" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="4.5" aria-hidden="true" style="color:var(--ink)">
-        <circle cx="50" cy="50" r="31"/>
-        <path d="M33 68 L50 30 L67 68" stroke-linecap="round" stroke-linejoin="miter"/>
-      </svg>
-      <span class="mark-w">GOA</span>
+      <span class="mark-w">GO<svg class="mark-a" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7" aria-hidden="true"><circle cx="50" cy="50" r="44"/><path d="M27 76 L50 29 L73 76" stroke-linecap="round" stroke-linejoin="miter"/></svg></span>
       <span class="mark-sub">Medical Aesthetics<br>Dr. Bengoa</span>
     </a>
     <nav class="nav" id="nav" aria-label="Secciones de la página">
@@ -774,7 +846,7 @@ details .ans{padding:0 0 20px 28px;color:var(--ink-2);font-size:16px;line-height
     </div>
     <div>
       <h2>Una marca que aguanta en pequeño</h2>
-      <p class="copy" style="margin-top:16px">El logo actual es un texto muy fino y muy espaciado: funciona en una tarjeta, pero se rompe en un favicon, en el círculo de Instagram y en el bordado de una bata. La propuesta conserva la idea del vértice —esa <em>Λ</em> que hacía de A— y la mete dentro del círculo: la O y la A del nombre en un solo trazo, legible a 16 píxeles.</p>
+      <p class="copy" style="margin-top:16px">El logo actual es un texto muy fino y muy espaciado: funciona en una tarjeta, pero se rompe en un favicon, en el círculo de Instagram y en el bordado de una bata. La propuesta conserva la idea del vértice —esa <em>Λ</em> que hacía de A— y la mete dentro de un círculo. Ese círculo <em>es</em> la A del nombre: se escribe GO y la tercera letra es el símbolo, así que marca y palabra son la misma pieza. Suelto, sigue funcionando a 16 píxeles.</p>
       <div class="brandbar">
         <div class="bcell">
           <div class="bstage">
@@ -791,26 +863,18 @@ details .ans{padding:0 0 20px 28px;color:var(--ink-2);font-size:16px;line-height
         <div class="bcell">
           <div class="bstage">
             <span class="mark" style="pointer-events:none">
-              <svg width="40" height="40" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="4.5" aria-hidden="true" style="color:var(--ink)">
-                <circle cx="50" cy="50" r="31"/>
-        <path d="M33 68 L50 30 L67 68" stroke-linecap="round" stroke-linejoin="miter"/>
-              </svg>
-              <span class="mark-w" style="font-size:34px">GOA</span>
+              <span class="mark-w" style="font-size:34px">GO<svg class="mark-a" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7" aria-hidden="true"><circle cx="50" cy="50" r="44"/><path d="M27 76 L50 29 L73 76" stroke-linecap="round" stroke-linejoin="miter"/></svg></span>
             </span>
           </div>
           <div>
             <h4>Horizontal</h4>
-            <p class="micro" style="margin-top:7px">Cabecera de la web y firma de email. La serif da la parte cara; el símbolo, la médica.</p>
+            <p class="micro" style="margin-top:7px">Cabecera de la web y firma de email. La A no se escribe: se dibuja.</p>
           </div>
         </div>
         <div class="bcell dark">
           <div class="bstage">
             <div class="stack">
-              <svg width="46" height="46" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="4.5" aria-hidden="true">
-                <circle cx="50" cy="50" r="31"/>
-        <path d="M33 68 L50 30 L67 68" stroke-linecap="round" stroke-linejoin="miter"/>
-              </svg>
-              <span class="stack-w">GOA</span>
+              <span class="stack-w">GO<svg class="mark-a" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7" aria-hidden="true"><circle cx="50" cy="50" r="44"/><path d="M27 76 L50 29 L73 76" stroke-linecap="round" stroke-linejoin="miter"/></svg></span>
               <span class="stack-s">Medical Aesthetics</span>
             </div>
           </div>
@@ -840,11 +904,7 @@ details .ans{padding:0 0 20px 28px;color:var(--ink-2);font-size:16px;line-height
   <div class="foot-in">
     <div>
       <span class="mark" style="pointer-events:none">
-        <svg width="26" height="26" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="4.5" aria-hidden="true" style="color:var(--ink)">
-          <circle cx="50" cy="50" r="31"/>
-        <path d="M33 68 L50 30 L67 68" stroke-linecap="round" stroke-linejoin="miter"/>
-        </svg>
-        <span class="mark-w" style="font-size:22px">GOA</span>
+        <span class="mark-w" style="font-size:22px">GO<svg class="mark-a" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7" aria-hidden="true"><circle cx="50" cy="50" r="44"/><path d="M27 76 L50 29 L73 76" stroke-linecap="round" stroke-linejoin="miter"/></svg></span>
       </span>
       <p class="micro" style="margin-top:12px;max-width:44ch">Medicina estética · Medicina capilar · Cirugía capilar<br>by Dr. Bengoa</p>
     </div>
@@ -856,11 +916,16 @@ details .ans{padding:0 0 20px 28px;color:var(--ink-2);font-size:16px;line-height
     </div>
   </div>
   <div class="pending">
-    <span class="micro">Maqueta de diseño v3</span>
+    <span class="micro">Maqueta de diseño v4</span>
     <span class="micro">Falta: fotografía clínica, testimonios, datos de contacto</span>
     <span class="micro">Nº de registro sanitario pendiente</span>
   </div>
 </footer>
+
+<div class="dock" aria-label="Acciones rápidas">
+  <a class="btn btn-line" href="#contacto">WhatsApp</a>
+  <a class="btn btn-solid" href="#contacto">Pedir valoración</a>
+</div>
 
 <script>
 (function(){
