@@ -15,7 +15,8 @@ Proyecto independiente. **No comparte código, datos ni despliegue con Becay Ren
 ## Maquetas
 
 - Home, enlace de trabajo (se actualiza en cada versión): https://claude.ai/code/artifact/c712173e-2492-44ea-a81a-39d80f49a903
-- Home v9, enlace limpio para enviar al cliente: https://claude.ai/code/artifact/4b7968b8-ce53-408c-a953-0ea11b479884
+- Home v10, enlace limpio para enviar al cliente: https://claude.ai/code/artifact/ea07fafa-ee3c-4e7c-b919-1b727cd92d89
+  (v9, ya enviada: https://claude.ai/code/artifact/4b7968b8-ce53-408c-a953-0ea11b479884)
 
 WhatsApp y las redes cachean la vista previa por URL: para enviar una versión nueva a alguien que
 ya recibió el enlace, se publica una copia con otro nombre de fichero (`design/goa-home-vN.html`),
@@ -77,3 +78,14 @@ Ver `docs/seo.md`.
 - Número de registro sanitario del centro (obligatorio en publicidad sanitaria)
 - Dominio definitivo
 - Decisión sobre la marca: se aprueba el símbolo nuevo o se mantiene el logo actual
+
+## Notas para la implementación
+
+- La barra fija de contacto del móvil se retiró de la maqueta: dentro del iframe del
+  visor de artifacts en iOS flotaba sobre el contenido. En el sitio propio, con dominio
+  y sin iframe, se puede recuperar.
+- El tema se estampa antes de la primera pintura y arranca en claro salvo que el
+  visitante haya elegido oscuro. Así la web se ve igual la abra quien la abra.
+- Nada de `100vw` para bloques a sangre: la sección va a ancho completo con su
+  contenedor dentro. `100vw` obliga a recortar el eje horizontal y eso rompe el
+  `position:sticky` de la cabecera.
