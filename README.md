@@ -7,14 +7,14 @@ Proyecto independiente. **No comparte código, datos ni despliegue con Becay Ren
 
 | Fase | Estado |
 |---|---|
-| Diseño (home + sistema visual) | v2 publicada para revisión |
+| Diseño (home + sistema visual) | v5 publicada para revisión |
 | Contenido real (fotos, testimonios, datos de contacto) | pendiente del cliente |
 | Implementación Next.js | no empezada |
 | Área privada (fichas médicas, usuarios) | fuera de alcance en esta fase |
 
-## Maquetas v1
+## Maquetas
 
-- Home (v2, con propuesta de marca): https://claude.ai/code/artifact/c712173e-2492-44ea-a81a-39d80f49a903
+- Home (con propuesta de marca): https://claude.ai/code/artifact/c712173e-2492-44ea-a81a-39d80f49a903
 - Sistema visual (v1, pendiente de actualizar a la paleta v2): https://claude.ai/code/artifact/6a9c460d-0b21-4a93-88a0-55312eacb5a3
 
 Los dos ficheros fuente están en `design/`. Se abren en cualquier navegador sin build.
@@ -31,10 +31,12 @@ y escora a femenino cuando media consulta es cirugía capilar masculina.
 Tipografía Instrument Serif para titulares, Instrument Sans para texto y UI, IBM Plex Mono para
 metadatos clínicos.
 
-**Marca (v2, propuesta)**: símbolo nuevo — el vértice Λ del logo original metido dentro del círculo,
-la O y la A del nombre en un solo trazo. El original es un texto muy fino y muy espaciado que se
-rompe en favicon, avatar de Instagram y bordado. Tres versiones dibujadas en SVG: símbolo suelto,
-horizontal con wordmark serif y apilada para papelería. Se ven al final de la maqueta.
+**Marca (propuesta)**: dos piezas y un solo dibujo, ambas en SVG (`<symbol>` reutilizado).
+- **Isologo** — la A dentro del círculo. Avatar, favicon, sello, bordado. Única pieza con círculo.
+- **Logo** — solo el nombre, `GOΛ`, sin círculo, con esa misma A como tercera letra.
+La A tiene asta fina y asta gruesa cortadas en horizontal, como la de una serif de alto contraste,
+para que junto a la G y la O se lea como letra y no como icono pegado.
+El logo original (texto muy fino y muy espaciado) se descarta porque se rompe en favicon y avatar.
 
 **Contenido**: todo el copy sale del esquema del cliente. Donde no hay material real —fotografía
 clínica, testimonios, teléfono— hay un hueco tramado y etiquetado, nunca contenido inventado.

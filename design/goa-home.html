@@ -122,6 +122,7 @@ em{font-style:italic}
 .nav a.here{color:var(--ink)}
 .hact{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .island .menu-btn{display:none}
+.theme-row{display:none}
 @media (max-width:980px){
   .nav{
     display:none;position:absolute;top:calc(100% + 8px);left:0;right:0;
@@ -135,6 +136,13 @@ em{font-style:italic}
   .nav a:not(.btn):last-child{border-bottom:none}
   .nav a:not(.btn)::after{display:none}
   .island .menu-btn{display:flex}
+  /* El conmutador de tema no se pierde en móvil: baja al menú, con su etiqueta */
+  .island .theme-row{
+    display:flex;align-items:center;gap:9px;width:100%;
+    padding:12px;margin:0;border:none;background:transparent;
+    font-family:"Instrument Sans",sans-serif;font-size:15px;color:var(--ink-2);text-align:left;cursor:pointer;
+  }
+  .island .theme-row:hover{color:var(--ink)}
 }
 @media (max-width:560px){
   .island{padding:7px}
@@ -150,7 +158,7 @@ em{font-style:italic}
 }
 /* El símbolo hace de A: se apoya en la línea base y desborda un pelo por arriba
    y por abajo, como cualquier letra redonda junto a una recta. */
-.mark-a{width:.74em;height:.74em;flex-shrink:0;transform:translateY(.03em)}
+.mark-a{height:.70em;width:.66em;flex-shrink:0}   /* altura de mayúscula, apoyada en la línea base */
 .mark-sub{
   font-family:"IBM Plex Mono",monospace;font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;
   color:var(--ink-3);border-left:1px solid var(--rule-2);padding-left:11px;line-height:1.5;
@@ -344,13 +352,12 @@ details .ans{padding:0 0 20px 28px;color:var(--ink-2);font-size:16px;line-height
 
 /* ═══════════ MOVIMIENTO ═══════════ */
 @keyframes riseIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-@keyframes drawArc{from{stroke-dashoffset:205}to{stroke-dashoffset:0}}
 .hero .eyebrow{animation:riseIn .5s cubic-bezier(.22,.61,.18,1) both}
 .hero h1{animation:riseIn .6s .06s cubic-bezier(.22,.61,.18,1) both}
 .hero .lead{animation:riseIn .6s .14s cubic-bezier(.22,.61,.18,1) both}
 .hero .actions{animation:riseIn .6s .22s cubic-bezier(.22,.61,.18,1) both}
 .hero-side{animation:riseIn .7s .3s cubic-bezier(.22,.61,.18,1) both}
-.hero-glyph path,.hero-glyph circle{stroke-dasharray:205;animation:drawArc 1.1s .2s cubic-bezier(.22,.61,.18,1) both}
+.hero-glyph{animation:riseIn .7s .34s cubic-bezier(.22,.61,.18,1) both}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{animation:none!important;transition:none!important}
@@ -429,10 +436,27 @@ a,button{-webkit-tap-highlight-color:transparent}
 }
 </style>
 
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+  <!-- La A: asta fina y asta gruesa, cortadas en horizontal, como la A de una
+       serif de alto contraste. Es la misma pieza dentro y fuera del círculo. -->
+  <symbol id="goa-a" viewBox="22 18 56 62">
+    <path fill="currentColor" d="M48 18 L52 18 L28 80 L22 80 Z"/>
+    <path fill="currentColor" d="M46 18 L54 18 L78 80 L66 80 Z"/>
+  </symbol>
+  <!-- Isologo: la misma A dentro del círculo -->
+  <symbol id="goa-iso" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" stroke-width="6"/>
+    <g transform="translate(50 50) scale(.66) translate(-50 -50)">
+      <path fill="currentColor" d="M48 18 L52 18 L28 80 L22 80 Z"/>
+      <path fill="currentColor" d="M46 18 L54 18 L78 80 L66 80 Z"/>
+    </g>
+  </symbol>
+</svg>
+
 <div class="hbar">
   <header class="island" id="island">
     <a class="mark" href="#top" aria-label="GOA Medical Aesthetics — inicio">
-      <span class="mark-w">GO<svg class="mark-a" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7" aria-hidden="true"><circle cx="50" cy="50" r="44"/><path d="M27 76 L50 29 L73 76" stroke-linecap="round" stroke-linejoin="miter"/></svg></span>
+      <span class="mark-w">GO<svg class="mark-a" aria-hidden="true"><use href="#goa-a"/></svg></span>
       <span class="mark-sub">Medical Aesthetics<br>Dr. Bengoa</span>
     </a>
     <nav class="nav" id="nav" aria-label="Secciones de la página">
@@ -441,6 +465,7 @@ a,button{-webkit-tap-highlight-color:transparent}
       <a href="#resultados">Antes y después</a>
       <a href="#sobre-mi">Sobre mí</a>
       <a href="#faq">FAQ</a>
+      <button class="theme-row" id="theme-m" type="button">◐ Ver en oscuro</button>
     </nav>
     <div class="hact">
       <a class="btn btn-solid btn-sm cta-top" href="#contacto">Pedir valoración</a>
@@ -466,10 +491,7 @@ a,button{-webkit-tap-highlight-color:transparent}
       </div>
     </div>
     <aside class="hero-side">
-      <svg class="hero-glyph" width="86" height="86" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true" style="color:var(--accent)">
-        <circle cx="50" cy="50" r="31"/>
-        <path d="M33 68 L50 30 L67 68" stroke-linecap="round" stroke-linejoin="miter"/>
-      </svg>
+      <svg class="hero-glyph" width="84" height="84" viewBox="0 0 100 100" aria-hidden="true" style="color:var(--accent)"><use href="#goa-iso"/></svg>
       <p>Tratamientos faciales, capilares y cirugía capilar diseñados según tu anatomía, tus objetivos y el resultado que realmente encaja contigo.</p>
       <div class="stats">
         <div class="stat"><span class="stat-v">Áreas médicas</span><span class="stat-k">3</span></div>
@@ -846,35 +868,33 @@ a,button{-webkit-tap-highlight-color:transparent}
     </div>
     <div>
       <h2>Una marca que aguanta en pequeño</h2>
-      <p class="copy" style="margin-top:16px">El logo actual es un texto muy fino y muy espaciado: funciona en una tarjeta, pero se rompe en un favicon, en el círculo de Instagram y en el bordado de una bata. La propuesta conserva la idea del vértice —esa <em>Λ</em> que hacía de A— y la mete dentro de un círculo. Ese círculo <em>es</em> la A del nombre: se escribe GO y la tercera letra es el símbolo, así que marca y palabra son la misma pieza. Suelto, sigue funcionando a 16 píxeles.</p>
+      <p class="copy" style="margin-top:16px">Dos piezas y un solo dibujo. El <em>isologo</em> mete la A dentro del círculo: es lo que va en el avatar, el favicon, el sello y el bordado, y aguanta a 16 píxeles. El <em>logo</em> es solo el nombre, sin círculo, y su A es exactamente ese mismo vértice. La A deja de ser un chevrón de icono: tiene asta fina y asta gruesa cortadas en horizontal, como la de una serif de alto contraste, para que junto a la G y la O se lea como una letra y no como un símbolo pegado al lado.</p>
       <div class="brandbar">
         <div class="bcell">
           <div class="bstage">
-            <svg width="76" height="76" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="4.5" aria-hidden="true" style="color:var(--ink)">
-              <circle cx="50" cy="50" r="31"/>
-        <path d="M33 68 L50 30 L67 68" stroke-linecap="round" stroke-linejoin="miter"/>
-            </svg>
+            <svg width="76" height="76" viewBox="0 0 100 100" aria-hidden="true" style="color:var(--ink)"><use href="#goa-iso"/></svg>
           </div>
           <div>
-            <h4>Símbolo</h4>
-            <p class="micro" style="margin-top:7px">Favicon, avatar, sello de quirófano, bordado. Un solo trazo, sin texto.</p>
+            <h4>Isologo</h4>
+            <p class="micro" style="margin-top:7px">Avatar, favicon, sello y bordado. Es la única pieza con círculo.</p>
           </div>
         </div>
         <div class="bcell">
           <div class="bstage">
             <span class="mark" style="pointer-events:none">
-              <span class="mark-w" style="font-size:34px">GO<svg class="mark-a" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7" aria-hidden="true"><circle cx="50" cy="50" r="44"/><path d="M27 76 L50 29 L73 76" stroke-linecap="round" stroke-linejoin="miter"/></svg></span>
+              <span class="mark-w" style="font-size:34px">GO<svg class="mark-a" aria-hidden="true"><use href="#goa-a"/></svg></span>
             </span>
           </div>
           <div>
-            <h4>Horizontal</h4>
-            <p class="micro" style="margin-top:7px">Cabecera de la web y firma de email. La A no se escribe: se dibuja.</p>
+            <h4>Logo</h4>
+            <p class="micro" style="margin-top:7px">Cabecera, papelería y firma de email. Sin círculo: la A no se escribe, se dibuja.</p>
           </div>
         </div>
         <div class="bcell dark">
           <div class="bstage">
             <div class="stack">
-              <span class="stack-w">GO<svg class="mark-a" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7" aria-hidden="true"><circle cx="50" cy="50" r="44"/><path d="M27 76 L50 29 L73 76" stroke-linecap="round" stroke-linejoin="miter"/></svg></span>
+              <svg width="42" height="42" viewBox="0 0 100 100" aria-hidden="true"><use href="#goa-iso"/></svg>
+              <span class="stack-w">GO<svg class="mark-a" aria-hidden="true"><use href="#goa-a"/></svg></span>
               <span class="stack-s">Medical Aesthetics</span>
             </div>
           </div>
@@ -904,7 +924,7 @@ a,button{-webkit-tap-highlight-color:transparent}
   <div class="foot-in">
     <div>
       <span class="mark" style="pointer-events:none">
-        <span class="mark-w" style="font-size:22px">GO<svg class="mark-a" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7" aria-hidden="true"><circle cx="50" cy="50" r="44"/><path d="M27 76 L50 29 L73 76" stroke-linecap="round" stroke-linejoin="miter"/></svg></span>
+        <span class="mark-w" style="font-size:22px">GO<svg class="mark-a" aria-hidden="true"><use href="#goa-a"/></svg></span>
       </span>
       <p class="micro" style="margin-top:12px;max-width:44ch">Medicina estética · Medicina capilar · Cirugía capilar<br>by Dr. Bengoa</p>
     </div>
@@ -916,7 +936,7 @@ a,button{-webkit-tap-highlight-color:transparent}
     </div>
   </div>
   <div class="pending">
-    <span class="micro">Maqueta de diseño v4</span>
+    <span class="micro">Maqueta de diseño v5</span>
     <span class="micro">Falta: fotografía clínica, testimonios, datos de contacto</span>
     <span class="micro">Nº de registro sanitario pendiente</span>
   </div>
@@ -937,11 +957,17 @@ a,button{-webkit-tap-highlight-color:transparent}
     if(s) return s;
     return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   }
-  btn.addEventListener("click",function(){
+  var btnM=document.getElementById("theme-m");
+  function label(){ btnM.textContent = current()==="dark" ? "◐ Ver en claro" : "◐ Ver en oscuro"; }
+  function toggle(){
     var next = current()==="dark" ? "light" : "dark";
     root.setAttribute("data-theme",next);
     try{ localStorage.setItem("goa-theme",next); }catch(e){}
-  });
+    label();
+  }
+  label();
+  btn.addEventListener("click",toggle);
+  btnM.addEventListener("click",toggle);
 
   /* La isla se asienta en cuanto la página se mueve */
   var island=document.getElementById("island");
@@ -957,7 +983,7 @@ a,button{-webkit-tap-highlight-color:transparent}
     menu.setAttribute("aria-expanded", String(open));
     menu.textContent = open ? "×" : "☰";
   });
-  nav.addEventListener("click",function(e){ if(e.target.closest("a")) closeMenu(); });
+  nav.addEventListener("click",function(e){ if(e.target.closest("a")) closeMenu(); });   /* el conmutador de tema no cierra el menú */
   addEventListener("keydown",function(e){ if(e.key==="Escape") closeMenu(); });
 
   /* Sección activa: en una sola página, el menú tiene que decir dónde estás */
