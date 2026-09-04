@@ -15,8 +15,8 @@ Proyecto independiente. **No comparte código, datos ni despliegue con Becay Ren
 ## Maquetas
 
 - Home, enlace de trabajo (se actualiza en cada versión): https://claude.ai/code/artifact/c712173e-2492-44ea-a81a-39d80f49a903
-- Home v10, enlace limpio para enviar al cliente: https://claude.ai/code/artifact/ea07fafa-ee3c-4e7c-b919-1b727cd92d89
-  (v9, ya enviada: https://claude.ai/code/artifact/4b7968b8-ce53-408c-a953-0ea11b479884)
+- Home v11, enlace limpio para enviar al cliente: https://claude.ai/code/artifact/3630d750-ac82-4f8f-b228-accdf8dcfb5a
+  (enviadas antes: v9 `4b7968b8`, v10 `ea07fafa` — ambas con el fallo de pintado en iOS)
 
 WhatsApp y las redes cachean la vista previa por URL: para enviar una versión nueva a alguien que
 ya recibió el enlace, se publica una copia con otro nombre de fichero (`design/goa-home-vN.html`),
@@ -89,3 +89,11 @@ Ver `docs/seo.md`.
 - Nada de `100vw` para bloques a sangre: la sección va a ancho completo con su
   contenedor dentro. `100vw` obliga a recortar el eje horizontal y eso rompe el
   `position:sticky` de la cabecera.
+- Nada de `overflow-x:clip` en `html` ni en `body`: no hace falta (comprobado a
+  360, 390, 430, 768 y 1280) y rompe el sticky en iOS.
+- `backdrop-filter` solo por encima de 980px. En móvil, la cabecera lleva fondo
+  opaco: el difuminado de fondo sobre un documento de ~13.000px hace que iOS
+  Safari deje de pintar a partir de cierto punto y el resto salga en blanco.
+- Sin `mask-image`: mismo motivo, es otra capa compuesta cara dentro de un iframe.
+- El progreso de lectura se actualiza una vez por fotograma (`requestAnimationFrame`),
+  no en cada evento de scroll.
