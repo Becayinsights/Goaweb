@@ -14,6 +14,7 @@
   --glass:rgba(247,247,242,.72); --glass-bd:rgba(18,32,31,.10); --glass-hi:rgba(255,255,255,.75);
   --glass-shadow:0 10px 34px rgba(18,32,31,.07); --glass-shadow-on:0 14px 40px rgba(18,32,31,.13);
   --hatch:rgba(18,32,31,.055);
+  --invert-bg:#12201F; --invert-fg:#EFEEE8; --invert-fg2:rgba(239,238,232,.74); --invert-bd:rgba(239,238,232,.28);
   --shadow:0 1px 0 rgba(255,255,255,.75) inset, 0 20px 46px rgba(18,32,31,.07);
   color-scheme:light;
 }
@@ -27,6 +28,7 @@
     --glass:rgba(21,31,30,.72); --glass-bd:rgba(233,235,228,.12); --glass-hi:rgba(255,255,255,.07);
     --glass-shadow:0 12px 36px rgba(0,0,0,.34); --glass-shadow-on:0 16px 44px rgba(0,0,0,.5);
     --hatch:rgba(233,235,228,.06);
+    --invert-bg:#E9EBE4; --invert-fg:#12201F; --invert-fg2:rgba(18,32,31,.72); --invert-bd:rgba(18,32,31,.26);
     --shadow:0 1px 0 rgba(255,255,255,.05) inset, 0 22px 54px rgba(0,0,0,.45);
     color-scheme:dark;
   }
@@ -40,6 +42,7 @@
   --glass:rgba(21,31,30,.72); --glass-bd:rgba(233,235,228,.12); --glass-hi:rgba(255,255,255,.07);
   --glass-shadow:0 12px 36px rgba(0,0,0,.34); --glass-shadow-on:0 16px 44px rgba(0,0,0,.5);
   --hatch:rgba(233,235,228,.06);
+  --invert-bg:#E9EBE4; --invert-fg:#12201F; --invert-fg2:rgba(18,32,31,.72); --invert-bd:rgba(18,32,31,.26);
   --shadow:0 1px 0 rgba(255,255,255,.05) inset, 0 22px 54px rgba(0,0,0,.45);
   color-scheme:dark;
 }
@@ -65,10 +68,11 @@ a{color:inherit}
 .grid>*{min-width:0}   /* sin esto, la tira de filtros ensancha su columna y recorta por la derecha */
 .rail{position:sticky;top:118px;align-self:start;display:flex;flex-direction:column;gap:7px}
 .rail-mark{
-  width:20px;height:1px;background:var(--accent);margin-bottom:9px;
-  transform:scaleX(.3);transform-origin:left;transition:transform .5s cubic-bezier(.22,.61,.18,1);
+  width:10px;height:11px;margin-bottom:10px;color:var(--accent);
+  opacity:.3;transform:translateY(3px);
+  transition:opacity .55s cubic-bezier(.22,.61,.18,1),transform .55s cubic-bezier(.22,.61,.18,1);
 }
-.rail.here .rail-mark{transform:scaleX(1)}
+.rail.here .rail-mark{opacity:1;transform:none}
 .rail-k{font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--ink)}
 .rail-v{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);line-height:1.7}
 @media (max-width:900px){
@@ -112,10 +116,13 @@ em{font-style:italic}
   transition:box-shadow .35s ease, border-color .35s ease;
 }
 .island.on{box-shadow:inset 0 1px 0 var(--glass-hi), var(--glass-shadow-on);border-color:var(--rule-2)}
-/* Cuánto queda de página: una línea, no una barra */
-.island::after{
-  content:"";position:absolute;left:9px;right:9px;bottom:0;height:1.5px;border-radius:2px;
-  background:var(--accent);opacity:.85;transform:scaleX(var(--read,0));transform-origin:left;
+/* El progreso de lectura no es una barra: es la A del logo, que se llena
+   de verde a medida que se baja. La marca hace de indicador. */
+.mark-fill{position:relative;display:inline-flex;flex-shrink:0}
+.mark-fill .mark-a-on{
+  position:absolute;left:0;top:0;color:var(--accent);
+  clip-path:inset(calc(100% - var(--read,0) * 100%) 0 0 0);
+  transition:clip-path .12s linear;
 }
 .nav{display:flex;gap:clamp(14px,1.7vw,22px);margin-left:auto;align-items:center}
 .nav a:not(.btn){
@@ -130,6 +137,19 @@ em{font-style:italic}
 .nav a:not(.btn):hover::after,.nav a.here::after{right:0}
 .nav a.here{color:var(--ink)}
 .hact{display:flex;align-items:center;gap:8px;flex-shrink:0}
+/* Que se entienda que la tira sigue: dos chevrones diminutos */
+.navx{display:none}
+@media (max-width:980px){
+  .navx{
+    display:flex;position:absolute;bottom:1px;width:24px;height:38px;padding:0;
+    align-items:center;justify-content:center;border:none;background:transparent;
+    color:var(--ink-3);font-size:15px;line-height:1;cursor:pointer;
+    opacity:0;pointer-events:none;transition:opacity .3s ease,color .2s ease;
+  }
+  .navx-r{right:2px}
+  .navx.on{opacity:1;pointer-events:auto}
+  .navx:hover{color:var(--ink)}
+}
 
 @media (max-width:980px){
   /* Mismas piezas que en escritorio y en el mismo orden: marca, tema, CTA y
@@ -139,11 +159,11 @@ em{font-style:italic}
   .island .mark{order:1}
   .hact{order:2;margin-left:auto}
   .nav{
-    order:3;width:100%;margin:8px 0 0;gap:0;padding:0 2px;
+    order:3;width:100%;margin:8px 0 0;gap:0;padding:0 26px 0 2px;
     border-top:1px solid var(--rule);
     overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none;
-    -webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);
-    mask-image:linear-gradient(90deg,#000 88%,transparent);
+    -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 46px),transparent calc(100% - 6px));
+    mask-image:linear-gradient(90deg,#000 calc(100% - 46px),transparent calc(100% - 6px));
   }
   .nav::-webkit-scrollbar{display:none}
   .nav a:not(.btn){padding:11px 11px 10px;font-size:13.5px;flex-shrink:0;scroll-snap-align:center}
@@ -208,6 +228,19 @@ em{font-style:italic}
 .hero-side{border-left:1px solid var(--rule);padding-left:clamp(18px,2.4vw,30px);display:flex;flex-direction:column;gap:22px}
 @media (max-width:980px){.hero-side{border-left:none;border-top:1px solid var(--rule);padding-left:0;padding-top:26px}}
 .hero-side p{font-size:15px;line-height:1.6;color:var(--ink-2)}
+/* La A del revés hace de "baja": la marca dice dónde seguir, y se retira
+   en cuanto el visitante ha bajado. */
+.scrolldown{
+  display:inline-flex;align-items:center;gap:10px;margin-top:6px;
+  text-decoration:none;color:var(--ink-3);width:fit-content;
+  transition:opacity .4s ease,transform .4s ease,color .25s ease;
+}
+.scrolldown svg{width:15px;height:17px;transform:rotate(180deg);color:var(--accent);opacity:.8}
+.scrolldown span{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase}
+.scrolldown:hover{color:var(--ink)}
+.scrolldown .cue{animation:cueBob 2.6s ease-in-out infinite}
+body.moved .scrolldown{opacity:0;transform:translateY(6px);pointer-events:none}
+@keyframes cueBob{0%,100%{transform:rotate(180deg) translateY(0)}50%{transform:rotate(180deg) translateY(-3px)}}
 .stats{display:flex;flex-direction:column}
 .stat{display:flex;align-items:baseline;justify-content:space-between;gap:14px;padding:10px 0;border-top:1px solid var(--rule)}
 .stat-v{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
@@ -331,14 +364,28 @@ details[open]>summary::before{content:"–"}
 details .ans{padding:0 0 20px 28px;color:var(--ink-2);font-size:16px;line-height:1.62;max-width:64ch}
 
 /* ═══════════ CTA ═══════════ */
+/* El cierre de la página se da la vuelta al entrar en pantalla: el último
+   bloque deja de ser papel y pasa a tinta. Un solo momento de color en toda
+   la web, y cae justo donde se pide la cita. */
 .cta{
   border:1px solid var(--rule);background:var(--paper-2);border-radius:2px;
+  transition:background .8s cubic-bezier(.22,.61,.18,1),border-color .8s ease,color .8s ease;
   padding:clamp(28px,4.6vw,56px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.75fr);
   gap:clamp(24px,4vw,56px);align-items:center;box-shadow:var(--shadow);
 }
 @media (max-width:820px){.cta{grid-template-columns:1fr}}
 .reasons{list-style:none;margin:0;padding:0}
-.reasons li{padding:10px 0;border-top:1px solid var(--rule);font-size:15.5px;color:var(--ink-2)}
+.reasons li{padding:10px 0;border-top:1px solid var(--rule);font-size:15.5px;color:var(--ink-2);
+  transition:color .8s ease,border-color .8s ease}
+.cta.lit{background:var(--invert-bg);border-color:var(--invert-bg);color:var(--invert-fg)}
+.cta.lit h2{color:var(--invert-fg)}
+.cta.lit .copy,.cta.lit .reasons li,.cta.lit .micro,.cta.lit h4{color:var(--invert-fg2)}
+.cta.lit .eyebrow{color:var(--invert-fg2)}
+.cta.lit .reasons li{border-color:var(--invert-bd)}
+.cta.lit .btn-solid{background:var(--invert-fg);border-color:var(--invert-fg);color:var(--invert-bg)}
+.cta.lit .btn-solid:hover{background:var(--accent);border-color:var(--accent);color:var(--invert-fg)}
+.cta.lit .btn-line{color:var(--invert-fg);border-color:var(--invert-bd)}
+.cta.lit .btn-line:hover{border-color:var(--invert-fg);color:var(--invert-fg)}
 
 /* ═══════════ MARCA — propuesta ═══════════ */
 .brandbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--rule);margin-top:34px}
@@ -366,11 +413,12 @@ details .ans{padding:0 0 20px 28px;color:var(--ink-2);font-size:16px;line-height
 
 /* ═══════════ MOVIMIENTO ═══════════ */
 @keyframes riseIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes trackIn{from{opacity:0;letter-spacing:.44em}to{opacity:1;letter-spacing:.2em}}
 @keyframes islandIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
 @keyframes ringDraw{from{stroke-dashoffset:264}to{stroke-dashoffset:0}}
 @keyframes glyphIn{from{opacity:0;transform:translate(50px,54px) scale(.62) translate(-50px,-50px)}
                    to{opacity:1;transform:translate(50px,50px) scale(.66) translate(-50px,-50px)}}
-.hero.intro .eyebrow{animation:riseIn .55s cubic-bezier(.22,.61,.18,1) both}
+.hero.intro .eyebrow{animation:trackIn .95s cubic-bezier(.22,.61,.18,1) both}
 .hero.intro h1{animation:riseIn .7s .08s cubic-bezier(.22,.61,.18,1) both}
 .hero.intro .lead{animation:riseIn .7s .18s cubic-bezier(.22,.61,.18,1) both}
 .hero.intro .actions{animation:riseIn .7s .28s cubic-bezier(.22,.61,.18,1) both}
@@ -489,7 +537,7 @@ a,button{-webkit-tap-highlight-color:transparent}
 <div class="hbar">
   <header class="island intro" id="island">
     <a class="mark" href="#top" aria-label="GOA Medical Aesthetics — inicio">
-      <span class="mark-w">GO<svg class="mark-a" aria-hidden="true"><use href="#goa-a"/></svg></span>
+      <span class="mark-w">GO<span class="mark-fill"><svg class="mark-a" aria-hidden="true"><use href="#goa-a"/></svg><svg class="mark-a mark-a-on" aria-hidden="true"><use href="#goa-a"/></svg></span></span>
       <span class="mark-sub">Medical Aesthetics<br>Dr. Bengoa</span>
     </a>
     <nav class="nav" id="nav" aria-label="Secciones de la página">
@@ -503,6 +551,7 @@ a,button{-webkit-tap-highlight-color:transparent}
       <a class="btn btn-solid btn-sm cta-top" href="#contacto">Pedir valoración</a>
       <button class="icon-btn theme-btn" id="theme" type="button" title="Cambiar tema" aria-label="Cambiar tema">◐</button>
     </div>
+    <button class="navx navx-r" id="navx-r" type="button" aria-label="Más secciones">›</button>
   </header>
 </div>
 
@@ -520,6 +569,10 @@ a,button{-webkit-tap-highlight-color:transparent}
         <a class="btn btn-line" href="#tratamientos">Ver tratamientos</a>
         <a class="link" href="#resultados">Antes y después <span class="arw" aria-hidden="true">→</span></a>
       </div>
+      <a class="scrolldown" href="#especialidades">
+        <svg class="cue" aria-hidden="true"><use href="#goa-a"/></svg>
+        <span>Baja</span>
+      </a>
     </div>
     <aside class="hero-side">
       <svg class="hero-glyph" width="84" height="84" viewBox="0 0 100 100" aria-hidden="true" style="color:var(--accent)">
@@ -543,7 +596,7 @@ a,button{-webkit-tap-highlight-color:transparent}
 <section class="shell band" id="especialidades">
   <div class="grid">
     <div class="rail">
-      <div class="rail-mark"></div>
+      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
       <div class="rail-k">Especialidades</div>
       <div class="rail-v">Tres áreas · un mismo criterio</div>
     </div>
@@ -581,7 +634,7 @@ a,button{-webkit-tap-highlight-color:transparent}
 <section class="shell band" id="proceso">
   <div class="grid">
     <div class="rail">
-      <div class="rail-mark"></div>
+      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
       <div class="rail-k">Método</div>
       <div class="rail-v">Cuatro pasos · en este orden</div>
     </div>
@@ -618,7 +671,7 @@ a,button{-webkit-tap-highlight-color:transparent}
 <section class="shell band" id="enfoque">
   <div class="grid">
     <div class="rail">
-      <div class="rail-mark"></div>
+      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
       <div class="rail-k">Enfoque</div>
       <div class="rail-v">Qué guía cada indicación</div>
     </div>
@@ -640,7 +693,7 @@ a,button{-webkit-tap-highlight-color:transparent}
 <section class="shell band" id="resultados">
   <div class="grid">
     <div class="rail">
-      <div class="rail-mark"></div>
+      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
       <div class="rail-k">Resultados</div>
       <div class="rail-v">Antes y después</div>
     </div>
@@ -704,7 +757,7 @@ a,button{-webkit-tap-highlight-color:transparent}
 <section class="shell band" id="tratamientos">
   <div class="grid">
     <div class="rail">
-      <div class="rail-mark"></div>
+      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
       <div class="rail-k">Tratamientos</div>
       <div class="rail-v">15 fichas · una por página</div>
     </div>
@@ -753,7 +806,7 @@ a,button{-webkit-tap-highlight-color:transparent}
 <section class="shell band" id="sobre-mi">
   <div class="grid">
     <div class="rail">
-      <div class="rail-mark"></div>
+      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
       <div class="rail-k">Sobre mí</div>
       <div class="rail-v">Dr. Bengoa</div>
     </div>
@@ -784,7 +837,7 @@ a,button{-webkit-tap-highlight-color:transparent}
 <section class="shell band" id="testimonios">
   <div class="grid">
     <div class="rail">
-      <div class="rail-mark"></div>
+      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
       <div class="rail-k">Testimonios</div>
       <div class="rail-v">Contenido pendiente</div>
     </div>
@@ -825,7 +878,7 @@ a,button{-webkit-tap-highlight-color:transparent}
 <section class="shell band" id="faq">
   <div class="grid">
     <div class="rail">
-      <div class="rail-mark"></div>
+      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
       <div class="rail-k">FAQ</div>
       <div class="rail-v">Preguntas frecuentes</div>
     </div>
@@ -865,7 +918,7 @@ a,button{-webkit-tap-highlight-color:transparent}
 <section class="shell band" id="contacto">
   <div class="grid">
     <div class="rail">
-      <div class="rail-mark"></div>
+      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
       <div class="rail-k">Contacto</div>
       <div class="rail-v">Reserva de cita</div>
     </div>
@@ -899,7 +952,7 @@ a,button{-webkit-tap-highlight-color:transparent}
 <section class="shell band" id="marca">
   <div class="grid">
     <div class="rail">
-      <div class="rail-mark"></div>
+      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
       <div class="rail-k">Marca</div>
       <div class="rail-v">Propuesta · no es parte de la web</div>
     </div>
@@ -973,7 +1026,7 @@ a,button{-webkit-tap-highlight-color:transparent}
     </div>
   </div>
   <div class="pending">
-    <span class="micro">Maqueta de diseño v7</span>
+    <span class="micro">Maqueta de diseño v8</span>
     <span class="micro">Falta: fotografía clínica, testimonios, datos de contacto</span>
     <span class="micro">Nº de registro sanitario pendiente</span>
   </div>
@@ -1019,6 +1072,7 @@ a,button{-webkit-tap-highlight-color:transparent}
   }
   onScroll();
   addEventListener("scroll", onScroll, {passive:true});
+  addEventListener("resize", onScroll);
 
   /* Sección activa: en una sola página, el menú tiene que decir dónde estás.
      En móvil, además, la tira se desplaza para que el activo siempre se vea. */
@@ -1065,6 +1119,30 @@ a,button{-webkit-tap-highlight-color:transparent}
   if(document.fonts && document.fonts.ready){ document.fonts.ready.then(function(){ replayIntro(); }); }
   var markLink=document.querySelector(".island .mark");
   if(markLink){ markLink.addEventListener("click",function(){ replayIntro(); }); }
+
+  /* Chevrones de la tira de secciones: aparecen solo si hay más que ver */
+  var xr=document.getElementById("navx-r");
+  function edges(){
+    var more = nav.scrollWidth - nav.clientWidth;
+    xr.classList.toggle("on", more > 4 && nav.scrollLeft < more - 4);
+  }
+  nav.addEventListener("scroll", edges, {passive:true});
+  addEventListener("resize", edges);
+  xr.addEventListener("click",function(){ nav.scrollBy({left:150,behavior:"smooth"}); });
+  edges();
+
+  /* El aviso de "baja" se retira en cuanto se ha bajado */
+  addEventListener("scroll",function(){
+    document.body.classList.toggle("moved", window.scrollY > 40);
+  },{passive:true});
+
+  /* El cierre de página se invierte al llegar */
+  var cta=document.querySelector(".cta");
+  if(cta && "IntersectionObserver" in window){
+    new IntersectionObserver(function(en,ob){
+      if(en[0].isIntersecting){ cta.classList.add("lit"); ob.disconnect(); }
+    },{threshold:.3}).observe(cta);
+  } else if(cta){ cta.classList.add("lit"); }
 
   /* El eje antes/después se traza cuando la ficha entra en pantalla, en cascada */
   var cards=Array.prototype.slice.call(document.querySelectorAll("#cases .case"));
