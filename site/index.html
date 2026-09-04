@@ -1,0 +1,1223 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Maqueta de diseno de la web de GOA Medical Aesthetics, por el Dr. Bengoa: medicina estetica, medicina capilar y cirugia capilar.">
+<meta name="theme-color" content="#EFEEE8">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="GOA Medical Aesthetics">
+<meta property="og:title" content="GOA Medical Aesthetics — maqueta de diseño">
+<meta property="og:description" content="Maqueta de diseno de la web de GOA Medical Aesthetics, por el Dr. Bengoa: medicina estetica, medicina capilar y cirugia capilar.">
+<meta name="twitter:card" content="summary">
+<title>GOA Medical Aesthetics</title>
+<script>
+/* El tema se estampa antes de la primera pintura: claro por defecto, para que
+   la web se vea siempre igual la abra quien la abra. El conmutador manda. */
+(function(){try{var t=localStorage.getItem("goa-theme");document.documentElement.setAttribute("data-theme",t==="dark"?"dark":"light");}catch(e){document.documentElement.setAttribute("data-theme","light");}})();
+</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* ═══════════ TOKENS ═══════════
+   Paleta v2: hueso mineral, negro petróleo y verde quirófano.
+   Ningún color literal fuera de este bloque. */
+:root{
+  --paper:#EFEEE8; --paper-2:#E9E8E1; --paper-3:#E3E3DB;
+  --ink:#12201F; --ink-2:#3E514E; --ink-3:#7C8A85;
+  --accent:#1F5A4E; --accent-text:#1B5045; --accent-dim:rgba(31,90,78,.10);
+  --rule:rgba(18,32,31,.14); --rule-2:rgba(18,32,31,.32);
+  --btn-ink:#F3F4EF;
+  --glass:rgba(247,247,242,.72); --glass-solid:#F2F1EB; --glass-bd:rgba(18,32,31,.10); --glass-hi:rgba(255,255,255,.75);
+  --glass-shadow:0 10px 34px rgba(18,32,31,.07); --glass-shadow-on:0 14px 40px rgba(18,32,31,.13);
+  --hatch:rgba(18,32,31,.055);
+  --invert-bg:#12201F; --invert-fg:#EFEEE8; --invert-fg2:rgba(239,238,232,.74); --invert-bd:rgba(239,238,232,.28); --invert-accent:#7FBFA8;
+  --shadow:0 1px 0 rgba(255,255,255,.75) inset, 0 20px 46px rgba(18,32,31,.07);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0E1615; --paper-2:#151F1E; --paper-3:#1B2624;
+    --ink:#E9EBE4; --ink-2:#A9B5B0; --ink-3:#76837E;
+    --accent:#6FB39D; --accent-text:#84C3AD; --accent-dim:rgba(111,179,157,.13);
+    --rule:rgba(233,235,228,.15); --rule-2:rgba(233,235,228,.32);
+    --btn-ink:#0E1615;
+    --glass:rgba(21,31,30,.72); --glass-solid:#171F1E; --glass-bd:rgba(233,235,228,.12); --glass-hi:rgba(255,255,255,.07);
+    --glass-shadow:0 12px 36px rgba(0,0,0,.34); --glass-shadow-on:0 16px 44px rgba(0,0,0,.5);
+    --hatch:rgba(233,235,228,.06);
+    --invert-bg:#E9EBE4; --invert-fg:#12201F; --invert-fg2:rgba(18,32,31,.72); --invert-bd:rgba(18,32,31,.26); --invert-accent:#1F5A4E;
+    --shadow:0 1px 0 rgba(255,255,255,.05) inset, 0 22px 54px rgba(0,0,0,.45);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0E1615; --paper-2:#151F1E; --paper-3:#1B2624;
+  --ink:#E9EBE4; --ink-2:#A9B5B0; --ink-3:#76837E;
+  --accent:#6FB39D; --accent-text:#84C3AD; --accent-dim:rgba(111,179,157,.13);
+  --rule:rgba(233,235,228,.15); --rule-2:rgba(233,235,228,.32);
+  --btn-ink:#0E1615;
+  --glass:rgba(21,31,30,.72); --glass-solid:#171F1E; --glass-bd:rgba(233,235,228,.12); --glass-hi:rgba(255,255,255,.07);
+  --glass-shadow:0 12px 36px rgba(0,0,0,.34); --glass-shadow-on:0 16px 44px rgba(0,0,0,.5);
+  --hatch:rgba(233,235,228,.06);
+  --invert-bg:#E9EBE4; --invert-fg:#12201F; --invert-fg2:rgba(18,32,31,.72); --invert-bd:rgba(18,32,31,.26); --invert-accent:#1F5A4E;
+  --shadow:0 1px 0 rgba(255,255,255,.05) inset, 0 22px 54px rgba(0,0,0,.45);
+  color-scheme:dark;
+}
+
+/* ═══════════ BASE ═══════════ */
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Instrument Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:16.5px; line-height:1.62; font-weight:400;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--accent-dim);color:var(--ink)}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+
+/* ═══════════ REJILLA ═══════════ */
+.shell{max-width:1240px;margin:0 auto;padding:0 clamp(20px,5vw,64px)}
+.band{padding-top:clamp(60px,8.5vw,124px);padding-bottom:clamp(60px,8.5vw,124px);border-top:1px solid var(--rule);scroll-margin-top:104px}
+.grid{display:grid;grid-template-columns:150px minmax(0,1fr);gap:clamp(24px,4vw,56px)}
+.grid>*{min-width:0}   /* sin esto, la tira de filtros ensancha su columna y recorta por la derecha */
+.rail{position:sticky;top:118px;align-self:start;display:flex;flex-direction:column;gap:7px}
+.rail-mark{
+  width:10px;height:11px;margin-bottom:10px;color:var(--accent);
+  opacity:.3;transform:translateY(3px);
+  transition:opacity .55s cubic-bezier(.22,.61,.18,1),transform .55s cubic-bezier(.22,.61,.18,1);
+}
+.rail.here .rail-mark{opacity:1;transform:none}
+.rail-k{font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--ink)}
+.rail-v{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);line-height:1.7}
+@media (max-width:900px){
+  .grid{grid-template-columns:minmax(0,1fr);gap:20px}
+  .rail{position:static;flex-direction:row;flex-wrap:wrap;align-items:center;gap:10px}
+  .rail-mark{display:none}
+  .rail-v::before{content:"·";margin-right:10px;color:var(--rule-2)}
+}
+
+/* ═══════════ TIPOGRAFÍA ═══════════
+   Instrument Serif dibuja, Instrument Sans explica, Plex Mono etiqueta. */
+h1,h2,h3{font-family:"Instrument Serif",Georgia,"Times New Roman",serif;font-weight:400;margin:0;text-wrap:balance}
+h1{font-size:clamp(44px,7vw,88px);line-height:1.0;letter-spacing:-.012em}
+h2{font-size:clamp(30px,3.9vw,48px);line-height:1.08;letter-spacing:-.008em}
+h3{font-size:23px;line-height:1.2}
+h4{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:500;margin:0;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);
+}
+p{margin:0}
+em{font-style:italic}
+.lead{font-size:clamp(17.5px,1.7vw,20px);line-height:1.55;color:var(--ink-2);max-width:38ch;font-weight:400}
+.copy{max-width:60ch;color:var(--ink-2)}
+.copy + .copy{margin-top:14px}
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:500;
+  text-transform:uppercase;letter-spacing:.2em;color:var(--accent-text);
+}
+.micro{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;color:var(--ink-3);line-height:1.7}
+
+/* ═══════════ CABECERA — isla flotante ═══════════
+   Una sola página: la isla es la única navegación y no tiene submenús. */
+.hbar{position:sticky;top:0;z-index:50;padding:14px clamp(12px,3vw,28px) 0;pointer-events:none}
+.island{
+  pointer-events:auto;position:relative;max-width:1180px;margin:0 auto;
+  display:flex;align-items:center;gap:clamp(12px,2vw,26px);
+  padding:7px 7px 7px 15px;border-radius:6px;
+  border:1px solid var(--glass-bd);background:var(--glass);
+  backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);
+  box-shadow:inset 0 1px 0 var(--glass-hi), var(--glass-shadow);
+  transition:box-shadow .35s ease, border-color .35s ease;
+}
+.island.on{box-shadow:inset 0 1px 0 var(--glass-hi), var(--glass-shadow-on);border-color:var(--rule-2)}
+/* El progreso de lectura no es una barra: es la A del logo, que se llena
+   de verde a medida que se baja. La marca hace de indicador. */
+.mark-fill{position:relative;display:inline-flex;flex-shrink:0}
+/* La marca entra como isologo —la A dentro del círculo— y se abre en logo:
+   el círculo se traza, crece y se va; la G y la O ocupan su sitio. */
+.mark-go{display:inline-flex}
+.mark-ring{
+  position:absolute;left:50%;top:50%;width:1.52em;height:1.52em;
+  transform:translate(-50%,-50%);color:var(--accent);opacity:0;pointer-events:none;
+}
+.island.intro .mark-go{animation:goIn .55s 1.02s cubic-bezier(.22,.61,.18,1) both}
+.island.intro .mark-ring{animation:ringOpen .72s 1s cubic-bezier(.22,.61,.18,1) both}
+.island.intro .mark-ring circle{stroke-dasharray:264;animation:ringDraw .9s .12s cubic-bezier(.22,.61,.18,1) both}
+@keyframes goIn{from{opacity:0;transform:translateX(-7px)}to{opacity:1;transform:none}}
+@keyframes ringOpen{
+  0%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  55%{opacity:.55}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.5)}
+}
+.mark-fill .mark-a-on{
+  position:absolute;left:0;top:0;color:var(--accent);
+  clip-path:inset(calc(100% - var(--read,0) * 100%) 0 0 0);
+}
+.nav{display:flex;gap:clamp(14px,1.7vw,22px);margin-left:auto;align-items:center}
+.nav a:not(.btn){
+  font-size:13px;font-weight:400;color:var(--ink-2);text-decoration:none;
+  padding:6px 0;position:relative;white-space:nowrap;transition:color .22s ease;
+}
+.nav a:not(.btn)::after{
+  content:"";position:absolute;left:0;right:100%;bottom:0;height:1px;background:var(--accent);
+  transition:right .3s cubic-bezier(.22,.61,.18,1);
+}
+.nav a:not(.btn):hover{color:var(--ink)}
+.nav a:not(.btn):hover::after,.nav a.here::after{right:0}
+.nav a.here{color:var(--ink)}
+.hact{display:flex;align-items:center;gap:8px;flex-shrink:0}
+/* Que se entienda que la tira sigue: dos chevrones diminutos */
+.navx{display:none}
+@media (max-width:980px){
+  .navx{
+    display:flex;position:absolute;bottom:1px;width:24px;height:38px;padding:0;
+    align-items:center;justify-content:center;border:none;background:transparent;
+    color:var(--ink-3);font-size:15px;line-height:1;cursor:pointer;
+    opacity:0;pointer-events:none;transition:opacity .3s ease,color .2s ease;
+  }
+  .navx-r{right:2px}
+  .navx.on{opacity:1;pointer-events:auto}
+  .navx:hover{color:var(--ink)}
+}
+
+@media (max-width:980px){
+  /* Mismas piezas que en escritorio y en el mismo orden: marca, tema, CTA y
+     las secciones. Lo único que cambia es que las secciones bajan a su propia
+     fila, deslizable, en vez de esconderse tras una hamburguesa. */
+  .island{
+    flex-wrap:wrap;padding:8px 8px 0 13px;column-gap:12px;row-gap:0;
+    background:var(--glass-solid);
+    backdrop-filter:none;-webkit-backdrop-filter:none;
+  }
+  .island .mark{order:1}
+  .hact{order:2;margin-left:auto}
+  .nav{
+    order:3;width:100%;margin:8px 0 0;gap:0;padding:0 30px 0 2px;
+    border-top:1px solid var(--rule);
+    overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none;
+  }
+  .nav::-webkit-scrollbar{display:none}
+  .nav a:not(.btn){padding:11px 11px 10px;font-size:13.5px;flex-shrink:0;scroll-snap-align:center}
+}
+@media (max-width:420px){
+  .island{column-gap:8px;padding-left:11px}
+  .nav a:not(.btn){padding:11px 9px 10px;font-size:13px}
+  .btn-sm{padding:9px 13px;font-size:12px}
+}
+
+/* ═══════════ MARCA ═══════════ */
+.mark{display:flex;align-items:center;gap:11px;text-decoration:none;flex-shrink:0}
+.mark svg{display:block;flex-shrink:0}
+.mark-w{
+  font-family:"Instrument Serif",serif;font-size:22px;line-height:1;letter-spacing:.11em;
+  color:var(--ink);padding-left:1px;display:inline-flex;align-items:baseline;
+}
+/* El símbolo hace de A: se apoya en la línea base y desborda un pelo por arriba
+   y por abajo, como cualquier letra redonda junto a una recta. */
+.mark-a{height:.70em;width:.66em;flex-shrink:0}   /* altura de mayúscula, apoyada en la línea base */
+.mark-sub{
+  font-family:"IBM Plex Mono",monospace;font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--ink-3);border-left:1px solid var(--rule-2);padding-left:11px;line-height:1.5;
+}
+@media (max-width:1300px){.mark-sub{display:none}}
+
+/* ═══════════ BOTONES ═══════════ */
+.btn{
+  display:inline-flex;align-items:center;gap:9px;flex-shrink:0;
+  font-size:14px;font-weight:500;letter-spacing:.01em;
+  padding:12px 22px;border-radius:2px;border:1px solid transparent;cursor:pointer;
+  text-decoration:none;white-space:nowrap;
+  transition:background .25s ease,color .25s ease,border-color .25s ease,transform .16s ease;
+}
+.btn-solid{background:var(--ink);color:var(--btn-ink);border-color:var(--ink)}
+.btn-solid:hover{background:var(--accent);border-color:var(--accent);color:var(--btn-ink)}
+.btn-line{background:transparent;color:var(--ink);border-color:var(--rule-2)}
+.btn-line:hover{border-color:var(--accent);color:var(--accent-text)}
+.btn:active{transform:translateY(1px)}
+.btn-sm{padding:9px 16px;font-size:12.5px;font-weight:500;letter-spacing:.02em}
+.link{font-size:14px;color:var(--ink-2);text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.link:hover{color:var(--accent-text)}
+.link .arw{transition:transform .25s cubic-bezier(.22,.61,.18,1)}
+.link:hover .arw{transform:translateX(4px)}
+.icon-btn{
+  width:32px;height:32px;flex-shrink:0;border-radius:2px;background:transparent;
+  border:1px solid var(--rule);color:var(--ink-3);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:14px;line-height:1;
+  transition:border-color .2s ease,color .2s ease;
+}
+.icon-btn:hover{border-color:var(--rule-2);color:var(--ink)}
+.actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+
+/* ═══════════ HERO ═══════════ */
+.hero{padding-top:clamp(52px,7vw,96px);padding-bottom:clamp(48px,6vw,84px)}
+.hero-in{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:clamp(28px,5vw,72px);align-items:end}
+@media (max-width:980px){.hero-in{grid-template-columns:1fr;gap:34px;align-items:start}}
+.hero h1{margin:20px 0 0}
+.hero h1 em{color:var(--accent-text)}
+.hero .lead{margin-top:24px}
+.hero .actions{margin-top:32px}
+.hero-side{border-left:1px solid var(--rule);padding-left:clamp(18px,2.4vw,30px);display:flex;flex-direction:column;gap:22px}
+@media (max-width:980px){.hero-side{border-left:none;border-top:1px solid var(--rule);padding-left:0;padding-top:26px}}
+.hero-side p{font-size:15px;line-height:1.6;color:var(--ink-2)}
+/* La A del revés hace de "baja": la marca dice dónde seguir, y se retira
+   en cuanto el visitante ha bajado. */
+.scrolldown{
+  display:inline-flex;align-items:center;gap:10px;margin-top:6px;
+  text-decoration:none;color:var(--ink-3);width:fit-content;
+  transition:opacity .4s ease,transform .4s ease,color .25s ease;
+}
+.scrolldown svg{width:15px;height:17px;transform:rotate(180deg);color:var(--accent);opacity:.8}
+.scrolldown span{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase}
+.scrolldown:hover{color:var(--ink)}
+.scrolldown .cue{animation:cueBob 2.6s ease-in-out infinite}
+body.moved .scrolldown{opacity:0;transform:translateY(6px);pointer-events:none}
+@keyframes cueBob{0%,100%{transform:rotate(180deg) translateY(0)}50%{transform:rotate(180deg) translateY(-3px)}}
+.stats{display:flex;flex-direction:column}
+.stat{display:flex;align-items:baseline;justify-content:space-between;gap:14px;padding:10px 0;border-top:1px solid var(--rule)}
+.stat-v{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.stat-k{font-family:"Instrument Serif",serif;font-size:24px;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* ═══════════ ESPECIALIDADES ═══════════ */
+.areas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--rule);margin-top:36px}
+.areas>*{min-width:0}
+@media (max-width:900px){.areas{grid-template-columns:1fr}}
+.area{
+  padding:28px clamp(18px,2.4vw,32px) 32px;border-right:1px solid var(--rule);
+  display:flex;flex-direction:column;gap:13px;text-decoration:none;transition:background .3s ease;
+}
+.area:last-child{border-right:none}
+@media (max-width:900px){.area{border-right:none;border-bottom:1px solid var(--rule)}.area:last-child{border-bottom:none}}
+.area:hover{background:var(--paper-2)}
+.area-tag{display:flex;align-items:center;gap:9px}
+.area-dot{width:5px;height:5px;background:var(--accent);flex-shrink:0}
+.area p{font-size:15px;line-height:1.58;color:var(--ink-2)}
+.area .link{margin-top:auto;padding-top:6px}
+
+/* ═══════════ PROCESO — esto sí es una secuencia, por eso va numerado ═══════════ */
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(16px,2.4vw,32px);margin-top:38px}
+.steps>*{min-width:0}
+@media (max-width:820px){.steps{grid-template-columns:repeat(2,minmax(0,1fr));gap:26px}}
+@media (max-width:520px){.steps{grid-template-columns:1fr}}
+.step{padding-top:16px;border-top:1px solid var(--rule-2);display:flex;flex-direction:column;gap:8px}
+.step-n{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.14em;color:var(--accent-text)}
+.step h3{font-size:20px}
+.step p{font-size:14.5px;line-height:1.55;color:var(--ink-2)}
+
+/* ═══════════ PRINCIPIOS ═══════════ */
+.principles{display:grid;grid-template-columns:1fr;margin-top:32px;max-width:52ch}
+.principle{padding:15px 0;border-top:1px solid var(--rule);display:flex;gap:13px;align-items:baseline}
+.principle span{font-size:16.5px;color:var(--ink);line-height:1.35}
+.principle i{width:9px;height:1px;background:var(--accent);flex-shrink:0;transform:translateY(-5px)}
+
+/* ═══════════ ANTES Y DESPUÉS ═══════════ */
+.filters{display:flex;flex-wrap:wrap;gap:7px;margin:24px 0 22px}
+.chip{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  padding:7px 13px;border:1px solid var(--rule);background:transparent;color:var(--ink-3);
+  border-radius:2px;cursor:pointer;transition:color .22s ease,border-color .22s ease,background .22s ease;
+}
+.chip:hover{color:var(--ink);border-color:var(--rule-2)}
+.chip[aria-pressed="true"]{color:var(--accent-text);border-color:var(--accent);background:var(--accent-dim)}
+.cases{display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:clamp(12px,1.6vw,20px)}
+.case{display:flex;flex-direction:column;gap:10px;margin:0}
+.slot{aspect-ratio:4/5;display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--rule);position:relative}
+.slot::after{
+  content:"";position:absolute;top:0;bottom:0;left:50%;width:1.5px;background:var(--accent);
+  transform:scaleY(0);transform-origin:center;
+  transition:transform .55s cubic-bezier(.22,.61,.18,1);transition-delay:var(--d,0s);
+}
+/* El eje antes/después se traza al entrar la ficha en pantalla, en cascada,
+   y también al pasar el ratón: en el móvil no hay hover que valga. */
+.case.seen .slot::after,.case:hover .slot::after{transform:scaleY(1)}
+.case:hover .slot{border-color:var(--rule-2)}
+.slot-half{
+  display:flex;align-items:flex-end;justify-content:center;padding:12px 0;
+  background:repeating-linear-gradient(-45deg,var(--hatch) 0 1px,transparent 1px 9px);
+}
+.slot-half + .slot-half{border-left:1px solid var(--rule)}
+.slot-lbl{font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3)}
+.case-meta{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.case-name{font-size:15px;font-weight:500}
+.notice{
+  margin-top:26px;padding:16px 18px;border-left:2px solid var(--accent);background:var(--accent-dim);
+  font-size:15px;line-height:1.6;color:var(--ink-2);max-width:70ch;
+}
+
+/* ═══════════ ÍNDICE DE TRATAMIENTOS ═══════════ */
+.index{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(22px,3vw,44px);margin-top:34px}
+.index>*{min-width:0}
+@media (max-width:900px){.index{grid-template-columns:1fr;gap:32px}}
+.index h4{margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--rule-2)}
+.tlist{list-style:none;margin:0;padding:0}
+.tlist a{
+  display:flex;align-items:baseline;justify-content:space-between;gap:14px;
+  padding:11px 0;border-bottom:1px solid var(--rule);text-decoration:none;
+  font-size:16px;color:var(--ink);
+  transition:color .22s ease,padding-left .28s cubic-bezier(.22,.61,.18,1);
+}
+.tlist a:hover{color:var(--accent-text);padding-left:8px}
+.tlist .arw{color:var(--ink-3);font-size:12px;opacity:0;transition:opacity .22s ease}
+.tlist a:hover .arw{opacity:1;color:var(--accent)}
+
+/* ═══════════ SOBRE MÍ ═══════════ */
+.about{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.8fr);gap:clamp(26px,4vw,56px);align-items:start}
+@media (max-width:900px){.about{grid-template-columns:1fr}}
+.portrait{
+  aspect-ratio:3/4;border:1px solid var(--rule);
+  background:repeating-linear-gradient(-45deg,var(--hatch) 0 1px,transparent 1px 9px);
+  display:flex;align-items:center;justify-content:center;
+}
+.pull{
+  font-family:"Instrument Serif",serif;font-size:clamp(21px,2.4vw,27px);line-height:1.3;color:var(--ink);
+  border-left:2px solid var(--accent);padding-left:20px;margin-top:26px;max-width:32ch;
+}
+.pull em{color:var(--accent-text)}
+
+/* ═══════════ TESTIMONIOS ═══════════ */
+.quotes{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:clamp(16px,2vw,26px);margin-top:32px}
+.quote{
+  background:var(--paper-2);border:1px solid var(--rule);border-radius:2px;
+  padding:22px 22px 20px;display:flex;flex-direction:column;gap:15px;margin:0;
+}
+.quote-body{font-family:"Instrument Serif",serif;font-size:18px;line-height:1.45;color:var(--ink-2);margin:0}
+.quote-foot{margin-top:auto;display:flex;flex-direction:column;gap:3px}
+
+/* ═══════════ FAQ ═══════════ */
+.faq{margin-top:28px;max-width:74ch}
+details{border-bottom:1px solid var(--rule)}
+details>summary{
+  list-style:none;cursor:pointer;padding:17px 0;display:flex;gap:16px;align-items:baseline;
+  font-family:"Instrument Serif",serif;font-size:21px;color:var(--ink);
+}
+details>summary::-webkit-details-marker{display:none}
+details>summary::before{content:"+";color:var(--accent);font-size:16px;line-height:1;flex-shrink:0;width:12px;font-family:"Instrument Sans",sans-serif}
+details[open]>summary::before{content:"–"}
+details .ans{padding:0 0 20px 28px;color:var(--ink-2);font-size:16px;line-height:1.62;max-width:64ch}
+
+/* ═══════════ CTA ═══════════ */
+/* El cierre de la página no es una tarjeta clara sobre el papel —eso era un
+   parche—: es una banda de tinta a sangre, de borde a borde de la pantalla.
+   Único bloque oscuro de la web, justo donde se pide la cita. */
+.cta{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.75fr);
+  gap:clamp(24px,4vw,56px);align-items:center;
+}
+@media (max-width:820px){.cta{grid-template-columns:1fr}}
+#contacto{
+  max-width:none;padding-left:0;padding-right:0;border-top:none;position:relative;
+  background:var(--invert-bg);color:var(--invert-fg);
+}
+/* Un filete de acento cruza la banda de lado a lado al llegar a ella */
+#contacto::after{
+  content:"";position:absolute;top:0;left:0;right:0;height:1.5px;
+  transform:scaleX(0);transform-origin:left;background:var(--invert-accent);
+  transition:transform 1s cubic-bezier(.22,.61,.18,1);
+}
+#contacto.lit::after{transform:scaleX(1)}
+.reasons{list-style:none;margin:0;padding:0}
+.reasons li{padding:10px 0;border-top:1px solid var(--rule);font-size:15.5px;color:var(--ink-2)}
+#contacto h2{color:var(--invert-fg)}
+#contacto .copy,#contacto .reasons li,#contacto .micro,#contacto h4{color:var(--invert-fg2)}
+#contacto .eyebrow{color:var(--invert-accent)}
+#contacto .rail-k{color:var(--invert-fg)}
+#contacto .rail-v{color:var(--invert-fg2)}
+#contacto .rail-mark{color:var(--invert-accent)}
+#contacto .reasons li{border-color:var(--invert-bd)}
+#contacto .btn-solid{background:var(--invert-fg);border-color:var(--invert-fg);color:var(--invert-bg)}
+#contacto .btn-solid:hover{background:var(--invert-accent);border-color:var(--invert-accent);color:var(--invert-bg)}
+#contacto .btn-line{color:var(--invert-fg);border-color:var(--invert-bd)}
+#contacto .btn-line:hover{border-color:var(--invert-fg);color:var(--invert-fg)}
+
+/* ═══════════ MARCA — propuesta ═══════════ */
+.brandbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--rule);margin-top:34px}
+.brandbar>*{min-width:0}
+@media (max-width:820px){.brandbar{grid-template-columns:1fr}}
+.bcell{padding:30px 24px;border-right:1px solid var(--rule);display:flex;flex-direction:column;gap:18px;align-items:flex-start}
+.bcell:last-child{border-right:none}
+@media (max-width:820px){.bcell{border-right:none;border-bottom:1px solid var(--rule)}.bcell:last-child{border-bottom:none}}
+.bcell.dark{background:var(--ink);color:var(--paper)}
+.bcell.dark .micro{color:rgba(239,238,232,.6)}
+.bstage{display:flex;align-items:center;justify-content:center;width:100%;min-height:96px}
+.stack{display:flex;flex-direction:column;align-items:center;gap:9px;text-align:center}
+.stack-w{font-family:"Instrument Serif",serif;font-size:38px;letter-spacing:.14em;line-height:1;padding-left:.14em;display:inline-flex;align-items:baseline}
+.stack-s{font-family:"IBM Plex Mono",monospace;font-size:8px;letter-spacing:.28em;text-transform:uppercase;opacity:.72}
+.swatches{display:flex;gap:0;width:100%;height:34px;border:1px solid var(--rule)}
+.swatches>i{flex:1}
+
+/* ═══════════ PIE ═══════════ */
+.foot{border-top:1px solid var(--rule);padding-top:42px;padding-bottom:56px;margin-top:clamp(56px,7vw,96px)}
+.foot-in{display:flex;flex-wrap:wrap;gap:30px;justify-content:space-between;align-items:flex-start}
+.foot-links{display:flex;flex-wrap:wrap;gap:18px}
+.foot-links a{font-size:14px;color:var(--ink-3);text-decoration:none}
+.foot-links a:hover{color:var(--ink)}
+.pending{margin-top:32px;padding-top:18px;border-top:1px solid var(--rule);display:flex;flex-wrap:wrap;gap:8px 22px}
+
+/* ═══════════ MOVIMIENTO ═══════════ */
+@keyframes riseIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes trackIn{from{opacity:0;letter-spacing:.44em}to{opacity:1;letter-spacing:.2em}}
+@keyframes islandIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+@keyframes ringDraw{from{stroke-dashoffset:264}to{stroke-dashoffset:0}}
+@keyframes glyphIn{from{opacity:0;transform:translate(50px,54px) scale(.62) translate(-50px,-50px)}
+                   to{opacity:1;transform:translate(50px,50px) scale(.66) translate(-50px,-50px)}}
+.hero.intro .eyebrow{animation:trackIn .95s cubic-bezier(.22,.61,.18,1) both}
+.hero.intro h1{animation:riseIn .7s .08s cubic-bezier(.22,.61,.18,1) both}
+.hero.intro .lead{animation:riseIn .7s .18s cubic-bezier(.22,.61,.18,1) both}
+.hero.intro .actions{animation:riseIn .7s .28s cubic-bezier(.22,.61,.18,1) both}
+.hero.intro .hero-side{animation:riseIn .8s .36s cubic-bezier(.22,.61,.18,1) both}
+.island.intro{animation:islandIn .6s cubic-bezier(.22,.61,.18,1) both}
+/* La marca se dibuja al entrar: el círculo se traza y la A sube a su sitio */
+.hero.intro .hg-ring{stroke-dasharray:264;animation:ringDraw 1.25s .42s cubic-bezier(.22,.61,.18,1) both}
+.hero.intro .hg-a{animation:glyphIn .75s 1s cubic-bezier(.22,.61,.18,1) both}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+
+/* ═══════════ RITMO VERTICAL ═══════════
+   Una sola distancia entre bloques de una sección, y una mayor antes de las
+   rejillas. Sin esto cada sección respiraba distinto y el conjunto bailaba. */
+.flow > * + *{margin-top:20px}
+.flow > .areas,.flow > .steps,.flow > .index,.flow > .quotes,
+.flow > .faq,.flow > .brandbar,.flow > .notice{margin-top:34px}
+.flow > .filters{margin-top:26px}
+.flow > .principles{margin-top:30px}
+.flow > .mt-lg{margin-top:38px}
+.flow > .swatches{margin-top:12px}
+.flow > .micro{margin-top:10px}
+
+/* ═══════════ MÓVIL ═══════════
+   No es el escritorio encogido: cambian los objetivos táctiles, el orden de
+   lectura de la galería y dónde está el CTA. */
+a,button{-webkit-tap-highlight-color:transparent}
+
+@media (max-width:760px){
+  body{font-size:16px}
+  .hbar{padding-top:10px}
+  .band{padding-top:clamp(48px,10vw,76px);padding-bottom:clamp(48px,10vw,76px);scroll-margin-top:116px}
+  h1{font-size:clamp(38px,10.4vw,54px);line-height:1.04}
+  h2{font-size:clamp(26px,7vw,34px)}
+  h3{font-size:21px}
+  .lead{max-width:none;font-size:17px}
+  .copy{max-width:none}
+  .hero{padding-top:32px;padding-bottom:42px}
+  .hero-side{gap:18px}
+  .hero .actions{gap:10px}
+  .hero .actions .btn{flex:1 1 100%;justify-content:center;padding:14px 20px;font-size:15px}
+  .stat-k{font-size:22px}
+  .areas{margin-top:26px}
+  .area{padding:22px 0 24px}
+  .steps{margin-top:28px}
+  .index{gap:28px;margin-top:26px}
+  .tlist a{padding:14px 0;font-size:16px}
+  .tlist .arw{opacity:1;color:var(--ink-3)}
+  details>summary{padding:16px 0;font-size:19px;gap:12px}
+  details .ans{padding:0 0 16px 24px;font-size:15.5px}
+  .portrait{aspect-ratio:4/3}
+  .pull{font-size:20px;padding-left:16px;margin-top:22px;max-width:none}
+  .quotes{gap:12px;margin-top:26px}
+  .quote{padding:20px}
+  .cta .actions{gap:10px}
+  .cta .actions .btn{flex:1 1 100%;justify-content:center;padding:14px 20px;font-size:15px}
+  .notice{font-size:14.5px;padding:14px 16px}
+  .bcell{padding:24px 20px}
+  .foot-in{gap:22px}
+}
+
+@media (max-width:700px){
+  /* Nueve filtros no caben legibles en tres líneas: se deslizan de lado,
+     sangrando hasta el borde para que se vea que hay más. */
+  .filters{
+    flex-wrap:nowrap;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none;
+    margin:22px calc(-1*clamp(20px,5vw,64px)) 20px;
+    padding:0 clamp(20px,5vw,64px) 8px;
+  }
+  .filters::-webkit-scrollbar{display:none}
+  .chip{flex-shrink:0;scroll-snap-align:start;padding:9px 14px}
+}
+
+@media (max-width:600px){
+  /* La galería en dos columnas: ocho fichas en una sola columna son un scroll eterno */
+  .cases{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .case-meta{flex-direction:column;align-items:flex-start;gap:1px}
+  .case-name{font-size:13.5px;line-height:1.3}
+  .slot-lbl{font-size:8px;letter-spacing:.12em}
+}
+
+
+/* Reglas que antes ponía el envoltorio del visor y ahora son nuestras */
+img{max-width:100%}
+[hidden]{display:none!important}   /* sin esto, .case{display:flex} gana al hidden y los filtros no ocultan nada */
+</style>
+</head>
+<body>
+
+
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+  <!-- La A: asta fina y asta gruesa, cortadas en horizontal, como la A de una
+       serif de alto contraste. Es la misma pieza dentro y fuera del círculo. -->
+  <symbol id="goa-a" viewBox="22 18 56 62">
+    <path fill="currentColor" d="M48 18 L52 18 L28 80 L22 80 Z"/>
+    <path fill="currentColor" d="M46 18 L54 18 L78 80 L66 80 Z"/>
+  </symbol>
+  <!-- Isologo: la misma A dentro del círculo -->
+  <symbol id="goa-iso" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" stroke-width="6"/>
+    <g transform="translate(50 50) scale(.66) translate(-50 -50)">
+      <path fill="currentColor" d="M48 18 L52 18 L28 80 L22 80 Z"/>
+      <path fill="currentColor" d="M46 18 L54 18 L78 80 L66 80 Z"/>
+    </g>
+  </symbol>
+</svg>
+
+<div class="hbar">
+  <header class="island intro" id="island">
+    <a class="mark" href="#top" aria-label="GOA Medical Aesthetics — inicio">
+      <span class="mark-w"><span class="mark-go">GO</span><span class="mark-fill"><svg class="mark-a" aria-hidden="true"><use href="#goa-a"/></svg><svg class="mark-a mark-a-on" aria-hidden="true"><use href="#goa-a"/></svg><svg class="mark-ring" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" stroke-width="6"/></svg></span></span>
+      <span class="mark-sub">Medical Aesthetics<br>Dr. Bengoa</span>
+    </a>
+    <nav class="nav" id="nav" aria-label="Secciones de la página">
+      <a href="#especialidades">Especialidades</a>
+      <a href="#tratamientos">Tratamientos</a>
+      <a href="#resultados">Antes y después</a>
+      <a href="#sobre-mi">Sobre mí</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="hact">
+      <a class="btn btn-solid btn-sm cta-top" href="#contacto">Pedir valoración</a>
+      <button class="icon-btn theme-btn" id="theme" type="button" title="Cambiar tema" aria-label="Cambiar tema">◐</button>
+    </div>
+    <button class="navx navx-r" id="navx-r" type="button" aria-label="Más secciones">›</button>
+  </header>
+</div>
+
+<main id="top">
+
+<!-- ══════════ HERO ══════════ -->
+<section class="shell hero intro">
+  <div class="hero-in">
+    <div>
+      <p class="eyebrow">Medicina estética · Medicina capilar · Cirugía capilar</p>
+      <h1>Verte mejor sin perder <em>tu identidad</em>.</h1>
+      <p class="lead">Diagnóstico médico, tratamientos personalizados y seguimiento real en cada caso.</p>
+      <div class="actions">
+        <a class="btn btn-solid" href="#contacto">Pedir valoración</a>
+        <a class="btn btn-line" href="#tratamientos">Ver tratamientos</a>
+        <a class="link" href="#resultados">Antes y después <span class="arw" aria-hidden="true">→</span></a>
+      </div>
+      <a class="scrolldown" href="#especialidades">
+        <svg class="cue" aria-hidden="true"><use href="#goa-a"/></svg>
+        <span>Baja</span>
+      </a>
+    </div>
+    <aside class="hero-side">
+      <svg class="hero-glyph" width="84" height="84" viewBox="0 0 100 100" aria-hidden="true" style="color:var(--accent)">
+        <circle class="hg-ring" cx="50" cy="50" r="42" fill="none" stroke="currentColor" stroke-width="6"/>
+        <g class="hg-a" transform="translate(50 50) scale(.66) translate(-50 -50)">
+          <path fill="currentColor" d="M48 18 L52 18 L28 80 L22 80 Z"/>
+          <path fill="currentColor" d="M46 18 L54 18 L78 80 L66 80 Z"/>
+        </g>
+      </svg>
+      <p>Tratamientos faciales, capilares y cirugía capilar diseñados según tu anatomía, tus objetivos y el resultado que realmente encaja contigo.</p>
+      <div class="stats">
+        <div class="stat"><span class="stat-v">Áreas médicas</span><span class="stat-k">3</span></div>
+        <div class="stat"><span class="stat-v">Cirugía en Suiza</span><span class="stat-k">2 años</span></div>
+        <div class="stat"><span class="stat-v">Valoración</span><span class="stat-k">1:1</span></div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ══════════ ESPECIALIDADES ══════════ -->
+<section class="shell band" id="especialidades">
+  <div class="grid">
+    <div class="rail">
+      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
+      <div class="rail-k">Especialidades</div>
+      <div class="rail-v">Tres áreas · un mismo criterio</div>
+    </div>
+    <div class="flow">
+      <h2>Medicina estética, medicina capilar y cirugía capilar con enfoque médico y resultados naturales</h2>
+      <div class="areas">
+
+        <a class="area" href="#tratamientos">
+          <div class="area-tag"><i class="area-dot"></i><span class="eyebrow">Facial</span></div>
+          <h3>Medicina estética</h3>
+          <p>Mejoramos calidad de piel, proporciones y signos de envejecimiento con tratamientos personalizados y criterio médico.</p>
+          <span class="link">Ver el área <span class="arw" aria-hidden="true">→</span></span>
+        </a>
+
+        <a class="area" href="#tratamientos">
+          <div class="area-tag"><i class="area-dot"></i><span class="eyebrow">Capilar médico</span></div>
+          <h3>Medicina capilar</h3>
+          <p>Estudio de la causa de la caída o pérdida de densidad y planteamiento de un plan médico realista para frenar, mejorar y mantener.</p>
+          <span class="link">Ver el área <span class="arw" aria-hidden="true">→</span></span>
+        </a>
+
+        <a class="area" href="#tratamientos">
+          <div class="area-tag"><i class="area-dot"></i><span class="eyebrow">Quirúrgico</span></div>
+          <h3>Cirugía capilar</h3>
+          <p>Injerto capilar con diseño estratégico, naturalidad en la línea frontal y planificación de largo plazo.</p>
+          <span class="link">Ver el área <span class="arw" aria-hidden="true">→</span></span>
+        </a>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ PROCESO ══════════ -->
+<section class="shell band" id="proceso">
+  <div class="grid">
+    <div class="rail">
+      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
+      <div class="rail-k">Método</div>
+      <div class="rail-v">Cuatro pasos · en este orden</div>
+    </div>
+    <div class="flow">
+      <h2>Analizar, diagnosticar, planificar y tratar</h2>
+      <p class="copy">Entiendo la estética desde una base médica. Cada rostro, cada patrón de alopecia y cada paciente requieren una estrategia distinta, y el orden importa: sin diagnóstico no hay plan, y sin plan no hay tratamiento que se sostenga en el tiempo.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-n">Paso 01</div>
+          <h3>Analizar</h3>
+          <p>Valoración del rostro en conjunto o del patrón capilar completo, no de la zona que preocupa aislada.</p>
+        </div>
+        <div class="step">
+          <div class="step-n">Paso 02</div>
+          <h3>Diagnosticar</h3>
+          <p>Tipo de alopecia, tiempo de evolución, estado de la zona donante, antecedentes y tratamientos previos.</p>
+        </div>
+        <div class="step">
+          <div class="step-n">Paso 03</div>
+          <h3>Planificar</h3>
+          <p>Qué tratamiento o combinación tiene sentido, en qué orden y con qué expectativa realista.</p>
+        </div>
+        <div class="step">
+          <div class="step-n">Paso 04</div>
+          <h3>Tratar y seguir</h3>
+          <p>Ejecución y seguimiento cercano: la evolución a medio plazo forma parte del tratamiento.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ ENFOQUE ══════════ -->
+<section class="shell band" id="enfoque">
+  <div class="grid">
+    <div class="rail">
+      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
+      <div class="rail-k">Enfoque</div>
+      <div class="rail-v">Qué guía cada indicación</div>
+    </div>
+    <div class="flow">
+      <h2>Un enfoque médico, natural y personalizado</h2>
+      <p class="copy">No todos los pacientes necesitan lo mismo. Mi forma de trabajar parte de una valoración médica completa para indicarte solo lo que tiene sentido en tu caso.</p>
+      <div class="principles">
+        <div class="principle"><i></i><span>Diagnóstico individualizado</span></div>
+        <div class="principle"><i></i><span>Naturalidad por encima del exceso</span></div>
+        <div class="principle"><i></i><span>Planes combinados faciales y capilares</span></div>
+        <div class="principle"><i></i><span>Seguimiento cercano</span></div>
+        <div class="principle"><i></i><span>Resultados pensados a medio y largo plazo</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ RESULTADOS ══════════ -->
+<section class="shell band" id="resultados">
+  <div class="grid">
+    <div class="rail">
+      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
+      <div class="rail-k">Resultados</div>
+      <div class="rail-v">Antes y después</div>
+    </div>
+    <div class="flow">
+      <h2>Casos reales. Resultados reales</h2>
+      <p class="copy">Cada paciente parte de una anatomía distinta, por eso cada tratamiento se adapta de forma personalizada. Los resultados deben interpretarse según el punto de partida, el tratamiento realizado y el seguimiento.</p>
+
+      <div class="filters" role="group" aria-label="Filtrar casos por tratamiento">
+        <button class="chip" type="button" data-f="all" aria-pressed="true">Todos</button>
+        <button class="chip" type="button" data-f="estetica" aria-pressed="false">Medicina estética</button>
+        <button class="chip" type="button" data-f="capilar" aria-pressed="false">Capilar</button>
+        <button class="chip" type="button" data-f="injerto" aria-pressed="false">Injerto capilar</button>
+        <button class="chip" type="button" data-f="labios" aria-pressed="false">Labios</button>
+        <button class="chip" type="button" data-f="ojeras" aria-pressed="false">Ojeras</button>
+        <button class="chip" type="button" data-f="superior" aria-pressed="false">Tercio superior</button>
+        <button class="chip" type="button" data-f="rino" aria-pressed="false">Rinomodelación</button>
+        <button class="chip" type="button" data-f="mandibula" aria-pressed="false">Marcación mandibular</button>
+      </div>
+
+      <div class="cases" id="cases">
+        <figure class="case" data-cat="injerto capilar">
+          <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
+          <figcaption class="case-meta"><span class="case-name">Injerto capilar FUE</span><span class="micro">12 meses</span></figcaption>
+        </figure>
+        <figure class="case" data-cat="estetica labios">
+          <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
+          <figcaption class="case-meta"><span class="case-name">Labios · ácido hialurónico</span><span class="micro">15 días</span></figcaption>
+        </figure>
+        <figure class="case" data-cat="estetica ojeras">
+          <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
+          <figcaption class="case-meta"><span class="case-name">Ojeras</span><span class="micro">1 mes</span></figcaption>
+        </figure>
+        <figure class="case" data-cat="estetica superior">
+          <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
+          <figcaption class="case-meta"><span class="case-name">Tercio superior</span><span class="micro">21 días</span></figcaption>
+        </figure>
+        <figure class="case" data-cat="estetica rino">
+          <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
+          <figcaption class="case-meta"><span class="case-name">Rinomodelación</span><span class="micro">Inmediato</span></figcaption>
+        </figure>
+        <figure class="case" data-cat="capilar">
+          <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
+          <figcaption class="case-meta"><span class="case-name">Mesoterapia capilar</span><span class="micro">6 meses</span></figcaption>
+        </figure>
+        <figure class="case" data-cat="estetica mandibula">
+          <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
+          <figcaption class="case-meta"><span class="case-name">Marcación mandibular</span><span class="micro">1 mes</span></figcaption>
+        </figure>
+        <figure class="case" data-cat="injerto capilar">
+          <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
+          <figcaption class="case-meta"><span class="case-name">Diseño de línea frontal</span><span class="micro">10 meses</span></figcaption>
+        </figure>
+      </div>
+
+      <p class="notice">Las imágenes muestran resultados reales, pero cada caso requiere una valoración individual y no todos los pacientes obtienen exactamente la misma evolución. <span class="micro" style="display:block;margin-top:8px">Maqueta: los ocho huecos están vacíos a propósito. Se rellenan con fotografía clínica propia y consentimiento firmado del paciente.</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ TRATAMIENTOS ══════════ -->
+<section class="shell band" id="tratamientos">
+  <div class="grid">
+    <div class="rail">
+      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
+      <div class="rail-k">Tratamientos</div>
+      <div class="rail-v">15 fichas · una por página</div>
+    </div>
+    <div class="flow">
+      <h2>Qué se puede tratar</h2>
+      <p class="copy">Cada tratamiento tiene su propia página: qué es, para quién está indicado, cómo se realiza, beneficios, duración y recuperación, resultados y preguntas frecuentes.</p>
+
+      <div class="index">
+        <div>
+          <h4>Medicina estética</h4>
+          <ul class="tlist">
+            <li><a href="#tratamientos">Neuromoduladores <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="#tratamientos">Ácido hialurónico <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="#tratamientos">Armonización facial <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="#tratamientos">Ojeras <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="#tratamientos">Labios <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="#tratamientos">Bioestimulación / skin quality <span class="arw" aria-hidden="true">→</span></a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Medicina capilar</h4>
+          <ul class="tlist">
+            <li><a href="#tratamientos">Primera valoración capilar <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="#tratamientos">Mesoterapia capilar <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="#tratamientos">PRP / bioestimulación <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="#tratamientos">Tratamiento médico de la alopecia <span class="arw" aria-hidden="true">→</span></a></li>
+          </ul>
+          <p class="micro" style="margin-top:16px">No todos los pacientes necesitan cirugía. Un buen diagnóstico puede frenar la evolución y mejorar densidad, calibre y calidad capilar.</p>
+        </div>
+        <div>
+          <h4>Cirugía capilar</h4>
+          <ul class="tlist">
+            <li><a href="#tratamientos">Injerto capilar FUE <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="#tratamientos">Diseño de línea frontal <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="#tratamientos">Injerto en coronilla <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="#tratamientos">Injerto de cejas / barba <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="#tratamientos">Postoperatorio y evolución <span class="arw" aria-hidden="true">→</span></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SOBRE MÍ ══════════ -->
+<section class="shell band" id="sobre-mi">
+  <div class="grid">
+    <div class="rail">
+      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
+      <div class="rail-k">Sobre mí</div>
+      <div class="rail-v">Dr. Bengoa</div>
+    </div>
+    <div class="about">
+      <div>
+        <h2>Una base quirúrgica detrás de cada decisión estética</h2>
+        <p class="copy">Soy médico estético y cirujano capilar. Mi objetivo no es cambiar caras ni vender tratamientos de forma indiscriminada, sino ayudarte a verte mejor con resultados armónicos, naturales y médicamente bien indicados.</p>
+        <p class="copy">Mi formación incluye rotatorios de cirugía general en el Hospital Hialeah de Miami (Estados Unidos) y dos años de cirugía ortopédica y traumatología en el Hospital Riviera Chablais y el Hospital de Saint-Loup, en Suiza. Esa base me permite tratar la estética facial y la cirugía capilar con una visión más precisa y exigente.</p>
+        <p class="pull">La mejor medicina estética es la que te hace verte bien sin que parezca que te has hecho <em>demasiado</em>.</p>
+        <div class="actions">
+          <a class="link" href="#contacto">Leer la página completa <span class="arw" aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div>
+        <div class="portrait"><span class="slot-lbl">Retrato · pendiente</span></div>
+        <div class="principles" style="margin-top:18px;max-width:none">
+          <div class="principle"><i></i><span>Escucharte bien</span></div>
+          <div class="principle"><i></i><span>Ser honesto con lo que puede conseguirse</span></div>
+          <div class="principle"><i></i><span>Priorizar resultados naturales</span></div>
+          <div class="principle"><i></i><span>Acompañarte en el seguimiento</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ TESTIMONIOS ══════════ -->
+<section class="shell band" id="testimonios">
+  <div class="grid">
+    <div class="rail">
+      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
+      <div class="rail-k">Testimonios</div>
+      <div class="rail-v">Contenido pendiente</div>
+    </div>
+    <div class="flow">
+      <h2>La confianza no se promete, se gana</h2>
+      <p class="copy">Aquí puedes conocer la experiencia de algunos pacientes que han confiado en mí para sus tratamientos faciales y capilares.</p>
+      <div class="quotes">
+        <figure class="quote">
+          <div class="micro">Formato · texto breve</div>
+          <blockquote class="quote-body">Hueco reservado para el testimonio real del paciente. Tres o cuatro líneas: qué le preocupaba, qué se hizo y cómo fue el seguimiento.</blockquote>
+          <figcaption class="quote-foot">
+            <span class="case-name">Nombre o iniciales</span>
+            <span class="micro">Tratamiento · tiempo de evolución</span>
+          </figcaption>
+        </figure>
+        <figure class="quote">
+          <div class="micro">Formato · vídeo corto</div>
+          <blockquote class="quote-body">Hueco reservado para vídeo de 20–40 s grabado en consulta, con transcripción debajo para que también lo lean los buscadores.</blockquote>
+          <figcaption class="quote-foot">
+            <span class="case-name">Nombre o iniciales</span>
+            <span class="micro">Tratamiento · tiempo de evolución</span>
+          </figcaption>
+        </figure>
+        <figure class="quote">
+          <div class="micro">Formato · texto + foto opcional</div>
+          <blockquote class="quote-body">Hueco reservado. Solo se publican testimonios con consentimiento escrito y sin promesas de resultado, por normativa de publicidad sanitaria.</blockquote>
+          <figcaption class="quote-foot">
+            <span class="case-name">Nombre o iniciales</span>
+            <span class="micro">Tratamiento · tiempo de evolución</span>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FAQ ══════════ -->
+<section class="shell band" id="faq">
+  <div class="grid">
+    <div class="rail">
+      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
+      <div class="rail-k">FAQ</div>
+      <div class="rail-v">Preguntas frecuentes</div>
+    </div>
+    <div class="flow">
+      <h2>Lo que más se pregunta en consulta</h2>
+      <div class="faq">
+        <details open>
+          <summary>¿La primera valoración es personalizada?</summary>
+          <div class="ans">Sí. Cada caso requiere una valoración individual para estudiar indicación, objetivos y opciones reales.</div>
+        </details>
+        <details>
+          <summary>¿Todos los pacientes capilares necesitan injerto?</summary>
+          <div class="ans">No. En muchos casos es fundamental empezar por un diagnóstico médico y un plan de tratamiento.</div>
+        </details>
+        <details>
+          <summary>¿La medicina estética cambia la cara?</summary>
+          <div class="ans">Bien indicada, no. El objetivo es armonizar, prevenir y rejuvenecer manteniendo la naturalidad.</div>
+        </details>
+        <details>
+          <summary>¿Cuándo se ven los resultados?</summary>
+          <div class="ans">Depende del tratamiento. En consulta se explica qué evolución cabe esperar en cada caso.</div>
+        </details>
+        <details>
+          <summary>¿Puedo combinar varios tratamientos?</summary>
+          <div class="ans">Sí. En muchos pacientes la mejor estrategia es combinar técnicas de forma planificada.</div>
+        </details>
+        <details>
+          <summary>¿Hay casos reales publicados?</summary>
+          <div class="ans">Sí, en la web podrás ver antes y después de distintos tratamientos, siempre con consentimiento del paciente.</div>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ CONTACTO ══════════ -->
+<section class="shell band" id="contacto">
+  <div class="shell">
+  <div class="grid">
+    <div class="rail">
+      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
+      <div class="rail-k">Contacto</div>
+      <div class="rail-v">Reserva de cita</div>
+    </div>
+    <div class="cta">
+      <div>
+        <p class="eyebrow">Valoración</p>
+        <h2>¿Quieres valorar tu caso?</h2>
+        <p class="copy">Reserva tu cita y te orientaré sobre el tratamiento más adecuado para ti, con una visión médica clara, honesta y personalizada.</p>
+        <div class="actions">
+          <a class="btn btn-solid" href="#">Reservar cita</a>
+          <a class="btn btn-line" href="#">WhatsApp</a>
+          <a class="btn btn-line" href="#">Llamar</a>
+        </div>
+        <p class="micro" style="margin-top:16px">Teléfono, WhatsApp y sistema de reserva pendientes de definir.</p>
+      </div>
+      <div>
+        <h4 style="margin-bottom:6px">Puedes escribir para</h4>
+        <ul class="reasons">
+          <li>Primera valoración de medicina estética</li>
+          <li>Valoración capilar</li>
+          <li>Estudio de injerto capilar</li>
+          <li>Seguimiento de tratamientos</li>
+          <li>Dudas sobre procedimientos</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- ══════════ PROPUESTA DE MARCA ══════════ -->
+<section class="shell band" id="marca">
+  <div class="grid">
+    <div class="rail">
+      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
+      <div class="rail-k">Marca</div>
+      <div class="rail-v">Propuesta · no es parte de la web</div>
+    </div>
+    <div class="flow">
+      <h2>Una marca que aguanta en pequeño</h2>
+      <p class="copy">Dos piezas y un solo dibujo. El <em>isologo</em> mete la A dentro del círculo: es lo que va en el avatar, el favicon, el sello y el bordado, y aguanta a 16 píxeles. El <em>logo</em> es solo el nombre, sin círculo, y su A es exactamente ese mismo vértice. La A deja de ser un chevrón de icono: tiene asta fina y asta gruesa cortadas en horizontal, como la de una serif de alto contraste, para que junto a la G y la O se lea como una letra y no como un símbolo pegado al lado.</p>
+      <div class="brandbar">
+        <div class="bcell">
+          <div class="bstage">
+            <svg width="76" height="76" viewBox="0 0 100 100" aria-hidden="true" style="color:var(--ink)"><use href="#goa-iso"/></svg>
+          </div>
+          <div>
+            <h4>Isologo</h4>
+            <p class="micro" style="margin-top:7px">Avatar, favicon, sello y bordado. Es la única pieza con círculo.</p>
+          </div>
+        </div>
+        <div class="bcell">
+          <div class="bstage">
+            <span class="mark" style="pointer-events:none">
+              <span class="mark-w" style="font-size:34px">GO<svg class="mark-a" aria-hidden="true"><use href="#goa-a"/></svg></span>
+            </span>
+          </div>
+          <div>
+            <h4>Logo</h4>
+            <p class="micro" style="margin-top:7px">Cabecera, papelería y firma de email. Sin círculo: la A no se escribe, se dibuja.</p>
+          </div>
+        </div>
+        <div class="bcell dark">
+          <div class="bstage">
+            <div class="stack">
+              <svg width="42" height="42" viewBox="0 0 100 100" aria-hidden="true"><use href="#goa-iso"/></svg>
+              <span class="stack-w">GO<svg class="mark-a" aria-hidden="true"><use href="#goa-a"/></svg></span>
+              <span class="stack-s">Medical Aesthetics</span>
+            </div>
+          </div>
+          <div>
+            <h4 style="color:rgba(239,238,232,.75)">Apilada</h4>
+            <p class="micro" style="margin-top:7px">Papelería, consentimientos y fondo oscuro. Se imprime en un solo color.</p>
+          </div>
+        </div>
+      </div>
+
+      <h4 class="mt-lg">Paleta v2 — fuera el crema y el dorado</h4>
+      <div class="swatches">
+        <i style="background:#EFEEE8" title="Hueso mineral #EFEEE8"></i>
+        <i style="background:#E3E3DB" title="Hueso sombra #E3E3DB"></i>
+        <i style="background:#1F5A4E" title="Verde quirófano #1F5A4E"></i>
+        <i style="background:#12201F" title="Negro petróleo #12201F"></i>
+      </div>
+      <p class="micro">Hueso mineral #EFEEE8 · hueso sombra #E3E3DB · verde quirófano #1F5A4E · negro petróleo #12201F</p>
+      <p class="copy">El crema con dorado es el uniforme de casi toda la medicina estética, y además tira hacia lo femenino cuando media consulta es cirugía capilar masculina. Este hueso es más frío y más limpio, el negro petróleo tiene verde dentro en vez de gris, y el acento es el verde del campo quirúrgico: dice medicina, no perfumería. Se gasta poco —filetes, un botón, el estado activo— para que siga significando algo.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="shell foot">
+  <div class="foot-in">
+    <div>
+      <span class="mark" style="pointer-events:none">
+        <span class="mark-w" style="font-size:22px">GO<svg class="mark-a" aria-hidden="true"><use href="#goa-a"/></svg></span>
+      </span>
+      <p class="micro" style="margin-top:12px;max-width:44ch">Medicina estética · Medicina capilar · Cirugía capilar<br>by Dr. Bengoa</p>
+    </div>
+    <div class="foot-links">
+      <a href="#">Aviso legal</a>
+      <a href="#">Política de privacidad</a>
+      <a href="#">Política de cookies</a>
+      <a href="#">Consentimientos informados</a>
+    </div>
+  </div>
+  <div class="pending">
+    <span class="micro">Maqueta de diseño v11</span>
+    <span class="micro">Falta: fotografía clínica, testimonios, datos de contacto</span>
+    <span class="micro">Nº de registro sanitario pendiente</span>
+  </div>
+</footer>
+
+
+<script>
+(function(){
+  "use strict";
+  var root=document.documentElement, btn=document.getElementById("theme");
+  try{ var saved=localStorage.getItem("goa-theme"); if(saved){ root.setAttribute("data-theme",saved); } }catch(e){}
+  function current(){
+    var s=root.getAttribute("data-theme");
+    if(s) return s;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+  function label(){
+    var dark = current()==="dark";
+    btn.textContent = dark ? "◐" : "◑";
+    btn.title = dark ? "Ver en claro" : "Ver en oscuro";
+    btn.setAttribute("aria-label", btn.title);
+  }
+  function toggle(){
+    var next = current()==="dark" ? "light" : "dark";
+    root.setAttribute("data-theme",next);
+    try{ localStorage.setItem("goa-theme",next); }catch(e){}
+    label();
+  }
+  label();
+  btn.addEventListener("click",toggle);
+
+  /* La isla se asienta en cuanto la página se mueve, y su filete inferior
+     dice cuánto queda por leer. Una sola pasada por scroll para las dos cosas. */
+  var island=document.getElementById("island"), nav=document.getElementById("nav");
+  function onScroll(){
+    island.classList.toggle("on", window.scrollY > 12);
+    var h=document.documentElement.scrollHeight - innerHeight;
+    island.style.setProperty("--read", h>0 ? Math.min(1, window.scrollY/h).toFixed(4) : 0);
+  }
+  var ticking=false;
+  function onScrollRaf(){
+    if(ticking) return;
+    ticking=true;
+    requestAnimationFrame(function(){ onScroll(); ticking=false; });
+  }
+  onScroll();
+  addEventListener("scroll", onScrollRaf, {passive:true});
+  addEventListener("resize", onScrollRaf);
+
+  /* Sección activa: en una sola página, el menú tiene que decir dónde estás.
+     En móvil, además, la tira se desplaza para que el activo siempre se vea. */
+  var links=Array.prototype.slice.call(nav.querySelectorAll("a"));
+  var targets=links.map(function(a){ return document.querySelector(a.getAttribute("href")); });
+  if("IntersectionObserver" in window){
+    var seen={}, last=null;
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ seen[en.target.id]=en.isIntersecting ? en.intersectionRatio : 0; });
+      var best="", top=0;
+      targets.forEach(function(t){ if(t && (seen[t.id]||0)>top){ top=seen[t.id]; best=t.id; } });
+      if(!best) return;   /* fuera de las secciones del menú, se mantiene la última */
+      targets.forEach(function(t){
+        if(t){ var r=t.querySelector(".rail"); if(r) r.classList.toggle("here", t.id===best); }
+      });
+      links.forEach(function(a){
+        var on = a.getAttribute("href")==="#"+best;
+        a.classList.toggle("here", on);
+        if(on){
+          a.setAttribute("aria-current","true");
+          if(a!==last && nav.scrollWidth > nav.clientWidth + 4){
+            nav.scrollTo({left:Math.max(0, a.offsetLeft - nav.clientWidth/2 + a.offsetWidth/2), behavior:"smooth"});
+          }
+          last=a;
+        } else { a.removeAttribute("aria-current"); }
+      });
+    },{rootMargin:"-120px 0px -55% 0px",threshold:[0,.25,.5,1]});
+    targets.forEach(function(t){ if(t) io.observe(t); });
+  }
+
+  /* La secuencia de entrada se vuelve a lanzar cuando las fuentes están listas:
+     si no, el gesto se gasta mientras el navegador todavía pinta con la de reserva.
+     Y se puede repetir pulsando la marca, para poder enseñarla. */
+  var hero=document.querySelector(".hero"), reduce=matchMedia("(prefers-reduced-motion: reduce)");
+  function replayIntro(){
+    if(reduce.matches) return;
+    [hero, island].forEach(function(el){
+      if(!el) return;
+      el.classList.remove("intro");
+      void el.offsetWidth;
+      el.classList.add("intro");
+    });
+  }
+  if(document.fonts && document.fonts.ready){ document.fonts.ready.then(function(){ replayIntro(); }); }
+  var markLink=document.querySelector(".island .mark");
+  if(markLink){ markLink.addEventListener("click",function(){ replayIntro(); }); }
+
+  /* Chevrones de la tira de secciones: aparecen solo si hay más que ver */
+  var xr=document.getElementById("navx-r");
+  function edges(){
+    var more = nav.scrollWidth - nav.clientWidth;
+    xr.classList.toggle("on", more > 4 && nav.scrollLeft < more - 4);
+  }
+  nav.addEventListener("scroll", edges, {passive:true});
+  addEventListener("resize", edges);
+  xr.addEventListener("click",function(){ nav.scrollBy({left:150,behavior:"smooth"}); });
+  edges();
+
+  /* El aviso de "baja" se retira en cuanto se ha bajado */
+  addEventListener("scroll",function(){
+    document.body.classList.toggle("moved", window.scrollY > 40);
+  },{passive:true});
+
+  /* El cierre de página se invierte al llegar */
+  var band=document.getElementById("contacto");
+  if(band && "IntersectionObserver" in window){
+    new IntersectionObserver(function(en,ob){
+      if(en[0].isIntersecting){ band.classList.add("lit"); ob.disconnect(); }
+    },{threshold:.15}).observe(band);
+  } else if(band){ band.classList.add("lit"); }
+
+  /* El eje antes/después se traza cuando la ficha entra en pantalla, en cascada */
+  var cards=Array.prototype.slice.call(document.querySelectorAll("#cases .case"));
+  if("IntersectionObserver" in window){
+    var cio=new IntersectionObserver(function(entries){
+      var n=0;
+      entries.forEach(function(en){
+        if(en.isIntersecting){
+          en.target.style.setProperty("--d",(n++*90)+"ms");
+          en.target.classList.add("seen");
+          cio.unobserve(en.target);
+        }
+      });
+    },{rootMargin:"0px 0px -12% 0px",threshold:.35});
+    cards.forEach(function(c){ cio.observe(c); });
+  } else {
+    cards.forEach(function(c){ c.classList.add("seen"); });
+  }
+
+  var chips=Array.prototype.slice.call(document.querySelectorAll(".chip"));
+  var cases=Array.prototype.slice.call(document.querySelectorAll("#cases .case"));
+  chips.forEach(function(chip){
+    chip.addEventListener("click",function(){
+      chips.forEach(function(c){ c.setAttribute("aria-pressed", String(c===chip)); });
+      var f=chip.getAttribute("data-f");
+      cases.forEach(function(c){
+        var cats=" "+(c.getAttribute("data-cat")||"")+" ";
+        c.hidden = !(f==="all" || cats.indexOf(" "+f+" ")>-1);
+      });
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

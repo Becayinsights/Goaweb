@@ -12,7 +12,20 @@ Proyecto independiente. **No comparte código, datos ni despliegue con Becay Ren
 | Implementación Next.js | no empezada |
 | Área privada (fichas médicas, usuarios) | fuera de alcance en esta fase |
 
-## Maquetas
+## Maqueta alojada (la que se envía al cliente)
+
+**https://goa-maqueta-becay.vercel.app** — Vercel, equipo BECAY, proyecto `goa-maqueta`,
+sin protección SSO para que se pueda abrir sin cuenta. Fuente en `site/index.html`:
+la misma maqueta con su propio esqueleto HTML (doctype, head, meta, favicon del isologo)
+y las dos reglas que antes ponía el envoltorio del visor de artifacts:
+`img{max-width:100%}` y `[hidden]{display:none!important}` —sin la segunda, `.case{display:flex}`
+gana al atributo `hidden` y los filtros de la galería no ocultan nada.
+
+Lleva `noindex, nofollow`: es una maqueta, no debe indexarse como la web del doctor.
+
+Para actualizarla: regenerar `site/index.html` desde `design/goa-home.html` y volver a desplegar.
+
+## Maquetas en artifact (histórico de revisiones)
 
 - Home, enlace de trabajo (se actualiza en cada versión): https://claude.ai/code/artifact/c712173e-2492-44ea-a81a-39d80f49a903
 - Home v11, enlace limpio para enviar al cliente: https://claude.ai/code/artifact/3630d750-ac82-4f8f-b228-accdf8dcfb5a
