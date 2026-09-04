@@ -1,8 +1,8 @@
 <title>GOA Medical Aesthetics</title>
 <script>
-/* El tema se estampa antes de la primera pintura: claro por defecto, para que
+/* El tema se estampa antes de la primera pintura: oscuro por defecto, para que
    la web se vea siempre igual la abra quien la abra. El conmutador manda. */
-(function(){try{var t=localStorage.getItem("goa-theme");document.documentElement.setAttribute("data-theme",t==="dark"?"dark":"light");}catch(e){document.documentElement.setAttribute("data-theme","light");}})();
+(function(){try{var t=localStorage.getItem("goa-theme");document.documentElement.setAttribute("data-theme",t==="light"?"light":"dark");}catch(e){document.documentElement.setAttribute("data-theme","dark");}})();
 </script>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -127,17 +127,24 @@ em{font-style:italic}
    el círculo se traza, crece y se va; la G y la O ocupan su sitio. */
 .mark-go{display:inline-flex}
 .mark-ring{
-  position:absolute;left:50%;top:50%;width:1.52em;height:1.52em;
+  position:absolute;left:50%;top:50%;width:1.72em;height:1.72em;
   transform:translate(-50%,-50%);color:var(--accent);opacity:0;pointer-events:none;
 }
-.island.intro .mark-go{animation:goIn .55s 1.02s cubic-bezier(.22,.61,.18,1) both}
-.island.intro .mark-ring{animation:ringOpen .72s 1s cubic-bezier(.22,.61,.18,1) both}
-.island.intro .mark-ring circle{stroke-dasharray:264;animation:ringDraw .9s .12s cubic-bezier(.22,.61,.18,1) both}
+.island.intro .mark-go{animation:goIn .6s 1.5s cubic-bezier(.22,.61,.18,1) both}
+.island.intro .mark-ring{animation:ringOpen .85s 1.45s cubic-bezier(.22,.61,.18,1) both}
+.island.intro .mark-ring circle{stroke-dasharray:264;animation:ringDraw 1.15s .22s cubic-bezier(.22,.61,.18,1) both}
+/* Durante la fase de isologo la A se queda sola en el centro del círculo;
+   al abrirse, cede su sitio a la palabra. */
+.island.intro .mark-fill{animation:aCenter 1.35s .15s cubic-bezier(.22,.61,.18,1) both}
+@keyframes aCenter{
+  0%,55%{transform:translateX(-.62em)}
+  100%{transform:none}
+}
 @keyframes goIn{from{opacity:0;transform:translateX(-7px)}to{opacity:1;transform:none}}
 @keyframes ringOpen{
   0%{opacity:1;transform:translate(-50%,-50%) scale(1)}
-  55%{opacity:.55}
-  100%{opacity:0;transform:translate(-50%,-50%) scale(1.5)}
+  60%{opacity:.5}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.65)}
 }
 .mark-fill .mark-a-on{
   position:absolute;left:0;top:0;color:var(--accent);
@@ -1046,7 +1053,7 @@ a,button{-webkit-tap-highlight-color:transparent}
     </div>
   </div>
   <div class="pending">
-    <span class="micro">Maqueta de diseño v11</span>
+    <span class="micro">Maqueta de diseño v12</span>
     <span class="micro">Falta: fotografía clínica, testimonios, datos de contacto</span>
     <span class="micro">Nº de registro sanitario pendiente</span>
   </div>
@@ -1138,7 +1145,17 @@ a,button{-webkit-tap-highlight-color:transparent}
       el.classList.add("intro");
     });
   }
-  if(document.fonts && document.fonts.ready){ document.fonts.ready.then(function(){ replayIntro(); }); }
+  /* Si arranca antes de la primera pintura, el gesto se gasta en blanco y nadie
+     lo ve. Se lanza cuando la página ya está en pantalla, pase lo que pase. */
+  var introBooted=false;
+  function bootIntro(){
+    if(introBooted) return;
+    introBooted=true;
+    setTimeout(replayIntro,180);
+  }
+  if(document.fonts && document.fonts.ready){ document.fonts.ready.then(bootIntro); }
+  if(document.readyState==="complete"){ bootIntro(); } else { addEventListener("load",bootIntro); }
+  setTimeout(bootIntro,1400);
   var markLink=document.querySelector(".island .mark");
   if(markLink){ markLink.addEventListener("click",function(){ replayIntro(); }); }
 
