@@ -64,7 +64,11 @@ a{color:inherit}
 .grid{display:grid;grid-template-columns:150px minmax(0,1fr);gap:clamp(24px,4vw,56px)}
 .grid>*{min-width:0}   /* sin esto, la tira de filtros ensancha su columna y recorta por la derecha */
 .rail{position:sticky;top:118px;align-self:start;display:flex;flex-direction:column;gap:7px}
-.rail-mark{width:20px;height:1px;background:var(--accent);margin-bottom:9px}
+.rail-mark{
+  width:20px;height:1px;background:var(--accent);margin-bottom:9px;
+  transform:scaleX(.3);transform-origin:left;transition:transform .5s cubic-bezier(.22,.61,.18,1);
+}
+.rail.here .rail-mark{transform:scaleX(1)}
 .rail-k{font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--ink)}
 .rail-v{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);line-height:1.7}
 @media (max-width:900px){
@@ -255,9 +259,12 @@ em{font-style:italic}
 .slot{aspect-ratio:4/5;display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--rule);position:relative}
 .slot::after{
   content:"";position:absolute;top:0;bottom:0;left:50%;width:1.5px;background:var(--accent);
-  transform:scaleY(0);transform-origin:center;transition:transform .5s cubic-bezier(.22,.61,.18,1);
+  transform:scaleY(0);transform-origin:center;
+  transition:transform .55s cubic-bezier(.22,.61,.18,1);transition-delay:var(--d,0s);
 }
-.case:hover .slot::after{transform:scaleY(1)}
+/* El eje antes/después se traza al entrar la ficha en pantalla, en cascada,
+   y también al pasar el ratón: en el móvil no hay hover que valga. */
+.case.seen .slot::after,.case:hover .slot::after{transform:scaleY(1)}
 .case:hover .slot{border-color:var(--rule-2)}
 .slot-half{
   display:flex;align-items:flex-end;justify-content:center;padding:12px 0;
@@ -363,15 +370,15 @@ details .ans{padding:0 0 20px 28px;color:var(--ink-2);font-size:16px;line-height
 @keyframes ringDraw{from{stroke-dashoffset:264}to{stroke-dashoffset:0}}
 @keyframes glyphIn{from{opacity:0;transform:translate(50px,54px) scale(.62) translate(-50px,-50px)}
                    to{opacity:1;transform:translate(50px,50px) scale(.66) translate(-50px,-50px)}}
-.hero .eyebrow{animation:riseIn .5s cubic-bezier(.22,.61,.18,1) both}
-.hero h1{animation:riseIn .6s .06s cubic-bezier(.22,.61,.18,1) both}
-.hero .lead{animation:riseIn .6s .14s cubic-bezier(.22,.61,.18,1) both}
-.hero .actions{animation:riseIn .6s .22s cubic-bezier(.22,.61,.18,1) both}
-.hero-side{animation:riseIn .7s .3s cubic-bezier(.22,.61,.18,1) both}
-.island{animation:islandIn .55s cubic-bezier(.22,.61,.18,1) both}
+.hero.intro .eyebrow{animation:riseIn .55s cubic-bezier(.22,.61,.18,1) both}
+.hero.intro h1{animation:riseIn .7s .08s cubic-bezier(.22,.61,.18,1) both}
+.hero.intro .lead{animation:riseIn .7s .18s cubic-bezier(.22,.61,.18,1) both}
+.hero.intro .actions{animation:riseIn .7s .28s cubic-bezier(.22,.61,.18,1) both}
+.hero.intro .hero-side{animation:riseIn .8s .36s cubic-bezier(.22,.61,.18,1) both}
+.island.intro{animation:islandIn .6s cubic-bezier(.22,.61,.18,1) both}
 /* La marca se dibuja al entrar: el círculo se traza y la A sube a su sitio */
-.hg-ring{stroke-dasharray:264;animation:ringDraw 1.15s .28s cubic-bezier(.22,.61,.18,1) both}
-.hg-a{animation:glyphIn .7s .78s cubic-bezier(.22,.61,.18,1) both}
+.hero.intro .hg-ring{stroke-dasharray:264;animation:ringDraw 1.25s .42s cubic-bezier(.22,.61,.18,1) both}
+.hero.intro .hg-a{animation:glyphIn .75s 1s cubic-bezier(.22,.61,.18,1) both}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{animation:none!important;transition:none!important}
@@ -480,7 +487,7 @@ a,button{-webkit-tap-highlight-color:transparent}
 </svg>
 
 <div class="hbar">
-  <header class="island" id="island">
+  <header class="island intro" id="island">
     <a class="mark" href="#top" aria-label="GOA Medical Aesthetics — inicio">
       <span class="mark-w">GO<svg class="mark-a" aria-hidden="true"><use href="#goa-a"/></svg></span>
       <span class="mark-sub">Medical Aesthetics<br>Dr. Bengoa</span>
@@ -502,7 +509,7 @@ a,button{-webkit-tap-highlight-color:transparent}
 <main id="top">
 
 <!-- ══════════ HERO ══════════ -->
-<section class="shell hero">
+<section class="shell hero intro">
   <div class="hero-in">
     <div>
       <p class="eyebrow">Medicina estética · Medicina capilar · Cirugía capilar</p>
@@ -966,7 +973,7 @@ a,button{-webkit-tap-highlight-color:transparent}
     </div>
   </div>
   <div class="pending">
-    <span class="micro">Maqueta de diseño v6</span>
+    <span class="micro">Maqueta de diseño v7</span>
     <span class="micro">Falta: fotografía clínica, testimonios, datos de contacto</span>
     <span class="micro">Nº de registro sanitario pendiente</span>
   </div>
@@ -987,8 +994,12 @@ a,button{-webkit-tap-highlight-color:transparent}
     if(s) return s;
     return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   }
-  var btnM=document.getElementById("theme-m");
-  function label(){ btnM.textContent = current()==="dark" ? "◐ Ver en claro" : "◐ Ver en oscuro"; }
+  function label(){
+    var dark = current()==="dark";
+    btn.textContent = dark ? "◐" : "◑";
+    btn.title = dark ? "Ver en claro" : "Ver en oscuro";
+    btn.setAttribute("aria-label", btn.title);
+  }
   function toggle(){
     var next = current()==="dark" ? "light" : "dark";
     root.setAttribute("data-theme",next);
@@ -997,7 +1008,6 @@ a,button{-webkit-tap-highlight-color:transparent}
   }
   label();
   btn.addEventListener("click",toggle);
-  btnM.addEventListener("click",toggle);
 
   /* La isla se asienta en cuanto la página se mueve, y su filete inferior
      dice cuánto queda por leer. Una sola pasada por scroll para las dos cosas. */
@@ -1020,6 +1030,10 @@ a,button{-webkit-tap-highlight-color:transparent}
       entries.forEach(function(en){ seen[en.target.id]=en.isIntersecting ? en.intersectionRatio : 0; });
       var best="", top=0;
       targets.forEach(function(t){ if(t && (seen[t.id]||0)>top){ top=seen[t.id]; best=t.id; } });
+      if(!best) return;   /* fuera de las secciones del menú, se mantiene la última */
+      targets.forEach(function(t){
+        if(t){ var r=t.querySelector(".rail"); if(r) r.classList.toggle("here", t.id===best); }
+      });
       links.forEach(function(a){
         var on = a.getAttribute("href")==="#"+best;
         a.classList.toggle("here", on);
@@ -1033,6 +1047,41 @@ a,button{-webkit-tap-highlight-color:transparent}
       });
     },{rootMargin:"-120px 0px -55% 0px",threshold:[0,.25,.5,1]});
     targets.forEach(function(t){ if(t) io.observe(t); });
+  }
+
+  /* La secuencia de entrada se vuelve a lanzar cuando las fuentes están listas:
+     si no, el gesto se gasta mientras el navegador todavía pinta con la de reserva.
+     Y se puede repetir pulsando la marca, para poder enseñarla. */
+  var hero=document.querySelector(".hero"), reduce=matchMedia("(prefers-reduced-motion: reduce)");
+  function replayIntro(){
+    if(reduce.matches) return;
+    [hero, island].forEach(function(el){
+      if(!el) return;
+      el.classList.remove("intro");
+      void el.offsetWidth;
+      el.classList.add("intro");
+    });
+  }
+  if(document.fonts && document.fonts.ready){ document.fonts.ready.then(function(){ replayIntro(); }); }
+  var markLink=document.querySelector(".island .mark");
+  if(markLink){ markLink.addEventListener("click",function(){ replayIntro(); }); }
+
+  /* El eje antes/después se traza cuando la ficha entra en pantalla, en cascada */
+  var cards=Array.prototype.slice.call(document.querySelectorAll("#cases .case"));
+  if("IntersectionObserver" in window){
+    var cio=new IntersectionObserver(function(entries){
+      var n=0;
+      entries.forEach(function(en){
+        if(en.isIntersecting){
+          en.target.style.setProperty("--d",(n++*90)+"ms");
+          en.target.classList.add("seen");
+          cio.unobserve(en.target);
+        }
+      });
+    },{rootMargin:"0px 0px -12% 0px",threshold:.35});
+    cards.forEach(function(c){ cio.observe(c); });
+  } else {
+    cards.forEach(function(c){ c.classList.add("seen"); });
   }
 
   var chips=Array.prototype.slice.call(document.querySelectorAll(".chip"));
