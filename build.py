@@ -49,6 +49,13 @@ img{max-width:100%}
 .trat-in{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:clamp(28px,5vw,64px);align-items:start}
 @media (max-width:900px){.trat-in{grid-template-columns:1fr;gap:30px}}
 .trat h1{font-size:clamp(34px,5.2vw,62px);margin:18px 0 0}
+/* Hueco de la foto del tratamiento: encabeza la columna de datos */
+.trat-foto{
+  aspect-ratio:3/4;border:1px solid var(--rule);margin-bottom:24px;
+  background:repeating-linear-gradient(-45deg,var(--hatch) 0 1px,transparent 1px 9px);
+}
+.trat-foto img{width:100%;height:100%;object-fit:cover;display:block}
+@media (max-width:900px){.trat-foto{aspect-ratio:4/3;margin-bottom:20px}}
 .trat .lead{max-width:60ch;margin-top:22px;font-size:clamp(17px,1.6vw,19px)}
 .ficha{border-top:1px solid var(--rule-2)}
 .ficha-row{display:flex;flex-direction:column;gap:4px;padding:13px 0;border-bottom:1px solid var(--rule)}
@@ -249,6 +256,29 @@ def cierre():
 </section>"""
 
 
+def seccion(cuerpo, ident, nuevo_id):
+    """Recorta una sección de la home para reutilizarla tal cual en las fichas.
+
+    El método y las preguntas frecuentes son los mismos en toda la web: se
+    escriben una vez, en la home, y de ahí salen. El id cambia para que los
+    enlaces del menú sigan apuntando a la home."""
+    ini = cuerpo.index(f'<section class="shell band" id="{ident}">')
+    fin = cuerpo.index("</section>", ini) + len("</section>")
+    return cuerpo[ini:fin].replace(f'id="{ident}"', f'id="{nuevo_id}"', 1)
+
+
+def galeria():
+    """Tres huecos de antes y después. Van numerados: el nombre del tratamiento
+    ya está en el título de la página y repetirlo tres veces no dice nada."""
+    return "\n".join(
+        '        <figure class="case seen">\n'
+        '          <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div>'
+        '<div class="slot-half"><span class="slot-lbl">Después</span></div></div>\n'
+        f'          <figcaption class="case-meta"><span class="case-name">Caso {n:02d}</span></figcaption>\n'
+        '        </figure>'
+        for n in (1, 2, 3))
+
+
 def landing(d, todos, cuerpo):
     """Una plantilla para todas las fichas; la ruta decide cuál se pinta."""
     datos = {t["slug"]: {**t, "area": a["nombre"], "tag": a["tag"]} for a, t in todos}
@@ -272,6 +302,7 @@ def landing(d, todos, cuerpo):
       </div>
     </div>
     <aside>
+      <div class="trat-foto"></div>
       <div class="ficha" id="t-ficha"></div>
     </aside>
   </div>
@@ -292,6 +323,28 @@ def landing(d, todos, cuerpo):
     </div>
   </div>
 </section>
+
+<section class="shell band" id="resultados-t">
+  <div class="grid">
+    <div class="rail">
+      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
+      <div class="rail-k">Resultados</div>
+      <div class="rail-v">Antes y después</div>
+    </div>
+    <div class="flow">
+      <h2>Antes y después</h2>
+      <p class="copy">Cada paciente parte de una anatomía distinta, por eso cada tratamiento se adapta de forma personalizada. Los resultados deben interpretarse según el punto de partida, el tratamiento realizado y el seguimiento.</p>
+      <div class="cases">
+{galeria()}
+      </div>
+      <p class="notice">Las imágenes muestran resultados reales, pero cada caso requiere una valoración individual y no todos los pacientes obtienen exactamente la misma evolución.</p>
+    </div>
+  </div>
+</section>
+
+{seccion(cuerpo, "proceso", "proceso-t")}
+
+{seccion(cuerpo, "faq", "faq-t")}
 
 {cierre()}
 </main>

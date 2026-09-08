@@ -258,19 +258,6 @@ em{font-style:italic}
 .hero-side{border-left:1px solid var(--rule);padding-left:clamp(18px,2.4vw,30px);display:flex;flex-direction:column;gap:22px}
 @media (max-width:980px){.hero-side{border-left:none;border-top:1px solid var(--rule);padding-left:0;padding-top:26px}}
 .hero-side p{font-size:15px;line-height:1.6;color:var(--ink-2)}
-/* La A del revés hace de "baja": la marca dice dónde seguir, y se retira
-   en cuanto el visitante ha bajado. */
-.scrolldown{
-  display:inline-flex;align-items:center;gap:10px;margin-top:6px;
-  text-decoration:none;color:var(--ink-3);width:fit-content;
-  transition:opacity .4s ease,transform .4s ease,color .25s ease;
-}
-.scrolldown svg{width:15px;height:17px;transform:rotate(180deg);color:var(--accent);opacity:.8}
-.scrolldown span{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase}
-.scrolldown:hover{color:var(--ink)}
-.scrolldown .cue{animation:cueBob 2.6s ease-in-out infinite}
-body.moved .scrolldown{opacity:0;transform:translateY(6px);pointer-events:none}
-@keyframes cueBob{0%,100%{transform:rotate(180deg) translateY(0)}50%{transform:rotate(180deg) translateY(-3px)}}
 .stats{display:flex;flex-direction:column}
 .stat{
   display:flex;align-items:baseline;justify-content:space-between;gap:14px;padding:11px 0;
@@ -601,10 +588,6 @@ a,button{-webkit-tap-highlight-color:transparent}
         <a class="btn btn-line" href="#tratamientos">Ver tratamientos</a>
         <a class="link" href="#resultados">Antes y después <span class="arw" aria-hidden="true">→</span></a>
       </div>
-      <a class="scrolldown" href="#especialidades">
-        <svg class="cue" aria-hidden="true"><use href="#goa-a"/></svg>
-        <span>Baja</span>
-      </a>
     </div>
     <aside class="hero-side">
       <svg class="hero-glyph" width="84" height="84" viewBox="0 0 100 100" aria-hidden="true" style="color:var(--accent)">
@@ -1074,11 +1057,6 @@ a,button{-webkit-tap-highlight-color:transparent}
   addEventListener("resize", edges);
   xr.addEventListener("click",function(){ navd.scrollBy({left:150,behavior:"smooth"}); });
   edges();
-
-  /* El aviso de "baja" se retira en cuanto se ha bajado */
-  addEventListener("scroll",function(){
-    document.body.classList.toggle("moved", window.scrollY > 40);
-  },{passive:true});
 
   /* El cierre de página se invierte al llegar */
   var band=document.getElementById("contacto");

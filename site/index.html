@@ -75,10 +75,6 @@
         <a class="btn btn-line" href="#tratamientos">Ver tratamientos</a>
         <a class="link" href="#resultados">Antes y después <span class="arw" aria-hidden="true">→</span></a>
       </div>
-      <a class="scrolldown" href="#especialidades">
-        <svg class="cue" aria-hidden="true"><use href="#goa-a"/></svg>
-        <span>Baja</span>
-      </a>
     </div>
     <aside class="hero-side">
       <svg class="hero-glyph" width="84" height="84" viewBox="0 0 100 100" aria-hidden="true" style="color:var(--accent)">
@@ -695,11 +691,6 @@
   addEventListener("resize", edges);
   xr.addEventListener("click",function(){ navd.scrollBy({left:150,behavior:"smooth"}); });
   edges();
-
-  /* El aviso de "baja" se retira en cuanto se ha bajado */
-  addEventListener("scroll",function(){
-    document.body.classList.toggle("moved", window.scrollY > 40);
-  },{passive:true});
 
   /* El cierre de página se invierte al llegar */
   var band=document.getElementById("contacto");
