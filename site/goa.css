@@ -17,19 +17,21 @@
   --glass:rgba(248,246,240,.74); --glass-solid:#F5F3EC; --glass-bd:rgba(12,20,19,.09); --glass-hi:rgba(255,255,255,.8);
   --glass-shadow:0 12px 40px rgba(12,20,19,.06); --glass-shadow-on:0 18px 52px rgba(12,20,19,.11);
   --hatch:rgba(12,20,19,.05);
+  --quote-bg:#F8F6F0;   /* la reseña se levanta del papel, no se hunde */
   --shadow:0 1px 0 rgba(255,255,255,.8) inset, 0 24px 56px rgba(12,20,19,.06);
   --hero-a:rgba(20,63,54,.12); --hero-b:rgba(12,20,19,.06); --hero-c:#EAE7DD;
   color-scheme:light;
 }
 /* ═══════════ BANDA DE CIERRE ═══════════
-   Es siempre oscura, con la fotografía detrás, en los dos temas: así el cierre
-   de la página tiene un peso propio y no depende de en qué modo se mire. */
+   La fotografía a la vista, con un velo de hueso que la aclara lo justo para
+   que el texto se lea en tinta. El cierre destaca por la imagen, no por
+   oscurecerse: un bloque negro en una página de hueso es un parche. */
 :root{
-  --band-bg:#0A100F;
-  --band-fg:#F1EEE5;
-  --band-fg2:rgba(241,238,229,.72);
-  --band-bd:rgba(241,238,229,.2);
-  --band-accent:#9CC9B4;
+  --band-bg:#EDEAE1;
+  --band-fg:#0C1413;
+  --band-fg2:rgba(12,20,19,.74);
+  --band-bd:rgba(12,20,19,.2);
+  --band-accent:#143F36;
 }
 
 /* ═══════════ ESCALA TIPOGRÁFICA ═══════════
@@ -252,9 +254,9 @@ em{font-style:italic}
 /* ═══════════ HERO ═══════════
    Bajo el titular, la fotografía muy lavada sobre las manchas de la paleta:
    textura, no protagonismo. El titular sigue siendo lo único que manda. */
-.hero-wrap{position:relative;isolation:isolate;overflow:hidden}
+.hero-wrap{position:relative;isolation:isolate}
 .hero-bg{
-  position:absolute;inset:0;z-index:-1;background:var(--hero-c);
+  position:absolute;top:-220px;left:0;right:0;bottom:0;z-index:-1;background:var(--hero-c);
   background-image:
     radial-gradient(58% 62% at 76% 16%, var(--hero-a) 0%, transparent 68%),
     radial-gradient(46% 54% at 12% 84%, var(--hero-a) 0%, transparent 66%),
@@ -392,10 +394,17 @@ em{font-style:italic}
 .pull em{color:var(--accent-text)}
 
 /* ═══════════ TESTIMONIOS ═══════════ */
-.quotes{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:clamp(16px,2vw,26px);margin-top:32px}
+/* En rejilla, todas las tarjetas de una fila crecían hasta la altura de la
+   más larga y dejaban medio bloque vacío. En columnas cada una mide lo que
+   mide su texto y el conjunto se ordena solo. */
+.quotes{columns:2;column-gap:clamp(16px,2vw,26px);margin-top:32px}
+.quotes .quote{break-inside:avoid;margin-bottom:clamp(16px,2vw,26px)}
+/* Dos columnas y no tres: con tres, la medida se quedaba en cinco palabras
+   por línea y una reseña larga se volvía ilegible. */
+@media (max-width:820px){.quotes{columns:1}}
 .quote{
-  background:var(--paper-2);border:1px solid var(--rule);border-radius:2px;
-  padding:22px 22px 20px;display:flex;flex-direction:column;gap:15px;margin:0;
+  background:var(--quote-bg);border:1px solid var(--rule);border-radius:2px;
+  padding:22px 22px 20px;display:flex;flex-direction:column;gap:15px;
 }
 .quote-body{font-family:"Instrument Serif",serif;font-size:var(--fs-d4);line-height:1.45;color:var(--ink-2);margin:0}
 /* Cabecera de la reseña: quién la escribe. El círculo es el hueco del retrato
@@ -451,34 +460,24 @@ details .ans{padding:0 0 20px 28px;color:var(--ink-2);font-size:var(--fs-6);line
 .band-bg::after{
   content:"";position:absolute;inset:0;
   background:
-    /* Salida: el borde inferior se disuelve en el papel en vez de cortarse
-       contra el pie. Arranca en el hueso a opacidad cero y no en transparent,
-       que interpola pasando por gris y ensucia el degradado. */
+    /* Velo de hueso: opaco arriba, donde va el texto, y se abre hacia abajo.
+       Muchas paradas y no tres: un degradado largo con pocas dibuja escalones
+       —las líneas que se veían— porque el navegador interpola en 8 bits. */
     linear-gradient(180deg,
-      rgba(243,241,234,0) 58%,
-      rgba(243,241,234,.05) 68%,
-      rgba(243,241,234,.14) 76%,
-      rgba(243,241,234,.3) 83%,
-      rgba(243,241,234,.5) 89%,
-      rgba(243,241,234,.72) 94%,
-      rgba(243,241,234,.9) 97.5%,
+      rgba(237,234,225,.9) 0%,
+      rgba(237,234,225,.89) 16%,
+      rgba(237,234,225,.87) 30%,
+      rgba(237,234,225,.83) 40%,
+      rgba(237,234,225,.77) 49%,
+      rgba(237,234,225,.69) 57%,
+      rgba(237,234,225,.6) 64%,
+      rgba(237,234,225,.52) 71%,
+      rgba(237,234,225,.48) 78%,
+      rgba(237,234,225,.54) 85%,
+      rgba(237,234,225,.68) 91%,
+      rgba(243,241,234,.86) 96%,
       var(--paper) 100%),
-    linear-gradient(180deg,
-      rgba(10,16,15,.94) 0%,
-      rgba(10,16,15,.935) 14%,
-      rgba(10,16,15,.92) 26%,
-      rgba(10,16,15,.90) 36%,
-      rgba(10,16,15,.86) 45%,
-      rgba(10,16,15,.80) 53%,
-      rgba(10,16,15,.73) 60%,
-      rgba(10,16,15,.65) 67%,
-      rgba(10,16,15,.57) 73%,
-      rgba(10,16,15,.50) 79%,
-      rgba(10,16,15,.46) 85%,
-      rgba(10,16,15,.50) 90%,
-      rgba(10,16,15,.64) 94%,
-      rgba(10,16,15,.9) 100%),
-    radial-gradient(80% 70% at 84% 100%, rgba(20,63,54,.34) 0%, transparent 72%);
+    radial-gradient(80% 70% at 84% 100%, rgba(20,63,54,.1) 0%, transparent 72%);
 }
 /* Grano: un ruido casi invisible que quita el bandeado de los degradados */
 .band-bg::before{
@@ -488,31 +487,26 @@ details .ans{padding:0 0 20px 28px;color:var(--ink-2);font-size:var(--fs-6);line
   background-size:140px 140px, cover;
   background-position:0 0, center;
   background-repeat:repeat, no-repeat;
+  opacity:.9;
 }
 @media (max-width:820px){
   /* En vertical el texto llega más abajo, así que el velo aguanta más rato */
   .band-bg::after{background:
     linear-gradient(180deg,
-      rgba(243,241,234,0) 72%,
-      rgba(243,241,234,.08) 80%,
-      rgba(243,241,234,.24) 87%,
-      rgba(243,241,234,.5) 92%,
-      rgba(243,241,234,.78) 96%,
+      rgba(237,234,225,.93) 0%,
+      rgba(237,234,225,.92) 24%,
+      rgba(237,234,225,.9) 44%,
+      rgba(237,234,225,.87) 58%,
+      rgba(237,234,225,.82) 69%,
+      rgba(237,234,225,.74) 77%,
+      rgba(237,234,225,.66) 84%,
+      rgba(237,234,225,.62) 89%,
+      rgba(237,234,225,.72) 94%,
+      rgba(243,241,234,.88) 97.5%,
       var(--paper) 100%),
-    linear-gradient(180deg,
-      rgba(10,16,15,.95) 0%,
-      rgba(10,16,15,.94) 22%,
-      rgba(10,16,15,.93) 40%,
-      rgba(10,16,15,.91) 55%,
-      rgba(10,16,15,.87) 66%,
-      rgba(10,16,15,.80) 74%,
-      rgba(10,16,15,.71) 81%,
-      rgba(10,16,15,.62) 87%,
-      rgba(10,16,15,.58) 91%,
-      rgba(10,16,15,.68) 95%,
-      rgba(10,16,15,.9) 100%),
-    radial-gradient(90% 50% at 80% 100%, rgba(20,63,54,.3) 0%, transparent 72%);}
+    radial-gradient(90% 50% at 80% 100%, rgba(20,63,54,.09) 0%, transparent 72%);}
 }
+.reasons-t{margin-bottom:6px}
 .reasons{list-style:none;margin:0;padding:0}
 .reasons li{padding:10px 0;border-top:1px solid var(--rule);font-size:var(--fs-5);color:var(--ink-2)}
 #contacto h2{color:var(--band-fg)}
@@ -522,8 +516,8 @@ details .ans{padding:0 0 20px 28px;color:var(--ink-2);font-size:var(--fs-6);line
 #contacto .rail-v{color:var(--band-fg2)}
 #contacto .rail-mark{color:var(--band-accent)}
 #contacto .reasons li{border-color:var(--band-bd)}
-#contacto .btn-solid{background:var(--band-fg);border-color:var(--band-fg);color:var(--band-bg)}
-#contacto .btn-solid:hover{background:var(--band-accent);border-color:var(--band-accent);color:var(--band-bg)}
+#contacto .btn-solid{background:var(--band-fg);border-color:var(--band-fg);color:var(--paper)}
+#contacto .btn-solid:hover{background:var(--band-accent);border-color:var(--band-accent);color:var(--paper)}
 #contacto .btn-line{color:var(--band-fg);border-color:var(--band-bd)}
 #contacto .btn-line:hover{border-color:var(--band-fg);color:var(--band-fg)}
 
@@ -556,7 +550,19 @@ details .ans{padding:0 0 20px 28px;color:var(--ink-2);font-size:var(--fs-6);line
 
 /* ═══════════ RITMO VERTICAL ═══════════
    Una sola distancia entre bloques de una sección, y una mayor antes de las
-   rejillas. Sin esto cada sección respiraba distinto y el conjunto bailaba. */
+   rejillas. Sin esto cada sección respiraba distinto y el conjunto bailaba.
+
+   El aire depende de qué va antes, no de en qué bloque se está: por eso las
+   reglas de abajo van por pares de elementos y no por contenedor. Así un
+   bloque nuevo hereda el ritmo sin que haya que acordarse de dárselo —que es
+   lo que le pasaba a la banda de cierre, con el titular pegado al párrafo. */
+.eyebrow + h1,.eyebrow + h2,.eyebrow + h3{margin-top:12px}
+h1 + p,h1 + .lead,h1 + .copy{margin-top:22px}
+h2 + p,h2 + .lead,h2 + .copy{margin-top:18px}
+h3 + p,h3 + .copy{margin-top:8px}
+p + .actions,.copy + .actions,.lead + .actions{margin-top:28px}
+.actions + .micro{margin-top:16px}
+
 .flow > * + *{margin-top:20px}
 .flow > .areas,.flow > .steps,.flow > .index,.flow > .quotes,
 .flow > .faq,.flow > .notice{margin-top:34px}
