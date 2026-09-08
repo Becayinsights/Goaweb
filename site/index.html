@@ -731,21 +731,27 @@
        él el menú se cerraba al cruzarlo. */
     cierre = setTimeout(function(){ abrir(false); }, 180);
   }
+  /* Quién manda no es el puntero sino dónde está el botón. El de la isla, con
+     ratón, se abre al pasar y el clic lleva a la sección; el de la barra de
+     móvil abre y cierra al tocarlo, siempre. Mirando solo el puntero, el botón
+     de la barra se quedaba sin abrir en cualquier equipo con ratón. */
+  function esDeLaIsla(b){ return b.closest("#nav") !== null; }
   drops.forEach(function(b){
+    var isla = esDeLaIsla(b);
     b.addEventListener("click",function(e){
       e.stopPropagation();
-      if(conRaton){ abrir(false); location.hash = "#tratamientos"; }
+      if(isla && conRaton && innerWidth > 980){ abrir(false); location.hash = "#tratamientos"; }
       else { abrir(mega.hidden); }
     });
-    if(conRaton){
+    if(isla && conRaton){
       b.addEventListener("mouseenter", entrar);
       b.addEventListener("mouseleave", salir);
       b.addEventListener("focus", entrar);
     }
   });
   if(conRaton){
-    mega.addEventListener("mouseenter", entrar);
-    mega.addEventListener("mouseleave", salir);
+    mega.addEventListener("mouseenter", function(){ if(innerWidth > 980) entrar(); });
+    mega.addEventListener("mouseleave", function(){ if(innerWidth > 980) salir(); });
   }
   document.addEventListener("click",function(e){
     if(!mega.hidden && !mega.contains(e.target)) abrir(false);
