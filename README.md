@@ -7,7 +7,7 @@ Proyecto independiente. **No comparte código, datos ni despliegue con Becay Ren
 
 | Fase | Estado |
 |---|---|
-| Diseño (home + fichas) | v20 publicada para revisión |
+| Diseño (home + fichas) | v21 publicada para revisión |
 | Contenido real (fotos, testimonios, datos de contacto) | pendiente del cliente |
 | Implementación Next.js | no empezada |
 | Área privada (fichas médicas, usuarios) | fuera de alcance en esta fase |
@@ -21,6 +21,12 @@ saltos visuales que fuimos corrigiendo. El verde va hondo: en piezas pequeñas
 —filetes, chips, el estado activo— uno claro se lee como decoración y uno
 oscuro se lee como marca. Ningún color literal fuera del bloque de tokens al
 principio de `design/goa-home.html`.
+
+**Tres letras con tres oficios.** Instrument Serif dibuja —titulares,
+entradillas, nombres de tratamiento y de paciente—, Instrument Sans explica lo
+que se lee de corrido y sostiene la interfaz, e IBM Plex Mono etiqueta. La
+serif baja hasta el texto destacado a propósito: en la misma letra que el
+titular, cada bloque se lee como una pieza y no como dos.
 
 **Dos escalas tipográficas y ninguna medida suelta.** La de texto tiene seis
 escalones (`--fs-1` a `--fs-6`) y la de la serif, que hace de display, dos

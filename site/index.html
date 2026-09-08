@@ -624,6 +624,10 @@
      En móvil, además, la tira se desplaza para que el activo siempre se vea. */
   var links=Array.prototype.slice.call(document.querySelectorAll("#nav a, #navd a"));
   var targets=links.map(function(a){ return document.querySelector(a.getAttribute("href")); });
+  /* Tratamientos no está en el menú como enlace sino como desplegable, así que
+     su sección hay que añadirla a mano: si no, el observador no la mira y el
+     botón nunca se subraya al pasar por ella. */
+  targets.push(document.getElementById("tratamientos"));
   if("IntersectionObserver" in window){
     var seen={}, last=null;
     var io=new IntersectionObserver(function(entries){
@@ -677,25 +681,23 @@
   var markLink=document.querySelector(".island .mark");
   if(markLink){ markLink.addEventListener("click",function(){ replayIntro(); }); }
 
-  /* En reposo la marca respira: se pliega en la A del isologo y vuelve a
-     abrirse en GOA. "Quieto" es sin scroll ni interacción real: mover el ratón
-     por encima no cuenta, o el gesto no llegaba a verse nunca. */
-  var REPOSO=2000, ultimo=Date.now();
-  function actividad(){ ultimo=Date.now(); }
+  /* En reposo la marca respira: se pliega en la A y vuelve a abrirse en GOA.
+     Una sola vez por parada. El gesto se arma con cada interacción y se gasta
+     al ejecutarse, así que tras pararte lo hace una vez y se queda quieto;
+     repetirlo cada dos segundos convertía un detalle en un parpadeo. */
+  var REPOSO=2000, ultimo=Date.now(), armado=false;
+  function actividad(){ ultimo=Date.now(); armado=true; }
   ["scroll","pointerdown","keydown","touchstart"].forEach(function(ev){
     addEventListener(ev, actividad, {passive:true});
   });
-  function replayMarca(){
-    ultimo=Date.now();
+  setInterval(function(){
+    if(!armado || reduce.matches || document.hidden) return;
+    if(Date.now() - ultimo < REPOSO) return;
+    armado=false;
     island.classList.remove("intro");
     void island.offsetWidth;
     island.classList.add("intro");
-  }
-  setInterval(function(){
-    if(reduce.matches || document.hidden) return;
-    if(Date.now() - ultimo < REPOSO) return;
-    replayMarca();
-  }, 1000);
+  }, 250);
 
   /* Desplegable de tratamientos. En escritorio se cuelga de la isla leyendo su
      posición real, así que no depende de ninguna medida escrita a mano; en
@@ -738,14 +740,6 @@
   addEventListener("resize", edges);
   xr.addEventListener("click",function(){ navd.scrollBy({left:150,behavior:"smooth"}); });
   edges();
-
-  /* El cierre de página se invierte al llegar */
-  var band=document.getElementById("contacto");
-  if(band && "IntersectionObserver" in window){
-    new IntersectionObserver(function(en,ob){
-      if(en[0].isIntersecting){ band.classList.add("lit"); ob.disconnect(); }
-    },{threshold:.15}).observe(band);
-  } else if(band){ band.classList.add("lit"); }
 
   /* El eje antes/después se traza cuando la ficha entra en pantalla, en cascada */
   var cards=Array.prototype.slice.call(document.querySelectorAll("#cases .case"));
