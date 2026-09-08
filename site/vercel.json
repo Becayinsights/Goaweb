@@ -1,0 +1,9 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/tratamientos/:slug",
+      "destination": "/tratamiento.html"
+    }
+  ]
+}

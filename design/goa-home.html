@@ -120,11 +120,11 @@ em{font-style:italic}
   transition:box-shadow .35s ease, border-color .35s ease;
 }
 .island.on{box-shadow:inset 0 1px 0 var(--glass-hi), var(--glass-shadow-on);border-color:var(--rule-2)}
-/* El progreso de lectura no es una barra: es la A del logo, que se llena
-   de verde a medida que se baja. La marca hace de indicador. */
 .mark-fill{position:relative;display:inline-flex;flex-shrink:0}
 /* La marca entra como isologo —la A dentro del círculo— y se abre en logo:
-   el círculo se traza, crece y se va; la G y la O ocupan su sitio. */
+   el círculo se traza, crece y se va; la G y la O ocupan su sitio.
+   El mismo gesto se repite cuando la página lleva un rato quieta: la marca
+   se pliega en A y vuelve a abrirse en GOA. */
 .mark-go{display:inline-flex}
 .mark-ring{
   position:absolute;left:50%;top:50%;width:1.72em;height:1.72em;
@@ -146,10 +146,6 @@ em{font-style:italic}
   60%{opacity:.5}
   100%{opacity:0;transform:translate(-50%,-50%) scale(1.65)}
 }
-.mark-fill .mark-a-on{
-  position:absolute;left:0;top:0;color:var(--accent);
-  clip-path:inset(calc(100% - var(--read,0) * 100%) 0 0 0);
-}
 .nav{display:flex;gap:clamp(14px,1.7vw,22px);margin-left:auto;align-items:center}
 .nav a:not(.btn){
   font-size:13px;font-weight:400;color:var(--ink-2);text-decoration:none;
@@ -163,42 +159,48 @@ em{font-style:italic}
 .nav a:not(.btn):hover::after,.nav a.here::after{right:0}
 .nav a.here{color:var(--ink)}
 .hact{display:flex;align-items:center;gap:8px;flex-shrink:0}
-/* Que se entienda que la tira sigue: dos chevrones diminutos */
+/* ═══════════ BARRA DE SECCIONES — solo móvil ═══════════
+   En móvil la cabecera se queda con lo imprescindible —marca, tema y la
+   llamada— y las secciones bajan a una barra flotante, al alcance del pulgar. */
+.dock{display:none}
 .navx{display:none}
 @media (max-width:980px){
-  .navx{
-    display:flex;position:absolute;bottom:1px;width:24px;height:38px;padding:0;
-    align-items:center;justify-content:center;border:none;background:transparent;
-    color:var(--ink-3);font-size:15px;line-height:1;cursor:pointer;
-    opacity:0;pointer-events:none;transition:opacity .3s ease,color .2s ease;
-  }
-  .navx-r{right:2px}
-  .navx.on{opacity:1;pointer-events:auto}
-  .navx:hover{color:var(--ink)}
-}
-
-@media (max-width:980px){
-  /* Mismas piezas que en escritorio y en el mismo orden: marca, tema, CTA y
-     las secciones. Lo único que cambia es que las secciones bajan a su propia
-     fila, deslizable, en vez de esconderse tras una hamburguesa. */
   .island{
-    flex-wrap:wrap;padding:8px 8px 0 13px;column-gap:12px;row-gap:0;
+    padding:7px 7px 7px 13px;column-gap:12px;
     background:var(--glass-solid);
     backdrop-filter:none;-webkit-backdrop-filter:none;
   }
-  .island .mark{order:1}
-  .hact{order:2;margin-left:auto}
-  .nav{
-    order:3;width:100%;margin:8px 0 0;gap:0;padding:0 30px 0 2px;
-    border-top:1px solid var(--rule);
+  .island .nav{display:none}
+  .hact{margin-left:auto}
+  .dock{
+    display:flex;position:fixed;z-index:60;align-items:stretch;
+    left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));
+    border-radius:6px;overflow:hidden;
+    border:1px solid var(--rule-2);background:var(--glass-solid);
+    box-shadow:inset 0 1px 0 var(--glass-hi), var(--glass-shadow-on);
+  }
+  .dock .nav{
+    width:100%;margin:0;gap:0;padding:0 28px 0 4px;
     overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none;
   }
-  .nav::-webkit-scrollbar{display:none}
-  .nav a:not(.btn){padding:11px 11px 10px;font-size:13.5px;flex-shrink:0;scroll-snap-align:center}
+  .dock .nav::-webkit-scrollbar{display:none}
+  .dock .nav a:not(.btn){padding:13px 11px;font-size:13.5px;flex-shrink:0;scroll-snap-align:center}
+  /* Que se entienda que la tira sigue: un chevrón diminuto */
+  .dock .navx{
+    display:flex;position:absolute;top:0;bottom:0;right:0;width:26px;padding:0;
+    align-items:center;justify-content:center;border:none;
+    background:var(--glass-solid);
+    color:var(--ink-3);font-size:15px;line-height:1;cursor:pointer;
+    opacity:0;pointer-events:none;transition:opacity .3s ease,color .2s ease;
+  }
+  .dock .navx.on{opacity:1;pointer-events:auto}
+  .dock .navx:hover{color:var(--ink)}
+  /* Para que la barra no se coma el final de la página */
+  body{padding-bottom:calc(62px + env(safe-area-inset-bottom))}
 }
 @media (max-width:420px){
   .island{column-gap:8px;padding-left:11px}
-  .nav a:not(.btn){padding:11px 9px 10px;font-size:13px}
+  .dock .nav a:not(.btn){padding:13px 9px;font-size:13px}
   .btn-sm{padding:9px 13px;font-size:12px}
 }
 
@@ -270,9 +272,13 @@ em{font-style:italic}
 body.moved .scrolldown{opacity:0;transform:translateY(6px);pointer-events:none}
 @keyframes cueBob{0%,100%{transform:rotate(180deg) translateY(0)}50%{transform:rotate(180deg) translateY(-3px)}}
 .stats{display:flex;flex-direction:column}
-.stat{display:flex;align-items:baseline;justify-content:space-between;gap:14px;padding:10px 0;border-top:1px solid var(--rule)}
+.stat{
+  display:flex;align-items:baseline;justify-content:space-between;gap:14px;padding:11px 0;
+  border-top:1px solid var(--rule);text-decoration:none;transition:color .22s ease;
+}
+.stat:hover .stat-k{color:var(--accent-text)}
 .stat-v{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
-.stat-k{font-family:"Instrument Serif",serif;font-size:24px;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
+.stat-k{font-family:"Instrument Serif",serif;font-size:20px;line-height:1;white-space:nowrap;color:var(--ink);transition:color .22s ease}
 
 /* ═══════════ ESPECIALIDADES ═══════════ */
 .areas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--rule);margin-top:36px}
@@ -355,6 +361,27 @@ body.moved .scrolldown{opacity:0;transform:translateY(6px);pointer-events:none}
 .tlist a:hover{color:var(--accent-text);padding-left:8px}
 .tlist .arw{color:var(--ink-3);font-size:12px;opacity:0;transition:opacity .22s ease}
 .tlist a:hover .arw{opacity:1;color:var(--accent)}
+/* El precio viaja con el nombre desde el índice: no hay que entrar para saberlo */
+.tprice{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;
+  color:var(--ink-3);white-space:nowrap;flex-shrink:0;transition:color .22s ease;
+}
+.tlist a:hover .tprice{color:var(--accent-text)}
+
+/* ═══════════ PRECIOS ═══════════ */
+.prices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(22px,3vw,44px)}
+.prices>*{min-width:0}
+@media (max-width:900px){.prices{grid-template-columns:1fr;gap:30px}}
+.pgroup h4{margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--rule-2)}
+.prow{
+  display:flex;align-items:baseline;justify-content:space-between;gap:14px;
+  padding:12px 0;border-bottom:1px solid var(--rule);text-decoration:none;
+  transition:color .22s ease,padding-left .28s cubic-bezier(.22,.61,.18,1);
+}
+.prow:hover{padding-left:8px}
+.pname{font-size:15.5px;color:var(--ink)}
+.prow:hover .pname{color:var(--accent-text)}
+.pval{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.04em;color:var(--ink-2);white-space:nowrap;flex-shrink:0}
 
 /* ═══════════ SOBRE MÍ ═══════════ */
 .about{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.8fr);gap:clamp(26px,4vw,56px);align-items:start}
@@ -378,6 +405,7 @@ body.moved .scrolldown{opacity:0;transform:translateY(6px);pointer-events:none}
 }
 .quote-body{font-family:"Instrument Serif",serif;font-size:18px;line-height:1.45;color:var(--ink-2);margin:0}
 .quote-foot{margin-top:auto;display:flex;flex-direction:column;gap:3px}
+.flow > #more-quotes{margin-top:22px}
 
 /* ═══════════ FAQ ═══════════ */
 .faq{margin-top:28px;max-width:74ch}
@@ -562,13 +590,14 @@ a,button{-webkit-tap-highlight-color:transparent}
 <div class="hbar">
   <header class="island intro" id="island">
     <a class="mark" href="#top" aria-label="GOA Medical Aesthetics — inicio">
-      <span class="mark-w"><span class="mark-go">GO</span><span class="mark-fill"><svg class="mark-a" aria-hidden="true"><use href="#goa-a"/></svg><svg class="mark-a mark-a-on" aria-hidden="true"><use href="#goa-a"/></svg><svg class="mark-ring" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" stroke-width="6"/></svg></span></span>
+      <span class="mark-w"><span class="mark-go">GO</span><span class="mark-fill"><svg class="mark-a" aria-hidden="true"><use href="#goa-a"/></svg><svg class="mark-ring" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" stroke-width="6"/></svg></span></span>
       <span class="mark-sub">Medical Aesthetics<br>Dr. Bengoa</span>
     </a>
     <nav class="nav" id="nav" aria-label="Secciones de la página">
-      <a href="#especialidades">Especialidades</a>
+      <a href="#precios">Precios</a>
       <a href="#tratamientos">Tratamientos</a>
       <a href="#resultados">Antes y después</a>
+      <a href="#especialidades">Especialidades</a>
       <a href="#sobre-mi">Sobre mí</a>
       <a href="#faq">FAQ</a>
     </nav>
@@ -576,7 +605,6 @@ a,button{-webkit-tap-highlight-color:transparent}
       <a class="btn btn-solid btn-sm cta-top" href="#contacto">Pedir valoración</a>
       <button class="icon-btn theme-btn" id="theme" type="button" title="Cambiar tema" aria-label="Cambiar tema">◐</button>
     </div>
-    <button class="navx navx-r" id="navx-r" type="button" aria-label="Más secciones">›</button>
   </header>
 </div>
 
@@ -608,52 +636,11 @@ a,button{-webkit-tap-highlight-color:transparent}
         </g>
       </svg>
       <p>Tratamientos faciales, capilares y cirugía capilar diseñados según tu anatomía, tus objetivos y el resultado que realmente encaja contigo.</p>
-      <div class="stats">
-        <div class="stat"><span class="stat-v">Áreas médicas</span><span class="stat-k">3</span></div>
-        <div class="stat"><span class="stat-v">Cirugía en Suiza</span><span class="stat-k">2 años</span></div>
-        <div class="stat"><span class="stat-v">Valoración</span><span class="stat-k">1:1</span></div>
-      </div>
     </aside>
   </div>
 </section>
 
-<!-- ══════════ ESPECIALIDADES ══════════ -->
-<section class="shell band" id="especialidades">
-  <div class="grid">
-    <div class="rail">
-      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
-      <div class="rail-k">Especialidades</div>
-      <div class="rail-v">Tres áreas · un mismo criterio</div>
-    </div>
-    <div class="flow">
-      <h2>Medicina estética, medicina capilar y cirugía capilar con enfoque médico y resultados naturales</h2>
-      <div class="areas">
 
-        <a class="area" href="#tratamientos">
-          <div class="area-tag"><i class="area-dot"></i><span class="eyebrow">Facial</span></div>
-          <h3>Medicina estética</h3>
-          <p>Mejoramos calidad de piel, proporciones y signos de envejecimiento con tratamientos personalizados y criterio médico.</p>
-          <span class="link">Ver el área <span class="arw" aria-hidden="true">→</span></span>
-        </a>
-
-        <a class="area" href="#tratamientos">
-          <div class="area-tag"><i class="area-dot"></i><span class="eyebrow">Capilar médico</span></div>
-          <h3>Medicina capilar</h3>
-          <p>Estudio de la causa de la caída o pérdida de densidad y planteamiento de un plan médico realista para frenar, mejorar y mantener.</p>
-          <span class="link">Ver el área <span class="arw" aria-hidden="true">→</span></span>
-        </a>
-
-        <a class="area" href="#tratamientos">
-          <div class="area-tag"><i class="area-dot"></i><span class="eyebrow">Quirúrgico</span></div>
-          <h3>Cirugía capilar</h3>
-          <p>Injerto capilar con diseño estratégico, naturalidad en la línea frontal y planificación de largo plazo.</p>
-          <span class="link">Ver el área <span class="arw" aria-hidden="true">→</span></span>
-        </a>
-
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- ══════════ PROCESO ══════════ -->
 <section class="shell band" id="proceso">
@@ -675,7 +662,7 @@ a,button{-webkit-tap-highlight-color:transparent}
         <div class="step">
           <div class="step-n">Paso 02</div>
           <h3>Diagnosticar</h3>
-          <p>Tipo de alopecia, tiempo de evolución, estado de la zona donante, antecedentes y tratamientos previos.</p>
+          <p>Evaluar las necesidades del paciente, su anatomía, antecedentes, evolución y tratamientos previos para establecer un diagnóstico preciso y personalizado.</p>
         </div>
         <div class="step">
           <div class="step-n">Paso 03</div>
@@ -730,7 +717,6 @@ a,button{-webkit-tap-highlight-color:transparent}
         <button class="chip" type="button" data-f="all" aria-pressed="true">Todos</button>
         <button class="chip" type="button" data-f="estetica" aria-pressed="false">Medicina estética</button>
         <button class="chip" type="button" data-f="capilar" aria-pressed="false">Capilar</button>
-        <button class="chip" type="button" data-f="injerto" aria-pressed="false">Injerto capilar</button>
         <button class="chip" type="button" data-f="labios" aria-pressed="false">Labios</button>
         <button class="chip" type="button" data-f="ojeras" aria-pressed="false">Ojeras</button>
         <button class="chip" type="button" data-f="superior" aria-pressed="false">Tercio superior</button>
@@ -739,41 +725,70 @@ a,button{-webkit-tap-highlight-color:transparent}
       </div>
 
       <div class="cases" id="cases">
-        <figure class="case" data-cat="injerto capilar">
-          <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
-          <figcaption class="case-meta"><span class="case-name">Injerto capilar FUE</span><span class="micro">12 meses</span></figcaption>
-        </figure>
         <figure class="case" data-cat="estetica labios">
           <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
-          <figcaption class="case-meta"><span class="case-name">Labios · ácido hialurónico</span><span class="micro">15 días</span></figcaption>
+          <figcaption class="case-meta"><span class="case-name">Labios · ácido hialurónico</span><span class="micro">Foto pendiente</span></figcaption>
         </figure>
         <figure class="case" data-cat="estetica ojeras">
           <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
-          <figcaption class="case-meta"><span class="case-name">Ojeras</span><span class="micro">1 mes</span></figcaption>
+          <figcaption class="case-meta"><span class="case-name">Ojeras</span><span class="micro">Foto pendiente</span></figcaption>
         </figure>
         <figure class="case" data-cat="estetica superior">
           <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
-          <figcaption class="case-meta"><span class="case-name">Tercio superior</span><span class="micro">21 días</span></figcaption>
+          <figcaption class="case-meta"><span class="case-name">Tercio superior</span><span class="micro">Foto pendiente</span></figcaption>
         </figure>
         <figure class="case" data-cat="estetica rino">
           <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
-          <figcaption class="case-meta"><span class="case-name">Rinomodelación</span><span class="micro">Inmediato</span></figcaption>
+          <figcaption class="case-meta"><span class="case-name">Rinomodelación</span><span class="micro">Foto pendiente</span></figcaption>
         </figure>
         <figure class="case" data-cat="capilar">
           <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
-          <figcaption class="case-meta"><span class="case-name">Mesoterapia capilar</span><span class="micro">6 meses</span></figcaption>
+          <figcaption class="case-meta"><span class="case-name">Mesoterapia capilar</span><span class="micro">Foto pendiente</span></figcaption>
         </figure>
         <figure class="case" data-cat="estetica mandibula">
           <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
-          <figcaption class="case-meta"><span class="case-name">Marcación mandibular</span><span class="micro">1 mes</span></figcaption>
-        </figure>
-        <figure class="case" data-cat="injerto capilar">
-          <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
-          <figcaption class="case-meta"><span class="case-name">Diseño de línea frontal</span><span class="micro">10 meses</span></figcaption>
+          <figcaption class="case-meta"><span class="case-name">Marcación mandibular</span><span class="micro">Foto pendiente</span></figcaption>
         </figure>
       </div>
 
-      <p class="notice">Las imágenes muestran resultados reales, pero cada caso requiere una valoración individual y no todos los pacientes obtienen exactamente la misma evolución. <span class="micro" style="display:block;margin-top:8px">Maqueta: los ocho huecos están vacíos a propósito. Se rellenan con fotografía clínica propia y consentimiento firmado del paciente.</span></p>
+      <p class="notice">Las imágenes muestran resultados reales, pero cada caso requiere una valoración individual y no todos los pacientes obtienen exactamente la misma evolución. <span class="micro" style="display:block;margin-top:8px">Maqueta: los seis huecos están vacíos a propósito. Se rellenan con fotografía clínica propia y consentimiento firmado del paciente. Los casos de injerto capilar se retiran hasta disponer de resultados propios con evolución suficiente.</span></p>
+    </div>
+  </div>
+</section>
+<!-- ══════════ ESPECIALIDADES ══════════ -->
+<section class="shell band" id="especialidades">
+  <div class="grid">
+    <div class="rail">
+      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
+      <div class="rail-k">Especialidades</div>
+      <div class="rail-v">Tres áreas · un mismo criterio</div>
+    </div>
+    <div class="flow">
+      <h2>Medicina estética, medicina capilar y cirugía capilar con enfoque médico y resultados naturales</h2>
+      <div class="areas">
+
+        <a class="area" href="#tratamientos">
+          <div class="area-tag"><i class="area-dot"></i><span class="eyebrow">Facial</span></div>
+          <h3>Medicina estética</h3>
+          <p>Mejoramos calidad de piel, proporciones y signos de envejecimiento con tratamientos personalizados y criterio médico.</p>
+          <span class="link">Ver el área <span class="arw" aria-hidden="true">→</span></span>
+        </a>
+
+        <a class="area" href="#tratamientos">
+          <div class="area-tag"><i class="area-dot"></i><span class="eyebrow">Capilar médico</span></div>
+          <h3>Medicina capilar</h3>
+          <p>Estudio de la causa de la caída o pérdida de densidad y planteamiento de un plan médico realista para frenar, mejorar y mantener.</p>
+          <span class="link">Ver el área <span class="arw" aria-hidden="true">→</span></span>
+        </a>
+
+        <a class="area" href="#tratamientos">
+          <div class="area-tag"><i class="area-dot"></i><span class="eyebrow">Quirúrgico</span></div>
+          <h3>Cirugía capilar</h3>
+          <p>Injerto capilar con diseño estratégico, naturalidad en la línea frontal y planificación de largo plazo.</p>
+          <span class="link">Ver el área <span class="arw" aria-hidden="true">→</span></span>
+        </a>
+
+      </div>
     </div>
   </div>
 </section>
@@ -788,41 +803,82 @@ a,button{-webkit-tap-highlight-color:transparent}
     </div>
     <div class="flow">
       <h2>Qué se puede tratar</h2>
-      <p class="copy">Cada tratamiento tiene su propia página: qué es, para quién está indicado, cómo se realiza, beneficios, duración y recuperación, resultados y preguntas frecuentes.</p>
+      <p class="copy">Cada tratamiento tiene su propia página: qué es, para quién está indicado, cómo se realiza, beneficios, duración y recuperación, resultados, preguntas frecuentes y precio.</p>
 
       <div class="index">
         <div>
           <h4>Medicina estética</h4>
           <ul class="tlist">
-            <li><a href="#tratamientos">Neuromoduladores <span class="arw" aria-hidden="true">→</span></a></li>
-            <li><a href="#tratamientos">Ácido hialurónico <span class="arw" aria-hidden="true">→</span></a></li>
-            <li><a href="#tratamientos">Armonización facial <span class="arw" aria-hidden="true">→</span></a></li>
-            <li><a href="#tratamientos">Ojeras <span class="arw" aria-hidden="true">→</span></a></li>
-            <li><a href="#tratamientos">Labios <span class="arw" aria-hidden="true">→</span></a></li>
-            <li><a href="#tratamientos">Bioestimulación / skin quality <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="/tratamientos/neuromoduladores">Neuromoduladores <span class="tprice">350 €</span></a></li>
+            <li><a href="/tratamientos/acido-hialuronico">Ácido hialurónico <span class="tprice">330 € / vial</span></a></li>
+            <li><a href="/tratamientos/armonizacion-facial">Armonización facial <span class="tprice">Desde 1.900 €</span></a></li>
+            <li><a href="/tratamientos/ojeras">Tratamiento de ojeras <span class="tprice">390 €</span></a></li>
+            <li><a href="/tratamientos/labios">Aumento y definición de labios <span class="tprice">350 €</span></a></li>
+            <li><a href="/tratamientos/bioestimulacion-calidad-piel">Bioestimulación y calidad de la piel <span class="tprice">390 €</span></a></li>
           </ul>
         </div>
         <div>
           <h4>Medicina capilar</h4>
           <ul class="tlist">
-            <li><a href="#tratamientos">Primera valoración capilar <span class="arw" aria-hidden="true">→</span></a></li>
-            <li><a href="#tratamientos">Mesoterapia capilar <span class="arw" aria-hidden="true">→</span></a></li>
-            <li><a href="#tratamientos">PRP / bioestimulación <span class="arw" aria-hidden="true">→</span></a></li>
-            <li><a href="#tratamientos">Tratamiento médico de la alopecia <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="/tratamientos/primera-valoracion-capilar">Primera valoración capilar <span class="tprice">60 €</span></a></li>
+            <li><a href="/tratamientos/mesoterapia-capilar">Mesoterapia capilar <span class="tprice">250 € / sesión</span></a></li>
+            <li><a href="/tratamientos/prp-capilar">PRP capilar y bioestimulación <span class="tprice">250 € / sesión</span></a></li>
+            <li><a href="/tratamientos/tratamiento-medico-alopecia">Tratamiento médico de la alopecia <span class="tprice">A valorar</span></a></li>
           </ul>
-          <p class="micro" style="margin-top:16px">No todos los pacientes necesitan cirugía. Un buen diagnóstico puede frenar la evolución y mejorar densidad, calibre y calidad capilar.</p>
         </div>
         <div>
           <h4>Cirugía capilar</h4>
           <ul class="tlist">
-            <li><a href="#tratamientos">Injerto capilar FUE <span class="arw" aria-hidden="true">→</span></a></li>
-            <li><a href="#tratamientos">Diseño de línea frontal <span class="arw" aria-hidden="true">→</span></a></li>
-            <li><a href="#tratamientos">Injerto en coronilla <span class="arw" aria-hidden="true">→</span></a></li>
-            <li><a href="#tratamientos">Injerto de cejas / barba <span class="arw" aria-hidden="true">→</span></a></li>
-            <li><a href="#tratamientos">Postoperatorio y evolución <span class="arw" aria-hidden="true">→</span></a></li>
+            <li><a href="/tratamientos/injerto-capilar-fue">Injerto capilar FUE <span class="tprice">Desde 4.500 €</span></a></li>
+            <li><a href="/tratamientos/diseno-linea-frontal">Diseño de la línea frontal <span class="tprice">Incluido</span></a></li>
+            <li><a href="/tratamientos/injerto-coronilla">Injerto capilar en coronilla <span class="tprice">Desde 4.500 €</span></a></li>
+            <li><a href="/tratamientos/injerto-cejas-barba">Injerto de cejas y barba <span class="tprice">Desde 2.500 €</span></a></li>
+            <li><a href="/tratamientos/postoperatorio">Postoperatorio y evolución <span class="tprice">Incluido</span></a></li>
           </ul>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ PRECIOS ══════════ -->
+<section class="shell band" id="precios">
+  <div class="grid">
+    <div class="rail">
+      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
+      <div class="rail-k">Precios</div>
+      <div class="rail-v">Tarifas por tratamiento</div>
+    </div>
+    <div class="flow">
+      <h2>Precios</h2>
+      <p class="copy">Cada tratamiento se indica tras una valoración médica. Los importes marcados como «desde» dependen del número de sesiones, de la cantidad de producto o de la extensión de la zona a tratar, y se cierran en consulta antes de empezar.</p>
+      <div class="prices">
+        <div class="pgroup">
+          <h4>Medicina estética</h4>
+          <a class="prow" href="/tratamientos/neuromoduladores"><span class="pname">Neuromoduladores</span><span class="pval">350 €</span></a>
+          <a class="prow" href="/tratamientos/acido-hialuronico"><span class="pname">Ácido hialurónico</span><span class="pval">330 € / vial</span></a>
+          <a class="prow" href="/tratamientos/armonizacion-facial"><span class="pname">Armonización facial</span><span class="pval">Desde 1.900 €</span></a>
+          <a class="prow" href="/tratamientos/ojeras"><span class="pname">Tratamiento de ojeras</span><span class="pval">390 €</span></a>
+          <a class="prow" href="/tratamientos/labios"><span class="pname">Aumento y definición de labios</span><span class="pval">350 €</span></a>
+          <a class="prow" href="/tratamientos/bioestimulacion-calidad-piel"><span class="pname">Bioestimulación y calidad de la piel</span><span class="pval">390 €</span></a>
+        </div>
+        <div class="pgroup">
+          <h4>Medicina capilar</h4>
+          <a class="prow" href="/tratamientos/primera-valoracion-capilar"><span class="pname">Primera valoración capilar</span><span class="pval">60 €</span></a>
+          <a class="prow" href="/tratamientos/mesoterapia-capilar"><span class="pname">Mesoterapia capilar</span><span class="pval">250 € por sesión</span></a>
+          <a class="prow" href="/tratamientos/prp-capilar"><span class="pname">PRP capilar y bioestimulación</span><span class="pval">250 € por sesión</span></a>
+          <a class="prow" href="/tratamientos/tratamiento-medico-alopecia"><span class="pname">Tratamiento médico de la alopecia</span><span class="pval">A valorar según diagnóstico</span></a>
+        </div>
+        <div class="pgroup">
+          <h4>Cirugía capilar</h4>
+          <a class="prow" href="/tratamientos/injerto-capilar-fue"><span class="pname">Injerto capilar FUE</span><span class="pval">Desde 4.500 €</span></a>
+          <a class="prow" href="/tratamientos/diseno-linea-frontal"><span class="pname">Diseño de la línea frontal</span><span class="pval">Incluido en el injerto capilar</span></a>
+          <a class="prow" href="/tratamientos/injerto-coronilla"><span class="pname">Injerto capilar en coronilla</span><span class="pval">Desde 4.500 €</span></a>
+          <a class="prow" href="/tratamientos/injerto-cejas-barba"><span class="pname">Injerto de cejas y barba</span><span class="pval">Desde 2.500 €</span></a>
+          <a class="prow" href="/tratamientos/postoperatorio"><span class="pname">Postoperatorio y evolución</span><span class="pval">Incluido en el tratamiento</span></a>
+        </div>
+      </div>
+      <p class="micro">La primera valoración capilar tiene un coste de 60 €. En medicina estética, la valoración se realiza junto al tratamiento.</p>
     </div>
   </div>
 </section>
@@ -864,37 +920,59 @@ a,button{-webkit-tap-highlight-color:transparent}
     <div class="rail">
       <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
       <div class="rail-k">Testimonios</div>
-      <div class="rail-v">Contenido pendiente</div>
+      <div class="rail-v">Reseñas reales de pacientes</div>
     </div>
     <div class="flow">
       <h2>La confianza no se promete, se gana</h2>
-      <p class="copy">Aquí puedes conocer la experiencia de algunos pacientes que han confiado en mí para sus tratamientos faciales y capilares.</p>
-      <div class="quotes">
+      <p class="copy">Aquí puedes conocer la experiencia de algunos pacientes que han confiado en mí para sus tratamientos faciales y capilares. Son mensajes recibidos en consulta, publicados con su permiso y sin editar.</p>
+      <div class="quotes" id="quotes">
         <figure class="quote">
-          <div class="micro">Formato · texto breve</div>
-          <blockquote class="quote-body">Hueco reservado para el testimonio real del paciente. Tres o cuatro líneas: qué le preocupaba, qué se hizo y cómo fue el seguimiento.</blockquote>
-          <figcaption class="quote-foot">
-            <span class="case-name">Nombre o iniciales</span>
-            <span class="micro">Tratamiento · tiempo de evolución</span>
-          </figcaption>
+          <div class="micro">Rinomodelación</div>
+          <blockquote class="quote-body">No puedo estar más contenta ni más feliz con el resultado 😍 Eres un artista y un pedazo de profesional. Mil gracias de verdad, me ha quedado justo como quería, y gracias por transmitirme tanta confianza y tranquilidad ❤</blockquote>
         </figure>
         <figure class="quote">
-          <div class="micro">Formato · vídeo corto</div>
-          <blockquote class="quote-body">Hueco reservado para vídeo de 20–40 s grabado en consulta, con transcripción debajo para que también lo lean los buscadores.</blockquote>
-          <figcaption class="quote-foot">
-            <span class="case-name">Nombre o iniciales</span>
-            <span class="micro">Tratamiento · tiempo de evolución</span>
-          </figcaption>
+          <div class="micro">Tratamiento médico y mesoterapia capilar</div>
+          <blockquote class="quote-body">¡Hola, Dr. Bengoa! Solo para decirte que estoy súper contento con la medicación y las sesiones de mesoterapia. Ya noto el pelo con más fuerza y densidad; de verdad que se ve el cambio. Me da mucha confianza cómo llevas el tratamiento, así que, cuando llegue el momento, no dudo en hacerme la cirugía capilar contigo. ¡Gracias por todo!</blockquote>
         </figure>
         <figure class="quote">
-          <div class="micro">Formato · texto + foto opcional</div>
-          <blockquote class="quote-body">Hueco reservado. Solo se publican testimonios con consentimiento escrito y sin promesas de resultado, por normativa de publicidad sanitaria.</blockquote>
-          <figcaption class="quote-foot">
-            <span class="case-name">Nombre o iniciales</span>
-            <span class="micro">Tratamiento · tiempo de evolución</span>
-          </figcaption>
+          <div class="micro">Neuromoduladores y ácido hialurónico</div>
+          <blockquote class="quote-body">Quiero agradecer al doctor Manuel Bengoa el gran trabajo que ha realizado conmigo en mi tratamiento de neuromoduladores y ácido hialurónico. Desde el primer momento ha demostrado ser un gran profesional; su experiencia se nota y le avala en cada detalle. Además de transmitir muchísima confianza, ha sido muy cercano y atento, resolviendo todas mis dudas con paciencia y sinceridad. El resultado me ha encantado y, sin duda, cualquier tratamiento estético que me realice en el futuro quiero seguir haciéndolo con él. Totalmente recomendable. Gracias de corazón ❤</blockquote>
+        </figure>
+        <figure class="quote">
+          <div class="micro">Mentón</div>
+          <blockquote class="quote-body">Buenas, Dr. Soy la paciente a la que infiltró el mentón. Solo quería decirle que no podía haber hecho mejor elección con usted. Ha sido un cambio brutal, pero a la vez sutil, que ha hecho que me sienta súper segura y guapa. Sin duda, volveré a elegirle para cualquier tratamiento de medicina estética. Un saludo.</blockquote>
+        </figure>
+        <figure class="quote">
+          <div class="micro">Tratamiento capilar</div>
+          <blockquote class="quote-body">¡Hola, Doc! Quería darte las gracias por todos estos meses de tratamiento capilar. Hice bien en confiar en el proceso y no tiene ni comparación con cómo estaba antes. Creía que no iba a tener solución, pero me diste mucha confianza y lo has demostrado con el resultado. Estoy súper contento. ¡Muchas gracias de nuevo!</blockquote>
+        </figure>
+        <figure class="quote">
+          <div class="micro">Tratamiento del bruxismo</div>
+          <blockquote class="quote-body">¡Buenos días, doctor! Hace ya unos días que me trataste lo del bruxismo. He estado comparando fotos del antes y el después y la diferencia es brutal. Estoy súper contenta con el resultado. Gracias por transmitirme tanta confianza ❤</blockquote>
+        </figure>
+        <figure class="quote" hidden>
+          <blockquote class="quote-body">No puedo estar más feliz con los resultados del doctor Bengoa. Desde el primer día me transmitió muchísima confianza y tranquilidad, y eso para mí fue muy importante. El resultado ha sido espectacular, incluso mejor de lo que imaginaba. Me siento increíble, me veo fenomenal.</blockquote>
+        </figure>
+        <figure class="quote" hidden>
+          <blockquote class="quote-body">Hace unos días estuve en la clínica para hacerme un tratamiento con el doctor Bengoa. No puedo estar más contenta, no solo por el resultado, que es espectacular, sino, sobre todo, por el trato tan humano, la confianza que me transmitió y la delicadeza al realizarme el tratamiento. Sin duda, volveré a ponerme en sus manos. ¡Gracias! 💕</blockquote>
+        </figure>
+        <figure class="quote" hidden>
+          <div class="micro">Rinomodelación</div>
+          <blockquote class="quote-body">¡Hola, doctor! Estoy súper contenta con la rinomodelación. La verdad es que el trato ha sido súper agradable y atento en todo momento. Muchas gracias por transmitirme confianza durante el proceso 😁</blockquote>
+        </figure>
+        <figure class="quote" hidden>
+          <blockquote class="quote-body">Cada día tengo más claro que la mejor decisión fue ponerme en manos del doctor Bengoa. Destaco su gran profesionalidad, asesoramiento y seguimiento. Y, por supuesto, sus resultados, que hablan por sí solos. Sin duda, se ha convertido en mi doctor de confianza. Tengo clarísimo que los siguientes tratamientos que me haga serán con el Dr. Bengoa. ¡Muchas gracias, Manuel!</blockquote>
+        </figure>
+        <figure class="quote" hidden>
+          <div class="micro">Mesoterapia y tratamiento médico capilar</div>
+          <blockquote class="quote-body">El cambio ha sido increíble. En solo tres meses he notado una diferencia enorme. Lo que más me preocupaba era el aclaramiento en la zona de la coronilla, pero gracias a la mesoterapia y al minoxidil he mejorado muchísimo. Ahora, con el nuevo tratamiento de dutasterida, estoy convencido de que seguiré fortaleciendo aún más el cabello. Muchas gracias, Manuel, por este gran cambio y por tu profesionalidad. ¡Seguimos adelante!</blockquote>
+        </figure>
+        <figure class="quote" hidden>
+          <div class="micro">Neuromoduladores</div>
+          <blockquote class="quote-body">¡No puedo estar más feliz con el resultado! Llevaba mucho tiempo queriendo realizarme un tratamiento con neuromoduladores, pero, debido a que tengo la piel súper sensible, quería esperar y escoger al mejor doctor para hacerlo. Este año me caso y no he podido tomar mejor decisión que ponerme en tus manos porque el resultado es increíble. Muchísimas gracias por todo 💕</blockquote>
         </figure>
       </div>
+      <button class="btn btn-line" id="more-quotes" type="button">Ver las 12 reseñas</button>
     </div>
   </div>
 </section>
@@ -1053,12 +1131,25 @@ a,button{-webkit-tap-highlight-color:transparent}
     </div>
   </div>
   <div class="pending">
-    <span class="micro">Maqueta de diseño v12</span>
-    <span class="micro">Falta: fotografía clínica, testimonios, datos de contacto</span>
+    <span class="micro">Maqueta de diseño v14 · marca en reposo y menú inferior</span>
+    <span class="micro">Falta: fotografía clínica y datos de contacto</span>
     <span class="micro">Nº de registro sanitario pendiente</span>
   </div>
 </footer>
-
+<!-- Barra de secciones de móvil: misma navegación, al alcance del pulgar.
+     Es un segundo menú porque en escritorio vive dentro de la isla; el que no
+     toca queda en display:none, así que solo hay uno a la vez para el lector. -->
+<div class="dock" id="dock">
+  <nav class="nav" id="navd" aria-label="Secciones de la página">
+      <a href="#precios">Precios</a>
+      <a href="#tratamientos">Tratamientos</a>
+      <a href="#resultados">Antes y después</a>
+      <a href="#especialidades">Especialidades</a>
+      <a href="#sobre-mi">Sobre mí</a>
+      <a href="#faq">FAQ</a>
+  </nav>
+  <button class="navx navx-r" id="navx-r" type="button" aria-label="Más secciones">›</button>
+</div>
 
 <script>
 (function(){
@@ -1085,13 +1176,11 @@ a,button{-webkit-tap-highlight-color:transparent}
   label();
   btn.addEventListener("click",toggle);
 
-  /* La isla se asienta en cuanto la página se mueve, y su filete inferior
-     dice cuánto queda por leer. Una sola pasada por scroll para las dos cosas. */
-  var island=document.getElementById("island"), nav=document.getElementById("nav");
+  /* La isla se asienta en cuanto la página se mueve. */
+  var island=document.getElementById("island");
+  var nav=document.getElementById("nav"), navd=document.getElementById("navd");
   function onScroll(){
     island.classList.toggle("on", window.scrollY > 12);
-    var h=document.documentElement.scrollHeight - innerHeight;
-    island.style.setProperty("--read", h>0 ? Math.min(1, window.scrollY/h).toFixed(4) : 0);
   }
   var ticking=false;
   function onScrollRaf(){
@@ -1105,7 +1194,7 @@ a,button{-webkit-tap-highlight-color:transparent}
 
   /* Sección activa: en una sola página, el menú tiene que decir dónde estás.
      En móvil, además, la tira se desplaza para que el activo siempre se vea. */
-  var links=Array.prototype.slice.call(nav.querySelectorAll("a"));
+  var links=Array.prototype.slice.call(document.querySelectorAll("#nav a, #navd a"));
   var targets=links.map(function(a){ return document.querySelector(a.getAttribute("href")); });
   if("IntersectionObserver" in window){
     var seen={}, last=null;
@@ -1122,8 +1211,8 @@ a,button{-webkit-tap-highlight-color:transparent}
         a.classList.toggle("here", on);
         if(on){
           a.setAttribute("aria-current","true");
-          if(a!==last && nav.scrollWidth > nav.clientWidth + 4){
-            nav.scrollTo({left:Math.max(0, a.offsetLeft - nav.clientWidth/2 + a.offsetWidth/2), behavior:"smooth"});
+          if(a.parentNode===navd && a!==last && navd.scrollWidth > navd.clientWidth + 4){
+            navd.scrollTo({left:Math.max(0, a.offsetLeft - navd.clientWidth/2 + a.offsetWidth/2), behavior:"smooth"});
           }
           last=a;
         } else { a.removeAttribute("aria-current"); }
@@ -1159,15 +1248,35 @@ a,button{-webkit-tap-highlight-color:transparent}
   var markLink=document.querySelector(".island .mark");
   if(markLink){ markLink.addEventListener("click",function(){ replayIntro(); }); }
 
+  /* En reposo la marca respira: se pliega en la A del isologo y vuelve a
+     abrirse en GOA. Solo cuando la página lleva un rato quieta y está a la
+     vista, para que sea un detalle y no un parpadeo. */
+  var REPOSO=12000, ultimo=Date.now();
+  function actividad(){ ultimo=Date.now(); }
+  ["scroll","pointerdown","pointermove","keydown","touchstart"].forEach(function(ev){
+    addEventListener(ev, actividad, {passive:true});
+  });
+  function replayMarca(){
+    ultimo=Date.now();
+    island.classList.remove("intro");
+    void island.offsetWidth;
+    island.classList.add("intro");
+  }
+  setInterval(function(){
+    if(reduce.matches || document.hidden) return;
+    if(Date.now() - ultimo < REPOSO) return;
+    replayMarca();
+  }, 1000);
+
   /* Chevrones de la tira de secciones: aparecen solo si hay más que ver */
   var xr=document.getElementById("navx-r");
   function edges(){
-    var more = nav.scrollWidth - nav.clientWidth;
-    xr.classList.toggle("on", more > 4 && nav.scrollLeft < more - 4);
+    var more = navd.scrollWidth - navd.clientWidth;
+    xr.classList.toggle("on", more > 4 && navd.scrollLeft < more - 4);
   }
-  nav.addEventListener("scroll", edges, {passive:true});
+  navd.addEventListener("scroll", edges, {passive:true});
   addEventListener("resize", edges);
-  xr.addEventListener("click",function(){ nav.scrollBy({left:150,behavior:"smooth"}); });
+  xr.addEventListener("click",function(){ navd.scrollBy({left:150,behavior:"smooth"}); });
   edges();
 
   /* El aviso de "baja" se retira en cuanto se ha bajado */
@@ -1199,6 +1308,22 @@ a,button{-webkit-tap-highlight-color:transparent}
     cards.forEach(function(c){ cio.observe(c); });
   } else {
     cards.forEach(function(c){ c.classList.add("seen"); });
+  }
+
+  /* Reseñas: seis a la vista, el resto a un clic */
+  var moreBtn=document.getElementById("more-quotes");
+  if(moreBtn){
+    moreBtn.addEventListener("click",function(){
+      var ocultas=document.querySelectorAll("#quotes .quote[hidden]");
+      if(ocultas.length){
+        Array.prototype.forEach.call(ocultas,function(q){ q.hidden=false; });
+        moreBtn.textContent="Ver menos";
+      } else {
+        Array.prototype.slice.call(document.querySelectorAll("#quotes .quote")).forEach(function(q,i){ if(i>=6) q.hidden=true; });
+        moreBtn.textContent="Ver las "+document.querySelectorAll("#quotes .quote").length+" reseñas";
+        document.getElementById("testimonios").scrollIntoView();
+      }
+    });
   }
 
   var chips=Array.prototype.slice.call(document.querySelectorAll(".chip"));

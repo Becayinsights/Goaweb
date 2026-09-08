@@ -1,0 +1,586 @@
+
+/* ═══════════ TOKENS ═══════════
+   Paleta v2: hueso mineral, negro petróleo y verde quirófano.
+   Ningún color literal fuera de este bloque. */
+:root{
+  --paper:#EFEEE8; --paper-2:#E9E8E1; --paper-3:#E3E3DB;
+  --ink:#12201F; --ink-2:#3E514E; --ink-3:#7C8A85;
+  --accent:#1F5A4E; --accent-text:#1B5045; --accent-dim:rgba(31,90,78,.10);
+  --rule:rgba(18,32,31,.14); --rule-2:rgba(18,32,31,.32);
+  --btn-ink:#F3F4EF;
+  --glass:rgba(247,247,242,.72); --glass-solid:#F2F1EB; --glass-bd:rgba(18,32,31,.10); --glass-hi:rgba(255,255,255,.75);
+  --glass-shadow:0 10px 34px rgba(18,32,31,.07); --glass-shadow-on:0 14px 40px rgba(18,32,31,.13);
+  --hatch:rgba(18,32,31,.055);
+  --invert-bg:#12201F; --invert-fg:#EFEEE8; --invert-fg2:rgba(239,238,232,.74); --invert-bd:rgba(239,238,232,.28); --invert-accent:#7FBFA8;
+  --shadow:0 1px 0 rgba(255,255,255,.75) inset, 0 20px 46px rgba(18,32,31,.07);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0E1615; --paper-2:#151F1E; --paper-3:#1B2624;
+    --ink:#E9EBE4; --ink-2:#A9B5B0; --ink-3:#76837E;
+    --accent:#6FB39D; --accent-text:#84C3AD; --accent-dim:rgba(111,179,157,.13);
+    --rule:rgba(233,235,228,.15); --rule-2:rgba(233,235,228,.32);
+    --btn-ink:#0E1615;
+    --glass:rgba(21,31,30,.72); --glass-solid:#171F1E; --glass-bd:rgba(233,235,228,.12); --glass-hi:rgba(255,255,255,.07);
+    --glass-shadow:0 12px 36px rgba(0,0,0,.34); --glass-shadow-on:0 16px 44px rgba(0,0,0,.5);
+    --hatch:rgba(233,235,228,.06);
+    --invert-bg:#E9EBE4; --invert-fg:#12201F; --invert-fg2:rgba(18,32,31,.72); --invert-bd:rgba(18,32,31,.26); --invert-accent:#1F5A4E;
+    --shadow:0 1px 0 rgba(255,255,255,.05) inset, 0 22px 54px rgba(0,0,0,.45);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0E1615; --paper-2:#151F1E; --paper-3:#1B2624;
+  --ink:#E9EBE4; --ink-2:#A9B5B0; --ink-3:#76837E;
+  --accent:#6FB39D; --accent-text:#84C3AD; --accent-dim:rgba(111,179,157,.13);
+  --rule:rgba(233,235,228,.15); --rule-2:rgba(233,235,228,.32);
+  --btn-ink:#0E1615;
+  --glass:rgba(21,31,30,.72); --glass-solid:#171F1E; --glass-bd:rgba(233,235,228,.12); --glass-hi:rgba(255,255,255,.07);
+  --glass-shadow:0 12px 36px rgba(0,0,0,.34); --glass-shadow-on:0 16px 44px rgba(0,0,0,.5);
+  --hatch:rgba(233,235,228,.06);
+  --invert-bg:#E9EBE4; --invert-fg:#12201F; --invert-fg2:rgba(18,32,31,.72); --invert-bd:rgba(18,32,31,.26); --invert-accent:#1F5A4E;
+  --shadow:0 1px 0 rgba(255,255,255,.05) inset, 0 22px 54px rgba(0,0,0,.45);
+  color-scheme:dark;
+}
+
+/* ═══════════ BASE ═══════════ */
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Instrument Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:16.5px; line-height:1.62; font-weight:400;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--accent-dim);color:var(--ink)}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+
+/* ═══════════ REJILLA ═══════════ */
+.shell{max-width:1240px;margin:0 auto;padding:0 clamp(20px,5vw,64px)}
+.band{padding-top:clamp(60px,8.5vw,124px);padding-bottom:clamp(60px,8.5vw,124px);border-top:1px solid var(--rule);scroll-margin-top:104px}
+.grid{display:grid;grid-template-columns:150px minmax(0,1fr);gap:clamp(24px,4vw,56px)}
+.grid>*{min-width:0}   /* sin esto, la tira de filtros ensancha su columna y recorta por la derecha */
+.rail{position:sticky;top:118px;align-self:start;display:flex;flex-direction:column;gap:7px}
+.rail-mark{
+  width:10px;height:11px;margin-bottom:10px;color:var(--accent);
+  opacity:.3;transform:translateY(3px);
+  transition:opacity .55s cubic-bezier(.22,.61,.18,1),transform .55s cubic-bezier(.22,.61,.18,1);
+}
+.rail.here .rail-mark{opacity:1;transform:none}
+.rail-k{font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--ink)}
+.rail-v{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);line-height:1.7}
+@media (max-width:900px){
+  .grid{grid-template-columns:minmax(0,1fr);gap:20px}
+  .rail{position:static;flex-direction:row;flex-wrap:wrap;align-items:center;gap:10px}
+  .rail-mark{display:none}
+  .rail-v::before{content:"·";margin-right:10px;color:var(--rule-2)}
+}
+
+/* ═══════════ TIPOGRAFÍA ═══════════
+   Instrument Serif dibuja, Instrument Sans explica, Plex Mono etiqueta. */
+h1,h2,h3{font-family:"Instrument Serif",Georgia,"Times New Roman",serif;font-weight:400;margin:0;text-wrap:balance}
+h1{font-size:clamp(44px,7vw,88px);line-height:1.0;letter-spacing:-.012em}
+h2{font-size:clamp(30px,3.9vw,48px);line-height:1.08;letter-spacing:-.008em}
+h3{font-size:23px;line-height:1.2}
+h4{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:500;margin:0;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);
+}
+p{margin:0}
+em{font-style:italic}
+.lead{font-size:clamp(17.5px,1.7vw,20px);line-height:1.55;color:var(--ink-2);max-width:38ch;font-weight:400}
+.copy{max-width:60ch;color:var(--ink-2)}
+.copy + .copy{margin-top:14px}
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:500;
+  text-transform:uppercase;letter-spacing:.2em;color:var(--accent-text);
+}
+.micro{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;color:var(--ink-3);line-height:1.7}
+
+/* ═══════════ CABECERA — isla flotante ═══════════
+   Una sola página: la isla es la única navegación y no tiene submenús. */
+.hbar{position:sticky;top:0;z-index:50;padding:14px clamp(12px,3vw,28px) 0;pointer-events:none}
+.island{
+  pointer-events:auto;position:relative;max-width:1180px;margin:0 auto;
+  display:flex;align-items:center;gap:clamp(12px,2vw,26px);
+  padding:7px 7px 7px 15px;border-radius:6px;
+  border:1px solid var(--glass-bd);background:var(--glass);
+  backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);
+  box-shadow:inset 0 1px 0 var(--glass-hi), var(--glass-shadow);
+  transition:box-shadow .35s ease, border-color .35s ease;
+}
+.island.on{box-shadow:inset 0 1px 0 var(--glass-hi), var(--glass-shadow-on);border-color:var(--rule-2)}
+.mark-fill{position:relative;display:inline-flex;flex-shrink:0}
+/* La marca entra como isologo —la A dentro del círculo— y se abre en logo:
+   el círculo se traza, crece y se va; la G y la O ocupan su sitio.
+   El mismo gesto se repite cuando la página lleva un rato quieta: la marca
+   se pliega en A y vuelve a abrirse en GOA. */
+.mark-go{display:inline-flex}
+.mark-ring{
+  position:absolute;left:50%;top:50%;width:1.72em;height:1.72em;
+  transform:translate(-50%,-50%);color:var(--accent);opacity:0;pointer-events:none;
+}
+.island.intro .mark-go{animation:goIn .6s 1.5s cubic-bezier(.22,.61,.18,1) both}
+.island.intro .mark-ring{animation:ringOpen .85s 1.45s cubic-bezier(.22,.61,.18,1) both}
+.island.intro .mark-ring circle{stroke-dasharray:264;animation:ringDraw 1.15s .22s cubic-bezier(.22,.61,.18,1) both}
+/* Durante la fase de isologo la A se queda sola en el centro del círculo;
+   al abrirse, cede su sitio a la palabra. */
+.island.intro .mark-fill{animation:aCenter 1.35s .15s cubic-bezier(.22,.61,.18,1) both}
+@keyframes aCenter{
+  0%,55%{transform:translateX(-.62em)}
+  100%{transform:none}
+}
+@keyframes goIn{from{opacity:0;transform:translateX(-7px)}to{opacity:1;transform:none}}
+@keyframes ringOpen{
+  0%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  60%{opacity:.5}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.65)}
+}
+.nav{display:flex;gap:clamp(14px,1.7vw,22px);margin-left:auto;align-items:center}
+.nav a:not(.btn){
+  font-size:13px;font-weight:400;color:var(--ink-2);text-decoration:none;
+  padding:6px 0;position:relative;white-space:nowrap;transition:color .22s ease;
+}
+.nav a:not(.btn)::after{
+  content:"";position:absolute;left:0;right:100%;bottom:0;height:1px;background:var(--accent);
+  transition:right .3s cubic-bezier(.22,.61,.18,1);
+}
+.nav a:not(.btn):hover{color:var(--ink)}
+.nav a:not(.btn):hover::after,.nav a.here::after{right:0}
+.nav a.here{color:var(--ink)}
+.hact{display:flex;align-items:center;gap:8px;flex-shrink:0}
+/* ═══════════ BARRA DE SECCIONES — solo móvil ═══════════
+   En móvil la cabecera se queda con lo imprescindible —marca, tema y la
+   llamada— y las secciones bajan a una barra flotante, al alcance del pulgar. */
+.dock{display:none}
+.navx{display:none}
+@media (max-width:980px){
+  .island{
+    padding:7px 7px 7px 13px;column-gap:12px;
+    background:var(--glass-solid);
+    backdrop-filter:none;-webkit-backdrop-filter:none;
+  }
+  .island .nav{display:none}
+  .hact{margin-left:auto}
+  .dock{
+    display:flex;position:fixed;z-index:60;align-items:stretch;
+    left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));
+    border-radius:6px;overflow:hidden;
+    border:1px solid var(--rule-2);background:var(--glass-solid);
+    box-shadow:inset 0 1px 0 var(--glass-hi), var(--glass-shadow-on);
+  }
+  .dock .nav{
+    width:100%;margin:0;gap:0;padding:0 28px 0 4px;
+    overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none;
+  }
+  .dock .nav::-webkit-scrollbar{display:none}
+  .dock .nav a:not(.btn){padding:13px 11px;font-size:13.5px;flex-shrink:0;scroll-snap-align:center}
+  /* Que se entienda que la tira sigue: un chevrón diminuto */
+  .dock .navx{
+    display:flex;position:absolute;top:0;bottom:0;right:0;width:26px;padding:0;
+    align-items:center;justify-content:center;border:none;
+    background:var(--glass-solid);
+    color:var(--ink-3);font-size:15px;line-height:1;cursor:pointer;
+    opacity:0;pointer-events:none;transition:opacity .3s ease,color .2s ease;
+  }
+  .dock .navx.on{opacity:1;pointer-events:auto}
+  .dock .navx:hover{color:var(--ink)}
+  /* Para que la barra no se coma el final de la página */
+  body{padding-bottom:calc(62px + env(safe-area-inset-bottom))}
+}
+@media (max-width:420px){
+  .island{column-gap:8px;padding-left:11px}
+  .dock .nav a:not(.btn){padding:13px 9px;font-size:13px}
+  .btn-sm{padding:9px 13px;font-size:12px}
+}
+
+/* ═══════════ MARCA ═══════════ */
+.mark{display:flex;align-items:center;gap:11px;text-decoration:none;flex-shrink:0}
+.mark svg{display:block;flex-shrink:0}
+.mark-w{
+  font-family:"Instrument Serif",serif;font-size:22px;line-height:1;letter-spacing:.11em;
+  color:var(--ink);padding-left:1px;display:inline-flex;align-items:baseline;
+}
+/* El símbolo hace de A: se apoya en la línea base y desborda un pelo por arriba
+   y por abajo, como cualquier letra redonda junto a una recta. */
+.mark-a{height:.70em;width:.66em;flex-shrink:0}   /* altura de mayúscula, apoyada en la línea base */
+.mark-sub{
+  font-family:"IBM Plex Mono",monospace;font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--ink-3);border-left:1px solid var(--rule-2);padding-left:11px;line-height:1.5;
+}
+@media (max-width:1300px){.mark-sub{display:none}}
+
+/* ═══════════ BOTONES ═══════════ */
+.btn{
+  display:inline-flex;align-items:center;gap:9px;flex-shrink:0;
+  font-size:14px;font-weight:500;letter-spacing:.01em;
+  padding:12px 22px;border-radius:2px;border:1px solid transparent;cursor:pointer;
+  text-decoration:none;white-space:nowrap;
+  transition:background .25s ease,color .25s ease,border-color .25s ease,transform .16s ease;
+}
+.btn-solid{background:var(--ink);color:var(--btn-ink);border-color:var(--ink)}
+.btn-solid:hover{background:var(--accent);border-color:var(--accent);color:var(--btn-ink)}
+.btn-line{background:transparent;color:var(--ink);border-color:var(--rule-2)}
+.btn-line:hover{border-color:var(--accent);color:var(--accent-text)}
+.btn:active{transform:translateY(1px)}
+.btn-sm{padding:9px 16px;font-size:12.5px;font-weight:500;letter-spacing:.02em}
+.link{font-size:14px;color:var(--ink-2);text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.link:hover{color:var(--accent-text)}
+.link .arw{transition:transform .25s cubic-bezier(.22,.61,.18,1)}
+.link:hover .arw{transform:translateX(4px)}
+.icon-btn{
+  width:32px;height:32px;flex-shrink:0;border-radius:2px;background:transparent;
+  border:1px solid var(--rule);color:var(--ink-3);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:14px;line-height:1;
+  transition:border-color .2s ease,color .2s ease;
+}
+.icon-btn:hover{border-color:var(--rule-2);color:var(--ink)}
+.actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+
+/* ═══════════ HERO ═══════════ */
+.hero{padding-top:clamp(52px,7vw,96px);padding-bottom:clamp(48px,6vw,84px)}
+.hero-in{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:clamp(28px,5vw,72px);align-items:end}
+@media (max-width:980px){.hero-in{grid-template-columns:1fr;gap:34px;align-items:start}}
+.hero h1{margin:20px 0 0}
+.hero h1 em{color:var(--accent-text)}
+.hero .lead{margin-top:24px}
+.hero .actions{margin-top:32px}
+.hero-side{border-left:1px solid var(--rule);padding-left:clamp(18px,2.4vw,30px);display:flex;flex-direction:column;gap:22px}
+@media (max-width:980px){.hero-side{border-left:none;border-top:1px solid var(--rule);padding-left:0;padding-top:26px}}
+.hero-side p{font-size:15px;line-height:1.6;color:var(--ink-2)}
+/* La A del revés hace de "baja": la marca dice dónde seguir, y se retira
+   en cuanto el visitante ha bajado. */
+.scrolldown{
+  display:inline-flex;align-items:center;gap:10px;margin-top:6px;
+  text-decoration:none;color:var(--ink-3);width:fit-content;
+  transition:opacity .4s ease,transform .4s ease,color .25s ease;
+}
+.scrolldown svg{width:15px;height:17px;transform:rotate(180deg);color:var(--accent);opacity:.8}
+.scrolldown span{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase}
+.scrolldown:hover{color:var(--ink)}
+.scrolldown .cue{animation:cueBob 2.6s ease-in-out infinite}
+body.moved .scrolldown{opacity:0;transform:translateY(6px);pointer-events:none}
+@keyframes cueBob{0%,100%{transform:rotate(180deg) translateY(0)}50%{transform:rotate(180deg) translateY(-3px)}}
+.stats{display:flex;flex-direction:column}
+.stat{
+  display:flex;align-items:baseline;justify-content:space-between;gap:14px;padding:11px 0;
+  border-top:1px solid var(--rule);text-decoration:none;transition:color .22s ease;
+}
+.stat:hover .stat-k{color:var(--accent-text)}
+.stat-v{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.stat-k{font-family:"Instrument Serif",serif;font-size:20px;line-height:1;white-space:nowrap;color:var(--ink);transition:color .22s ease}
+
+/* ═══════════ ESPECIALIDADES ═══════════ */
+.areas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--rule);margin-top:36px}
+.areas>*{min-width:0}
+@media (max-width:900px){.areas{grid-template-columns:1fr}}
+.area{
+  padding:28px clamp(18px,2.4vw,32px) 32px;border-right:1px solid var(--rule);
+  display:flex;flex-direction:column;gap:13px;text-decoration:none;transition:background .3s ease;
+}
+.area:last-child{border-right:none}
+@media (max-width:900px){.area{border-right:none;border-bottom:1px solid var(--rule)}.area:last-child{border-bottom:none}}
+.area:hover{background:var(--paper-2)}
+.area-tag{display:flex;align-items:center;gap:9px}
+.area-dot{width:5px;height:5px;background:var(--accent);flex-shrink:0}
+.area p{font-size:15px;line-height:1.58;color:var(--ink-2)}
+.area .link{margin-top:auto;padding-top:6px}
+
+/* ═══════════ PROCESO — esto sí es una secuencia, por eso va numerado ═══════════ */
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(16px,2.4vw,32px);margin-top:38px}
+.steps>*{min-width:0}
+@media (max-width:820px){.steps{grid-template-columns:repeat(2,minmax(0,1fr));gap:26px}}
+@media (max-width:520px){.steps{grid-template-columns:1fr}}
+.step{padding-top:16px;border-top:1px solid var(--rule-2);display:flex;flex-direction:column;gap:8px}
+.step-n{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.14em;color:var(--accent-text)}
+.step h3{font-size:20px}
+.step p{font-size:14.5px;line-height:1.55;color:var(--ink-2)}
+
+/* ═══════════ PRINCIPIOS ═══════════ */
+.principles{display:grid;grid-template-columns:1fr;margin-top:32px;max-width:52ch}
+.principle{padding:15px 0;border-top:1px solid var(--rule);display:flex;gap:13px;align-items:baseline}
+.principle span{font-size:16.5px;color:var(--ink);line-height:1.35}
+.principle i{width:9px;height:1px;background:var(--accent);flex-shrink:0;transform:translateY(-5px)}
+
+/* ═══════════ ANTES Y DESPUÉS ═══════════ */
+.filters{display:flex;flex-wrap:wrap;gap:7px;margin:24px 0 22px}
+.chip{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  padding:7px 13px;border:1px solid var(--rule);background:transparent;color:var(--ink-3);
+  border-radius:2px;cursor:pointer;transition:color .22s ease,border-color .22s ease,background .22s ease;
+}
+.chip:hover{color:var(--ink);border-color:var(--rule-2)}
+.chip[aria-pressed="true"]{color:var(--accent-text);border-color:var(--accent);background:var(--accent-dim)}
+.cases{display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:clamp(12px,1.6vw,20px)}
+.case{display:flex;flex-direction:column;gap:10px;margin:0}
+.slot{aspect-ratio:4/5;display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--rule);position:relative}
+.slot::after{
+  content:"";position:absolute;top:0;bottom:0;left:50%;width:1.5px;background:var(--accent);
+  transform:scaleY(0);transform-origin:center;
+  transition:transform .55s cubic-bezier(.22,.61,.18,1);transition-delay:var(--d,0s);
+}
+/* El eje antes/después se traza al entrar la ficha en pantalla, en cascada,
+   y también al pasar el ratón: en el móvil no hay hover que valga. */
+.case.seen .slot::after,.case:hover .slot::after{transform:scaleY(1)}
+.case:hover .slot{border-color:var(--rule-2)}
+.slot-half{
+  display:flex;align-items:flex-end;justify-content:center;padding:12px 0;
+  background:repeating-linear-gradient(-45deg,var(--hatch) 0 1px,transparent 1px 9px);
+}
+.slot-half + .slot-half{border-left:1px solid var(--rule)}
+.slot-lbl{font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3)}
+.case-meta{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.case-name{font-size:15px;font-weight:500}
+.notice{
+  margin-top:26px;padding:16px 18px;border-left:2px solid var(--accent);background:var(--accent-dim);
+  font-size:15px;line-height:1.6;color:var(--ink-2);max-width:70ch;
+}
+
+/* ═══════════ ÍNDICE DE TRATAMIENTOS ═══════════ */
+.index{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(22px,3vw,44px);margin-top:34px}
+.index>*{min-width:0}
+@media (max-width:900px){.index{grid-template-columns:1fr;gap:32px}}
+.index h4{margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--rule-2)}
+.tlist{list-style:none;margin:0;padding:0}
+.tlist a{
+  display:flex;align-items:baseline;justify-content:space-between;gap:14px;
+  padding:11px 0;border-bottom:1px solid var(--rule);text-decoration:none;
+  font-size:16px;color:var(--ink);
+  transition:color .22s ease,padding-left .28s cubic-bezier(.22,.61,.18,1);
+}
+.tlist a:hover{color:var(--accent-text);padding-left:8px}
+.tlist .arw{color:var(--ink-3);font-size:12px;opacity:0;transition:opacity .22s ease}
+.tlist a:hover .arw{opacity:1;color:var(--accent)}
+/* El precio viaja con el nombre desde el índice: no hay que entrar para saberlo */
+.tprice{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;
+  color:var(--ink-3);white-space:nowrap;flex-shrink:0;transition:color .22s ease;
+}
+.tlist a:hover .tprice{color:var(--accent-text)}
+
+/* ═══════════ PRECIOS ═══════════ */
+.prices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(22px,3vw,44px)}
+.prices>*{min-width:0}
+@media (max-width:900px){.prices{grid-template-columns:1fr;gap:30px}}
+.pgroup h4{margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--rule-2)}
+.prow{
+  display:flex;align-items:baseline;justify-content:space-between;gap:14px;
+  padding:12px 0;border-bottom:1px solid var(--rule);text-decoration:none;
+  transition:color .22s ease,padding-left .28s cubic-bezier(.22,.61,.18,1);
+}
+.prow:hover{padding-left:8px}
+.pname{font-size:15.5px;color:var(--ink)}
+.prow:hover .pname{color:var(--accent-text)}
+.pval{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.04em;color:var(--ink-2);white-space:nowrap;flex-shrink:0}
+
+/* ═══════════ SOBRE MÍ ═══════════ */
+.about{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.8fr);gap:clamp(26px,4vw,56px);align-items:start}
+@media (max-width:900px){.about{grid-template-columns:1fr}}
+.portrait{
+  aspect-ratio:3/4;border:1px solid var(--rule);
+  background:repeating-linear-gradient(-45deg,var(--hatch) 0 1px,transparent 1px 9px);
+  display:flex;align-items:center;justify-content:center;
+}
+.pull{
+  font-family:"Instrument Serif",serif;font-size:clamp(21px,2.4vw,27px);line-height:1.3;color:var(--ink);
+  border-left:2px solid var(--accent);padding-left:20px;margin-top:26px;max-width:32ch;
+}
+.pull em{color:var(--accent-text)}
+
+/* ═══════════ TESTIMONIOS ═══════════ */
+.quotes{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:clamp(16px,2vw,26px);margin-top:32px}
+.quote{
+  background:var(--paper-2);border:1px solid var(--rule);border-radius:2px;
+  padding:22px 22px 20px;display:flex;flex-direction:column;gap:15px;margin:0;
+}
+.quote-body{font-family:"Instrument Serif",serif;font-size:18px;line-height:1.45;color:var(--ink-2);margin:0}
+.quote-foot{margin-top:auto;display:flex;flex-direction:column;gap:3px}
+.flow > #more-quotes{margin-top:22px}
+
+/* ═══════════ FAQ ═══════════ */
+.faq{margin-top:28px;max-width:74ch}
+details{border-bottom:1px solid var(--rule)}
+details>summary{
+  list-style:none;cursor:pointer;padding:17px 0;display:flex;gap:16px;align-items:baseline;
+  font-family:"Instrument Serif",serif;font-size:21px;color:var(--ink);
+}
+details>summary::-webkit-details-marker{display:none}
+details>summary::before{content:"+";color:var(--accent);font-size:16px;line-height:1;flex-shrink:0;width:12px;font-family:"Instrument Sans",sans-serif}
+details[open]>summary::before{content:"–"}
+details .ans{padding:0 0 20px 28px;color:var(--ink-2);font-size:16px;line-height:1.62;max-width:64ch}
+
+/* ═══════════ CTA ═══════════ */
+/* El cierre de la página no es una tarjeta clara sobre el papel —eso era un
+   parche—: es una banda de tinta a sangre, de borde a borde de la pantalla.
+   Único bloque oscuro de la web, justo donde se pide la cita. */
+.cta{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.75fr);
+  gap:clamp(24px,4vw,56px);align-items:center;
+}
+@media (max-width:820px){.cta{grid-template-columns:1fr}}
+#contacto{
+  max-width:none;padding-left:0;padding-right:0;border-top:none;position:relative;
+  background:var(--invert-bg);color:var(--invert-fg);
+}
+/* Un filete de acento cruza la banda de lado a lado al llegar a ella */
+#contacto::after{
+  content:"";position:absolute;top:0;left:0;right:0;height:1.5px;
+  transform:scaleX(0);transform-origin:left;background:var(--invert-accent);
+  transition:transform 1s cubic-bezier(.22,.61,.18,1);
+}
+#contacto.lit::after{transform:scaleX(1)}
+.reasons{list-style:none;margin:0;padding:0}
+.reasons li{padding:10px 0;border-top:1px solid var(--rule);font-size:15.5px;color:var(--ink-2)}
+#contacto h2{color:var(--invert-fg)}
+#contacto .copy,#contacto .reasons li,#contacto .micro,#contacto h4{color:var(--invert-fg2)}
+#contacto .eyebrow{color:var(--invert-accent)}
+#contacto .rail-k{color:var(--invert-fg)}
+#contacto .rail-v{color:var(--invert-fg2)}
+#contacto .rail-mark{color:var(--invert-accent)}
+#contacto .reasons li{border-color:var(--invert-bd)}
+#contacto .btn-solid{background:var(--invert-fg);border-color:var(--invert-fg);color:var(--invert-bg)}
+#contacto .btn-solid:hover{background:var(--invert-accent);border-color:var(--invert-accent);color:var(--invert-bg)}
+#contacto .btn-line{color:var(--invert-fg);border-color:var(--invert-bd)}
+#contacto .btn-line:hover{border-color:var(--invert-fg);color:var(--invert-fg)}
+
+/* ═══════════ MARCA — propuesta ═══════════ */
+.brandbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--rule);margin-top:34px}
+.brandbar>*{min-width:0}
+@media (max-width:820px){.brandbar{grid-template-columns:1fr}}
+.bcell{padding:30px 24px;border-right:1px solid var(--rule);display:flex;flex-direction:column;gap:18px;align-items:flex-start}
+.bcell:last-child{border-right:none}
+@media (max-width:820px){.bcell{border-right:none;border-bottom:1px solid var(--rule)}.bcell:last-child{border-bottom:none}}
+.bcell.dark{background:var(--ink);color:var(--paper)}
+.bcell.dark .micro{color:rgba(239,238,232,.6)}
+.bstage{display:flex;align-items:center;justify-content:center;width:100%;min-height:96px}
+.stack{display:flex;flex-direction:column;align-items:center;gap:9px;text-align:center}
+.stack-w{font-family:"Instrument Serif",serif;font-size:38px;letter-spacing:.14em;line-height:1;padding-left:.14em;display:inline-flex;align-items:baseline}
+.stack-s{font-family:"IBM Plex Mono",monospace;font-size:8px;letter-spacing:.28em;text-transform:uppercase;opacity:.72}
+.swatches{display:flex;gap:0;width:100%;height:34px;border:1px solid var(--rule)}
+.swatches>i{flex:1}
+
+/* ═══════════ PIE ═══════════ */
+.foot{border-top:1px solid var(--rule);padding-top:42px;padding-bottom:56px;margin-top:clamp(56px,7vw,96px)}
+.foot-in{display:flex;flex-wrap:wrap;gap:30px;justify-content:space-between;align-items:flex-start}
+.foot-links{display:flex;flex-wrap:wrap;gap:18px}
+.foot-links a{font-size:14px;color:var(--ink-3);text-decoration:none}
+.foot-links a:hover{color:var(--ink)}
+.pending{margin-top:32px;padding-top:18px;border-top:1px solid var(--rule);display:flex;flex-wrap:wrap;gap:8px 22px}
+
+/* ═══════════ MOVIMIENTO ═══════════ */
+@keyframes riseIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes trackIn{from{opacity:0;letter-spacing:.44em}to{opacity:1;letter-spacing:.2em}}
+@keyframes islandIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+@keyframes ringDraw{from{stroke-dashoffset:264}to{stroke-dashoffset:0}}
+@keyframes glyphIn{from{opacity:0;transform:translate(50px,54px) scale(.62) translate(-50px,-50px)}
+                   to{opacity:1;transform:translate(50px,50px) scale(.66) translate(-50px,-50px)}}
+.hero.intro .eyebrow{animation:trackIn .95s cubic-bezier(.22,.61,.18,1) both}
+.hero.intro h1{animation:riseIn .7s .08s cubic-bezier(.22,.61,.18,1) both}
+.hero.intro .lead{animation:riseIn .7s .18s cubic-bezier(.22,.61,.18,1) both}
+.hero.intro .actions{animation:riseIn .7s .28s cubic-bezier(.22,.61,.18,1) both}
+.hero.intro .hero-side{animation:riseIn .8s .36s cubic-bezier(.22,.61,.18,1) both}
+.island.intro{animation:islandIn .6s cubic-bezier(.22,.61,.18,1) both}
+/* La marca se dibuja al entrar: el círculo se traza y la A sube a su sitio */
+.hero.intro .hg-ring{stroke-dasharray:264;animation:ringDraw 1.25s .42s cubic-bezier(.22,.61,.18,1) both}
+.hero.intro .hg-a{animation:glyphIn .75s 1s cubic-bezier(.22,.61,.18,1) both}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+
+/* ═══════════ RITMO VERTICAL ═══════════
+   Una sola distancia entre bloques de una sección, y una mayor antes de las
+   rejillas. Sin esto cada sección respiraba distinto y el conjunto bailaba. */
+.flow > * + *{margin-top:20px}
+.flow > .areas,.flow > .steps,.flow > .index,.flow > .quotes,
+.flow > .faq,.flow > .brandbar,.flow > .notice{margin-top:34px}
+.flow > .filters{margin-top:26px}
+.flow > .principles{margin-top:30px}
+.flow > .mt-lg{margin-top:38px}
+.flow > .swatches{margin-top:12px}
+.flow > .micro{margin-top:10px}
+
+/* ═══════════ MÓVIL ═══════════
+   No es el escritorio encogido: cambian los objetivos táctiles, el orden de
+   lectura de la galería y dónde está el CTA. */
+a,button{-webkit-tap-highlight-color:transparent}
+
+@media (max-width:760px){
+  body{font-size:16px}
+  .hbar{padding-top:10px}
+  .band{padding-top:clamp(48px,10vw,76px);padding-bottom:clamp(48px,10vw,76px);scroll-margin-top:116px}
+  h1{font-size:clamp(38px,10.4vw,54px);line-height:1.04}
+  h2{font-size:clamp(26px,7vw,34px)}
+  h3{font-size:21px}
+  .lead{max-width:none;font-size:17px}
+  .copy{max-width:none}
+  .hero{padding-top:32px;padding-bottom:42px}
+  .hero-side{gap:18px}
+  .hero .actions{gap:10px}
+  .hero .actions .btn{flex:1 1 100%;justify-content:center;padding:14px 20px;font-size:15px}
+  .stat-k{font-size:22px}
+  .areas{margin-top:26px}
+  .area{padding:22px 0 24px}
+  .steps{margin-top:28px}
+  .index{gap:28px;margin-top:26px}
+  .tlist a{padding:14px 0;font-size:16px}
+  .tlist .arw{opacity:1;color:var(--ink-3)}
+  details>summary{padding:16px 0;font-size:19px;gap:12px}
+  details .ans{padding:0 0 16px 24px;font-size:15.5px}
+  .portrait{aspect-ratio:4/3}
+  .pull{font-size:20px;padding-left:16px;margin-top:22px;max-width:none}
+  .quotes{gap:12px;margin-top:26px}
+  .quote{padding:20px}
+  .cta .actions{gap:10px}
+  .cta .actions .btn{flex:1 1 100%;justify-content:center;padding:14px 20px;font-size:15px}
+  .notice{font-size:14.5px;padding:14px 16px}
+  .bcell{padding:24px 20px}
+  .foot-in{gap:22px}
+}
+
+@media (max-width:700px){
+  /* Nueve filtros no caben legibles en tres líneas: se deslizan de lado,
+     sangrando hasta el borde para que se vea que hay más. */
+  .filters{
+    flex-wrap:nowrap;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none;
+    margin:22px calc(-1*clamp(20px,5vw,64px)) 20px;
+    padding:0 clamp(20px,5vw,64px) 8px;
+  }
+  .filters::-webkit-scrollbar{display:none}
+  .chip{flex-shrink:0;scroll-snap-align:start;padding:9px 14px}
+}
+
+@media (max-width:600px){
+  /* La galería en dos columnas: ocho fichas en una sola columna son un scroll eterno */
+  .cases{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .case-meta{flex-direction:column;align-items:flex-start;gap:1px}
+  .case-name{font-size:13.5px;line-height:1.3}
+  .slot-lbl{font-size:8px;letter-spacing:.12em}
+}
+
+
+/* Reglas que antes ponía el envoltorio del visor de artifacts y ahora son nuestras */
+img{max-width:100%}
+[hidden]{display:none!important}   /* sin esto, .case{display:flex} gana al hidden */
+
+/* ═══════════ FICHA DE TRATAMIENTO ═══════════ */
+.crumbs{display:flex;gap:10px;align-items:center;font-family:"IBM Plex Mono",monospace;
+  font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.crumbs a{text-decoration:none}
+.crumbs a:hover{color:var(--ink)}
+.trat{padding-top:clamp(40px,6vw,80px);padding-bottom:clamp(40px,6vw,72px)}
+.trat-in{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:clamp(28px,5vw,64px);align-items:start}
+@media (max-width:900px){.trat-in{grid-template-columns:1fr;gap:30px}}
+.trat h1{font-size:clamp(34px,5.2vw,62px);margin:18px 0 0}
+.trat .lead{max-width:60ch;margin-top:22px;font-size:clamp(17px,1.6vw,19px)}
+.ficha{border-top:1px solid var(--rule-2)}
+.ficha-row{display:flex;flex-direction:column;gap:4px;padding:13px 0;border-bottom:1px solid var(--rule)}
+.ficha-k{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3)}
+.ficha-v{font-size:15.5px;color:var(--ink-2);line-height:1.45}
+.ficha-precio .ficha-v{font-family:"Instrument Serif",serif;font-size:26px;color:var(--ink);line-height:1.1}
+.pend{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 clamp(20px,3vw,40px)}
+@media (max-width:820px){.pend{grid-template-columns:1fr}}
+.pend div{padding:14px 0;border-top:1px solid var(--rule);font-size:15.5px;color:var(--ink-3)}
