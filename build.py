@@ -70,6 +70,34 @@ img{max-width:100%}
 """
 
 
+def fondo():
+    """Prepara la fotografía de fondo de la banda de cierre.
+
+    Vale cualquier imagen que haya en assets/ y no hace falta renombrarla. Se
+    guarda ya desenfocada y reducida: el desenfoque por CSS lo recalcula el
+    navegador en cada pintado y en un móvil se nota, y una foto de cinco mil
+    píxeles para verse borrosa es peso tirado. De 1,2 MB a unos 30 KB.
+    """
+    fotos = sorted(f for f in (RAIZ / "assets").glob("*")
+                   if f.suffix.lower() in (".jpg", ".jpeg", ".png", ".webp"))
+    if not fotos:
+        return ""
+    foto = next((f for f in fotos if f.stem.lower() == "cierre"), fotos[0])
+    destino = SITE / "cierre.jpg"
+    try:
+        from PIL import Image, ImageFilter
+        im = Image.open(foto).convert("RGB")
+        ancho = 1400
+        im = im.resize((ancho, round(im.height * ancho / im.width)), Image.LANCZOS)
+        im.filter(ImageFilter.GaussianBlur(22)).save(
+            destino, quality=76, optimize=True, progressive=True)
+        print(f"{'fondo de cierre':20} {foto.name} -> {destino.stat().st_size:>7,} bytes")
+    except ImportError:
+        destino.write_bytes(foto.read_bytes())
+        print(f"{'fondo de cierre':20} {foto.name} sin procesar (falta Pillow: pip install Pillow)")
+    return '\n:root{--band-img:url("/cierre.jpg")}\n'
+
+
 def cargar():
     d = json.loads((RAIZ / "content" / "tratamientos.json").read_text(encoding="utf-8"))
     todos = [(a, t) for a in d["areas"] for t in a["tratamientos"]]
@@ -486,17 +514,7 @@ def main():
         '<div class="quotes" id="quotes"></div>',
         '<div class="quotes" id="quotes">\n' + perfiles() + '\n      </div>')
 
-    # La fotografía del hero es opcional y no hace falta renombrarla: vale
-    # cualquier imagen que haya en assets/. Si no hay ninguna, el fondo se
-    # queda en las manchas de color y la página no se entera.
-    fotos = sorted(f for f in (RAIZ / "assets").glob("*")
-                   if f.suffix.lower() in (".jpg", ".jpeg", ".png", ".webp", ".avif"))
-    if fotos:
-        foto = next((f for f in fotos if f.stem.lower() == "hero"), fotos[0])
-        destino = "hero" + foto.suffix.lower()
-        (SITE / destino).write_bytes(foto.read_bytes())
-        css += f'\n:root{{--hero-img:url("/{destino}")}}\n'
-        print(f"{'foto del hero':20} {foto.name}")
+    css += fondo()
 
     (SITE / "goa.css").write_text(css + EXTRA_CSS, encoding="utf-8")
     (SITE / "index.html").write_text(

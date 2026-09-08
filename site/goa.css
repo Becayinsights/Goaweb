@@ -49,6 +49,17 @@
   color-scheme:dark;
 }
 
+/* ═══════════ BANDA DE CIERRE ═══════════
+   Es siempre oscura, con la fotografía detrás, en los dos temas: así el cierre
+   de la página tiene un peso propio y no depende de en qué modo se mire. */
+:root{
+  --band-bg:#0A100F;
+  --band-fg:#F1EEE5;
+  --band-fg2:rgba(241,238,229,.72);
+  --band-bd:rgba(241,238,229,.2);
+  --band-accent:#9CC9B4;
+}
+
 /* ═══════════ ESCALA TIPOGRÁFICA ═══════════
    Dos escalas y nada más: la de texto, de seis escalones, y la de la serif,
    que es la que hace de display. Antes había veintidós cuerpos distintos
@@ -274,10 +285,8 @@ em{font-style:italic}
 .actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
 
 /* ═══════════ HERO ═══════════
-   Debajo del titular hay una imagen desenfocada: da profundidad sin competir
-   con el texto. Mientras no haya fotografía propia el fondo lo dibujan tres
-   manchas de la propia paleta; el día que la haya, basta con dejarla en
-   assets/hero.jpg y build.py la enchufa en --hero-img. */
+   Bajo el titular, tres manchas de la propia paleta: dan profundidad sin
+   competir con el texto ni meter un color que no sea de la marca. */
 .hero-wrap{position:relative;isolation:isolate;overflow:hidden}
 .hero-bg{
   position:absolute;inset:0;z-index:-1;background:var(--hero-c);
@@ -286,15 +295,7 @@ em{font-style:italic}
     radial-gradient(46% 54% at 12% 84%, var(--hero-a) 0%, transparent 66%),
     radial-gradient(70% 78% at 44% 42%, var(--hero-b) 0%, transparent 74%);
 }
-/* La fotografía, desenfocada y desbordada para que el desenfoque no deje
-   bordes claros en las esquinas. */
-.hero-bg::before{
-  content:"";position:absolute;inset:-9%;z-index:0;
-  background:var(--hero-img) center/cover no-repeat;
-  filter:blur(30px) saturate(1.05);
-  opacity:.62;
-}
-/* Y un velo que la funde con el resto de la página, para que el texto se lea */
+/* Un velo que lo funde con el resto de la página */
 .hero-bg::after{
   content:"";position:absolute;inset:0;z-index:1;
   background:linear-gradient(to bottom, transparent 34%, var(--paper) 100%);
@@ -447,38 +448,58 @@ details[open]>summary::before{content:"–"}
 details .ans{padding:0 0 20px 28px;color:var(--ink-2);font-size:var(--fs-6);line-height:1.62;max-width:64ch}
 
 /* ═══════════ CTA ═══════════ */
-/* El cierre de la página no es una tarjeta clara sobre el papel —eso era un
-   parche—: es una banda de tinta a sangre, de borde a borde de la pantalla.
-   Único bloque oscuro de la web, justo donde se pide la cita. */
+/* El cierre no es un bloque de tinta plano —eso cortaba la página en seco—:
+   es la fotografía desenfocada bajo un velo que se abre hacia la derecha, así
+   que la imagen respira donde no hay texto y el texto se lee donde sí lo hay. */
 .cta{
   display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.75fr);
   gap:clamp(24px,4vw,56px);align-items:center;
 }
 @media (max-width:820px){.cta{grid-template-columns:1fr}}
 #contacto{
-  max-width:none;padding-left:0;padding-right:0;border-top:none;position:relative;
-  background:var(--invert-bg);color:var(--invert-fg);
+  max-width:none;padding-left:0;padding-right:0;border-top:none;
+  position:relative;isolation:isolate;overflow:hidden;
+  background:var(--band-bg);color:var(--band-fg);
+}
+.band-bg{position:absolute;inset:0;z-index:-1}
+.band-bg::before{
+  content:"";position:absolute;inset:0;
+  background:var(--band-img) center/cover no-repeat;opacity:.85;
+}
+/* El velo cierra arriba, donde va el texto, y se abre hacia abajo: la piedra
+   se ve donde no estorba y el texto conserva su contraste. */
+.band-bg::after{
+  content:"";position:absolute;inset:0;
+  background:
+    linear-gradient(180deg, rgba(10,16,15,.93) 0%, rgba(10,16,15,.86) 42%, rgba(10,16,15,.34) 80%, var(--band-bg) 100%),
+    radial-gradient(80% 70% at 84% 100%, rgba(27,78,68,.4) 0%, transparent 70%);
+}
+@media (max-width:820px){
+  /* En vertical el texto llega más abajo, así que el velo aguanta más rato */
+  .band-bg::after{background:
+    linear-gradient(180deg, rgba(10,16,15,.94) 0%, rgba(10,16,15,.9) 66%, rgba(10,16,15,.46) 88%, var(--band-bg) 100%),
+    radial-gradient(90% 50% at 80% 100%, rgba(27,78,68,.36) 0%, transparent 72%);}
 }
 /* Un filete de acento cruza la banda de lado a lado al llegar a ella */
 #contacto::after{
   content:"";position:absolute;top:0;left:0;right:0;height:1.5px;
-  transform:scaleX(0);transform-origin:left;background:var(--invert-accent);
+  transform:scaleX(0);transform-origin:left;background:var(--band-accent);
   transition:transform 1s cubic-bezier(.22,.61,.18,1);
 }
 #contacto.lit::after{transform:scaleX(1)}
 .reasons{list-style:none;margin:0;padding:0}
 .reasons li{padding:10px 0;border-top:1px solid var(--rule);font-size:var(--fs-5);color:var(--ink-2)}
-#contacto h2{color:var(--invert-fg)}
-#contacto .copy,#contacto .reasons li,#contacto .micro,#contacto h4{color:var(--invert-fg2)}
-#contacto .eyebrow{color:var(--invert-accent)}
-#contacto .rail-k{color:var(--invert-fg)}
-#contacto .rail-v{color:var(--invert-fg2)}
-#contacto .rail-mark{color:var(--invert-accent)}
-#contacto .reasons li{border-color:var(--invert-bd)}
-#contacto .btn-solid{background:var(--invert-fg);border-color:var(--invert-fg);color:var(--invert-bg)}
-#contacto .btn-solid:hover{background:var(--invert-accent);border-color:var(--invert-accent);color:var(--invert-bg)}
-#contacto .btn-line{color:var(--invert-fg);border-color:var(--invert-bd)}
-#contacto .btn-line:hover{border-color:var(--invert-fg);color:var(--invert-fg)}
+#contacto h2{color:var(--band-fg)}
+#contacto .copy,#contacto .reasons li,#contacto .micro,#contacto h4{color:var(--band-fg2)}
+#contacto .eyebrow{color:var(--band-accent)}
+#contacto .rail-k{color:var(--band-fg)}
+#contacto .rail-v{color:var(--band-fg2)}
+#contacto .rail-mark{color:var(--band-accent)}
+#contacto .reasons li{border-color:var(--band-bd)}
+#contacto .btn-solid{background:var(--band-fg);border-color:var(--band-fg);color:var(--band-bg)}
+#contacto .btn-solid:hover{background:var(--band-accent);border-color:var(--band-accent);color:var(--band-bg)}
+#contacto .btn-line{color:var(--band-fg);border-color:var(--band-bd)}
+#contacto .btn-line:hover{border-color:var(--band-fg);color:var(--band-fg)}
 
 /* ═══════════ PIE ═══════════ */
 .foot{border-top:1px solid var(--rule);padding-top:42px;padding-bottom:56px;margin-top:clamp(56px,7vw,96px)}
@@ -575,6 +596,8 @@ a,button{-webkit-tap-highlight-color:transparent}
   .slot-lbl{font-size:var(--fs-1);letter-spacing:.12em}
 }
 
+
+:root{--band-img:url("/cierre.jpg")}
 
 /* Reglas que antes ponía el envoltorio del visor de artifacts y ahora son nuestras */
 img{max-width:100%}
