@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="description" content="Dr. Manuel Bengoa. Medicina estetica, medicina capilar y cirugia capilar con enfoque medico y resultados naturales.">
-<meta name="theme-color" content="#0A100F">
+<meta name="theme-color" content="#F3F1EA">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="GOA Medical Aesthetics">
 <meta property="og:title" content="Consentimientos informados · GOA Medical Aesthetics">
@@ -13,10 +13,6 @@
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><circle cx=%2750%27 cy=%2750%27 r=%2742%27 fill=%27none%27 stroke=%27%23ECE8DE%27 stroke-width=%276%27/><path fill=%27%23ECE8DE%27 d=%27M48 18 L52 18 L28 80 L22 80 Z%27/><path fill=%27%23ECE8DE%27 d=%27M46 18 L54 18 L78 80 L66 80 Z%27/></svg>">
 <title>Consentimientos informados · GOA Medical Aesthetics</title>
-<script>
-/* El tema se estampa antes de la primera pintura: oscuro por defecto. */
-(function(){try{var t=localStorage.getItem("goa-theme");document.documentElement.setAttribute("data-theme",t==="light"?"light":"dark");}catch(e){document.documentElement.setAttribute("data-theme","dark");}})();
-</script>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="/goa.css">
@@ -55,7 +51,6 @@
     </nav>
     <div class="hact">
       <a class="btn btn-solid btn-sm cta-top" href="/#contacto">Pedir valoración</a>
-      <button class="icon-btn theme-btn" id="theme" type="button" title="Cambiar tema" aria-label="Cambiar tema">◐</button>
     </div>
   </header>
 </div>
@@ -136,17 +131,6 @@
 <script>
 (function(){
   "use strict";
-
-  var root=document.documentElement, btn=document.getElementById("theme");
-  function current(){ var s=root.getAttribute("data-theme"); return s || (matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"); }
-  function label(){ var d=current()==="dark"; btn.textContent=d?"◐":"◑"; btn.title=d?"Ver en claro":"Ver en oscuro"; btn.setAttribute("aria-label",btn.title); }
-  label();
-  btn.addEventListener("click",function(){
-    var next=current()==="dark"?"light":"dark";
-    root.setAttribute("data-theme",next);
-    try{ localStorage.setItem("goa-theme",next); }catch(e){}
-    label();
-  });
 
   var island=document.getElementById("island"), navd=document.getElementById("navd");
   addEventListener("scroll",function(){ island.classList.toggle("on", scrollY>12); },{passive:true});

@@ -24,12 +24,6 @@ ICON = ('<link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.o
         'stroke=%27%23ECE8DE%27 stroke-width=%276%27/><path fill=%27%23ECE8DE%27 '
         'd=%27M48 18 L52 18 L28 80 L22 80 Z%27/><path fill=%27%23ECE8DE%27 '
         'd=%27M46 18 L54 18 L78 80 L66 80 Z%27/></svg>">')
-TEMA = ('<script>\n'
-        '/* El tema se estampa antes de la primera pintura: oscuro por defecto. */\n'
-        '(function(){try{var t=localStorage.getItem("goa-theme");'
-        'document.documentElement.setAttribute("data-theme",t==="light"?"light":"dark");}'
-        'catch(e){document.documentElement.setAttribute("data-theme","dark");}})();\n'
-        '</script>')
 FUENTES = ('<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
            '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?'
            'family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600&'
@@ -120,7 +114,7 @@ def cabeza(titulo, descripcion, canonica=None):
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="description" content="{E(descripcion)}">
-<meta name="theme-color" content="#0A100F">
+<meta name="theme-color" content="#F3F1EA">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="GOA Medical Aesthetics">
 <meta property="og:title" content="{E(titulo)}">
@@ -128,7 +122,6 @@ def cabeza(titulo, descripcion, canonica=None):
 <meta name="twitter:card" content="summary">
 {ICON}
 <title>{E(titulo)}</title>
-{TEMA}
 {FUENTES}
 <link rel="stylesheet" href="/goa.css">
 </head>
@@ -157,7 +150,6 @@ def isla(volver=False):
     </nav>
     <div class="hact">
       <a class="btn btn-solid btn-sm cta-top" href="/#contacto">Pedir valoración</a>
-      <button class="icon-btn theme-btn" id="theme" type="button" title="Cambiar tema" aria-label="Cambiar tema">◐</button>
     </div>
   </header>
 </div>"""
@@ -189,17 +181,6 @@ def menu_js():
     """El comportamiento del header, común a todas las páginas que no son la
     home: tema, isla, tira de secciones, desplegable y marca en reposo."""
     return """
-  var root=document.documentElement, btn=document.getElementById("theme");
-  function current(){ var s=root.getAttribute("data-theme"); return s || (matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"); }
-  function label(){ var d=current()==="dark"; btn.textContent=d?"\u25d0":"\u25d1"; btn.title=d?"Ver en claro":"Ver en oscuro"; btn.setAttribute("aria-label",btn.title); }
-  label();
-  btn.addEventListener("click",function(){
-    var next=current()==="dark"?"light":"dark";
-    root.setAttribute("data-theme",next);
-    try{ localStorage.setItem("goa-theme",next); }catch(e){}
-    label();
-  });
-
   var island=document.getElementById("island"), navd=document.getElementById("navd");
   addEventListener("scroll",function(){ island.classList.toggle("on", scrollY>12); },{passive:true});
   var xr=document.getElementById("navx-r");

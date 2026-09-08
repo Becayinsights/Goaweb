@@ -7,18 +7,20 @@ Proyecto independiente. **No comparte código, datos ni despliegue con Becay Ren
 
 | Fase | Estado |
 |---|---|
-| Diseño (home + fichas) | v18 publicada para revisión |
+| Diseño (home + fichas) | v19 publicada para revisión |
 | Contenido real (fotos, testimonios, datos de contacto) | pendiente del cliente |
 | Implementación Next.js | no empezada |
 | Área privada (fichas médicas, usuarios) | fuera de alcance en esta fase |
 
 ## Sistema visual
 
-**Paleta v3.** El mismo concepto —hueso mineral, negro petróleo, verde
-quirófano— llevado más hondo: el negro deja de tirar a gris, el hueso se
-calienta un punto y los filetes se afinan. La sensación de material caro sale
-de ahí, no de meter más color. Ningún color literal fuera del bloque de tokens
-al principio de `design/goa-home.html`.
+**Paleta v4, un solo tema.** El claro. El hueso mineral es la marca y en
+oscuro la web parecía otra; mantener los dos obligaba además a validar dos
+veces cada foto, cada velo y cada sombra, y de ahí salieron la mitad de los
+saltos visuales que fuimos corrigiendo. El verde va hondo: en piezas pequeñas
+—filetes, chips, el estado activo— uno claro se lee como decoración y uno
+oscuro se lee como marca. Ningún color literal fuera del bloque de tokens al
+principio de `design/goa-home.html`.
 
 **Dos escalas tipográficas y ninguna medida suelta.** La de texto tiene seis
 escalones (`--fs-1` a `--fs-6`) y la de la serif, que hace de display, dos
