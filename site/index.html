@@ -51,7 +51,7 @@
       <a href="#faq">FAQ</a>
     </nav>
     <div class="hact">
-      <a class="btn btn-solid btn-sm cta-top" href="#contacto">Pedir valoración</a>
+      <a class="btn btn-solid btn-sm cta-top" href="#contacto"><span class="cta-larga">Pedir valoración</span><span class="cta-corta">Valoración</span></a>
     </div>
   </header>
 </div>
@@ -512,7 +512,6 @@
         <p class="copy">Reserva tu cita y te orientaré sobre el tratamiento más adecuado para ti, con una visión médica clara, honesta y personalizada.</p>
         <div class="actions">
           <a class="btn btn-solid" href="#">Reservar cita</a>
-          <a class="btn btn-line" href="#">WhatsApp</a>
         </div>
       </div>
       <div>
@@ -593,7 +592,6 @@
   <nav class="nav" id="navd" aria-label="Secciones de la página">
       <a href="#resultados">Antes y después</a>
       <a href="#especialidades">Especialidades</a>
-      <button class="drop" type="button" aria-expanded="false" aria-controls="mega">Tratamientos <span class="caret" aria-hidden="true">›</span></button>
       <a href="#sobre-mi">Sobre mí</a>
       <a href="#faq">FAQ</a>
   </nav>
@@ -681,22 +679,25 @@
   var markLink=document.querySelector(".island .mark");
   if(markLink){ markLink.addEventListener("click",function(){ replayIntro(); }); }
 
-  /* En reposo la marca respira: se pliega en la A y vuelve a abrirse en GOA.
-     Una sola vez por parada. El gesto se arma con cada interacción y se gasta
-     al ejecutarse, así que tras pararte lo hace una vez y se queda quieto;
-     repetirlo cada dos segundos convertía un detalle en un parpadeo. */
-  var REPOSO=2000, ultimo=Date.now(), armado=false;
-  function actividad(){ ultimo=Date.now(); armado=true; }
-  ["scroll","pointerdown","keydown","touchstart"].forEach(function(ev){
+  /* La marca tiene dos estados y no un bucle: con la página quieta se pliega
+     en el isologo y ahí se queda; en cuanto se vuelve a mover, se abre en GOA.
+     Así el gesto ocurre una sola vez por parada y lo que se ve entre medias es
+     un estado, no una animación repitiéndose. */
+  var REPOSO=2500, ultimo=Date.now();
+  function actividad(){ ultimo=Date.now(); island.classList.remove("reposo"); }
+  ["scroll","wheel","pointerdown","keydown","touchstart"].forEach(function(ev){
     addEventListener(ev, actividad, {passive:true});
   });
+  /* La clase de la entrada se retira al acabar: su fill both deja congelados el
+     transform y la opacidad, y con ellos congelados el plegado no se ve. */
+  island.addEventListener("animationend", function(e){
+    if(e.animationName==="goIn") island.classList.remove("intro");
+  });
   setInterval(function(){
-    if(!armado || reduce.matches || document.hidden) return;
+    if(reduce.matches || document.hidden) return;
     if(Date.now() - ultimo < REPOSO) return;
-    armado=false;
-    island.classList.remove("intro");
-    void island.offsetWidth;
-    island.classList.add("intro");
+    if(island.classList.contains("intro")) return;
+    island.classList.add("reposo");
   }, 250);
 
   /* Desplegable de tratamientos. En escritorio se cuelga de la isla leyendo su
@@ -704,14 +705,15 @@
      móvil el CSS lo ancla sobre la barra inferior. */
   var mega=document.getElementById("mega");
   function colocar(){
+    var r=island.getBoundingClientRect();
+    mega.style.top=(r.bottom + 8) + "px";
+    mega.style.maxHeight=(innerHeight - r.bottom - 24) + "px";
     if(innerWidth > 980){
-      var r=island.getBoundingClientRect();
-      mega.style.top=(r.bottom + 8) + "px";
       mega.style.left=r.left + "px";
       mega.style.width=r.width + "px";
-      mega.style.maxHeight=(innerHeight - r.bottom - 32) + "px";
     } else {
-      mega.style.top=mega.style.left=mega.style.width=mega.style.maxHeight="";
+      /* El ancho lo pone el CSS con left y right; aquí solo el alto. */
+      mega.style.left=mega.style.width="";
     }
   }
   function abrir(v){

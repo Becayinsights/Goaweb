@@ -50,7 +50,7 @@
       <a href="/#faq">FAQ</a>
     </nav>
     <div class="hact">
-      <a class="btn btn-solid btn-sm cta-top" href="/#contacto">Pedir valoración</a>
+      <a class="btn btn-solid btn-sm cta-top" href="/#contacto"><span class="cta-larga">Pedir valoración</span><span class="cta-corta">Valoración</span></a>
     </div>
   </header>
 </div>
@@ -103,7 +103,6 @@
   <nav class="nav" id="navd" aria-label="Secciones de la página">
       <a href="/#resultados">Antes y después</a>
       <a href="/#especialidades">Especialidades</a>
-      <button class="drop" type="button" aria-expanded="false" aria-controls="mega">Tratamientos <span class="caret" aria-hidden="true">›</span></button>
       <a href="/#sobre-mi">Sobre mí</a>
       <a href="/#faq">FAQ</a>
   </nav>
@@ -143,15 +142,11 @@
   var mega=document.getElementById("mega");
   var drops=Array.prototype.slice.call(document.querySelectorAll(".drop"));
   function colocar(){
-    if(innerWidth > 980){
-      var r=island.getBoundingClientRect();
-      mega.style.top=(r.bottom + 8) + "px";
-      mega.style.left=r.left + "px";
-      mega.style.width=r.width + "px";
-      mega.style.maxHeight=(innerHeight - r.bottom - 32) + "px";
-    } else {
-      mega.style.top=mega.style.left=mega.style.width=mega.style.maxHeight="";
-    }
+    var r=island.getBoundingClientRect();
+    mega.style.top=(r.bottom + 8) + "px";
+    mega.style.maxHeight=(innerHeight - r.bottom - 24) + "px";
+    if(innerWidth > 980){ mega.style.left=r.left + "px"; mega.style.width=r.width + "px"; }
+    else { mega.style.left=mega.style.width=""; }
   }
   function abrir(v){
     if(v) colocar();
@@ -162,21 +157,25 @@
   var cierre;
   function entrar(){ clearTimeout(cierre); abrir(true); }
   function salir(){ clearTimeout(cierre); cierre=setTimeout(function(){ abrir(false); }, 180); }
+  /* Con ratón y ancho de escritorio se abre al pasar por encima y el clic lleva
+     a la sección; en móvil, donde el botón vive en la isla junto a la llamada,
+     el toque abre y cierra. Mirando solo el puntero, en un equipo con ratón y
+     ventana estrecha el botón navegaba y el panel no llegaba a abrirse. */
   drops.forEach(function(b){
     b.addEventListener("click",function(e){
       e.stopPropagation();
-      if(conRaton){ abrir(false); location.href = "/#tratamientos"; }
+      if(conRaton && innerWidth > 980){ abrir(false); location.href = "/#tratamientos"; }
       else { abrir(mega.hidden); }
     });
     if(conRaton){
-      b.addEventListener("mouseenter", entrar);
-      b.addEventListener("mouseleave", salir);
-      b.addEventListener("focus", entrar);
+      b.addEventListener("mouseenter", function(){ if(innerWidth > 980) entrar(); });
+      b.addEventListener("mouseleave", function(){ if(innerWidth > 980) salir(); });
+      b.addEventListener("focus", function(){ if(innerWidth > 980) entrar(); });
     }
   });
   if(conRaton){
-    mega.addEventListener("mouseenter", entrar);
-    mega.addEventListener("mouseleave", salir);
+    mega.addEventListener("mouseenter", function(){ if(innerWidth > 980) entrar(); });
+    mega.addEventListener("mouseleave", function(){ if(innerWidth > 980) salir(); });
   }
   document.addEventListener("click",function(e){ if(!mega.hidden && !mega.contains(e.target)) abrir(false); });
   mega.addEventListener("click",function(e){ if(e.target.closest("a")) abrir(false); });
@@ -184,16 +183,20 @@
   addEventListener("resize",function(){ if(!mega.hidden) colocar(); });
   addEventListener("scroll",function(){ if(!mega.hidden) colocar(); },{passive:true});
 
-  /* La marca en reposo se pliega en A y vuelve a GOA */
+  /* Dos estados y no un bucle: con la página quieta la marca se pliega en el
+     isologo y ahí se queda; al volver a moverse, se abre en GOA. */
   var reduce=matchMedia("(prefers-reduced-motion: reduce)"), ultimo=Date.now();
-  ["scroll","pointerdown","keydown","touchstart"].forEach(function(ev){
-    addEventListener(ev,function(){ ultimo=Date.now(); },{passive:true});
+  ["scroll","wheel","pointerdown","keydown","touchstart"].forEach(function(ev){
+    addEventListener(ev,function(){ ultimo=Date.now(); island.classList.remove("reposo"); },{passive:true});
+  });
+  island.addEventListener("animationend",function(e){
+    if(e.animationName==="goIn") island.classList.remove("intro");
   });
   setInterval(function(){
-    if(reduce.matches || document.hidden || Date.now()-ultimo < 2000) return;
-    ultimo=Date.now();
-    island.classList.remove("intro"); void island.offsetWidth; island.classList.add("intro");
-  }, 1000);
+    if(reduce.matches || document.hidden || Date.now()-ultimo < 2500) return;
+    if(island.classList.contains("intro")) return;
+    island.classList.add("reposo");
+  }, 250);
 
 })();
 </script>

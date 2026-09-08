@@ -137,6 +137,17 @@ em{font-style:italic}
 .island.intro .mark-go{animation:goIn .45s .6s ease both}
 @keyframes aCenter{from{transform:translateX(-.62em)}to{transform:none}}
 @keyframes goIn{from{opacity:0}to{opacity:1}}
+/* Con la página quieta la marca se pliega en el isologo —la G y la O se apagan
+   y la A se queda centrada— y al volver a moverse se abre otra vez en GOA.
+   Va por transición y no por keyframes justamente para poder deshacerse a
+   medias: si vuelves a mover la página mientras se pliega, se abre desde donde
+   esté en vez de dar un salto. Por eso también se retira la clase .intro en
+   cuanto su animación termina; si se queda puesta, su fill both congela el
+   transform y la transición no tiene nada que animar. */
+.mark-go{transition:opacity .5s ease}
+.mark-fill{transition:transform .6s cubic-bezier(.22,.61,.18,1)}
+.island.reposo .mark-go{opacity:0}
+.island.reposo .mark-fill{transform:translateX(-.62em)}
 .nav{display:flex;gap:clamp(14px,1.7vw,22px);margin-left:auto;align-items:center}
 .nav a:not(.btn),.nav .drop{
   font-family:inherit;font-size:var(--fs-3);font-weight:400;color:var(--ink-2);text-decoration:none;
@@ -172,11 +183,10 @@ em{font-style:italic}
 .mega .tlist a{padding:9px 0;font-size:var(--fs-5)}
 .mega-todos{margin-top:20px;padding-top:16px;border-top:1px solid var(--rule);width:100%}
 @media (max-width:980px){
-  .mega{
-    left:12px;right:12px;width:auto;top:auto;
-    bottom:calc(80px + env(safe-area-inset-bottom));max-height:62vh;
-  }
-  @keyframes megaIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  /* Cuelga de la isla igual que en escritorio —el JS le da el alto— porque el
+     botón que lo abre está arriba: un panel que subiera desde abajo no tendría
+     de dónde salir. */
+  .mega{left:12px;right:12px;width:auto;bottom:auto;max-height:70vh}
   .mega .index{grid-template-columns:1fr;gap:24px}
 }
 .hact{display:flex;align-items:center;gap:8px;flex-shrink:0}
@@ -191,8 +201,14 @@ em{font-style:italic}
     background:var(--glass-solid);
     backdrop-filter:none;-webkit-backdrop-filter:none;
   }
-  .island .nav{display:none}
-  .hact{margin-left:auto}
+  /* En móvil la isla se queda con la marca, tratamientos y la llamada: el
+     desplegable es lo único que no es un salto a una sección, así que es lo
+     único que no tiene sentido en la barra de abajo. Los enlaces de sección
+     se ocultan aquí y viven en el dock. */
+  .island .nav{display:flex;margin-left:auto;gap:0}
+  .island .nav a:not(.btn){display:none}
+  .island .nav .drop{padding:10px 0}
+  .hact{margin-left:0}
   .dock{
     display:flex;position:fixed;z-index:60;align-items:stretch;
     left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));
@@ -224,6 +240,19 @@ em{font-style:italic}
   .dock .nav a:not(.btn){padding:13px 9px;font-size:var(--fs-3)}
   .btn-sm{padding:9px 13px;font-size:var(--fs-3)}
 }
+/* En 320 px la marca, tratamientos y la llamada no caben con las medidas de
+   siempre. Antes de quitar nada se aprieta: la marca baja un punto y los aires
+   se estrechan. El chevrón se queda, que es la única señal de que despliega. */
+@media (max-width:360px){
+  .island{column-gap:6px;padding:7px 6px 7px 10px}
+  .mark-w{font-size:19px}
+  .btn-sm{padding:9px 11px}
+  /* Y la llamada se queda en el sustantivo: se dice lo mismo con una palabra
+     menos, que es mejor que encoger la letra hasta que no se lea. */
+  .cta-top .cta-larga{display:none}
+  .cta-top .cta-corta{display:inline}
+}
+.cta-top .cta-corta{display:none}
 
 /* ═══════════ MARCA ═══════════ */
 .mark{display:flex;align-items:center;gap:11px;text-decoration:none;flex-shrink:0}
@@ -676,7 +705,7 @@ a,button{-webkit-tap-highlight-color:transparent}
       <a href="#faq">FAQ</a>
     </nav>
     <div class="hact">
-      <a class="btn btn-solid btn-sm cta-top" href="#contacto">Pedir valoración</a>
+      <a class="btn btn-solid btn-sm cta-top" href="#contacto"><span class="cta-larga">Pedir valoración</span><span class="cta-corta">Valoración</span></a>
     </div>
   </header>
 </div>
@@ -990,7 +1019,6 @@ a,button{-webkit-tap-highlight-color:transparent}
         <p class="copy">Reserva tu cita y te orientaré sobre el tratamiento más adecuado para ti, con una visión médica clara, honesta y personalizada.</p>
         <div class="actions">
           <a class="btn btn-solid" href="#">Reservar cita</a>
-          <a class="btn btn-line" href="#">WhatsApp</a>
         </div>
       </div>
       <div>
@@ -1042,7 +1070,6 @@ a,button{-webkit-tap-highlight-color:transparent}
   <nav class="nav" id="navd" aria-label="Secciones de la página">
       <a href="#resultados">Antes y después</a>
       <a href="#especialidades">Especialidades</a>
-      <button class="drop" type="button" aria-expanded="false" aria-controls="mega">Tratamientos <span class="caret" aria-hidden="true">›</span></button>
       <a href="#sobre-mi">Sobre mí</a>
       <a href="#faq">FAQ</a>
   </nav>
@@ -1130,22 +1157,25 @@ a,button{-webkit-tap-highlight-color:transparent}
   var markLink=document.querySelector(".island .mark");
   if(markLink){ markLink.addEventListener("click",function(){ replayIntro(); }); }
 
-  /* En reposo la marca respira: se pliega en la A y vuelve a abrirse en GOA.
-     Una sola vez por parada. El gesto se arma con cada interacción y se gasta
-     al ejecutarse, así que tras pararte lo hace una vez y se queda quieto;
-     repetirlo cada dos segundos convertía un detalle en un parpadeo. */
-  var REPOSO=2000, ultimo=Date.now(), armado=false;
-  function actividad(){ ultimo=Date.now(); armado=true; }
-  ["scroll","pointerdown","keydown","touchstart"].forEach(function(ev){
+  /* La marca tiene dos estados y no un bucle: con la página quieta se pliega
+     en el isologo y ahí se queda; en cuanto se vuelve a mover, se abre en GOA.
+     Así el gesto ocurre una sola vez por parada y lo que se ve entre medias es
+     un estado, no una animación repitiéndose. */
+  var REPOSO=2500, ultimo=Date.now();
+  function actividad(){ ultimo=Date.now(); island.classList.remove("reposo"); }
+  ["scroll","wheel","pointerdown","keydown","touchstart"].forEach(function(ev){
     addEventListener(ev, actividad, {passive:true});
   });
+  /* La clase de la entrada se retira al acabar: su fill both deja congelados el
+     transform y la opacidad, y con ellos congelados el plegado no se ve. */
+  island.addEventListener("animationend", function(e){
+    if(e.animationName==="goIn") island.classList.remove("intro");
+  });
   setInterval(function(){
-    if(!armado || reduce.matches || document.hidden) return;
+    if(reduce.matches || document.hidden) return;
     if(Date.now() - ultimo < REPOSO) return;
-    armado=false;
-    island.classList.remove("intro");
-    void island.offsetWidth;
-    island.classList.add("intro");
+    if(island.classList.contains("intro")) return;
+    island.classList.add("reposo");
   }, 250);
 
   /* Desplegable de tratamientos. En escritorio se cuelga de la isla leyendo su
@@ -1153,14 +1183,15 @@ a,button{-webkit-tap-highlight-color:transparent}
      móvil el CSS lo ancla sobre la barra inferior. */
   var mega=document.getElementById("mega");
   function colocar(){
+    var r=island.getBoundingClientRect();
+    mega.style.top=(r.bottom + 8) + "px";
+    mega.style.maxHeight=(innerHeight - r.bottom - 24) + "px";
     if(innerWidth > 980){
-      var r=island.getBoundingClientRect();
-      mega.style.top=(r.bottom + 8) + "px";
       mega.style.left=r.left + "px";
       mega.style.width=r.width + "px";
-      mega.style.maxHeight=(innerHeight - r.bottom - 32) + "px";
     } else {
-      mega.style.top=mega.style.left=mega.style.width=mega.style.maxHeight="";
+      /* El ancho lo pone el CSS con left y right; aquí solo el alto. */
+      mega.style.left=mega.style.width="";
     }
   }
   function abrir(v){
