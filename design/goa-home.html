@@ -368,21 +368,6 @@ body.moved .scrolldown{opacity:0;transform:translateY(6px);pointer-events:none}
 }
 .tlist a:hover .tprice{color:var(--accent-text)}
 
-/* ═══════════ PRECIOS ═══════════ */
-.prices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(22px,3vw,44px)}
-.prices>*{min-width:0}
-@media (max-width:900px){.prices{grid-template-columns:1fr;gap:30px}}
-.pgroup h4{margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--rule-2)}
-.prow{
-  display:flex;align-items:baseline;justify-content:space-between;gap:14px;
-  padding:12px 0;border-bottom:1px solid var(--rule);text-decoration:none;
-  transition:color .22s ease,padding-left .28s cubic-bezier(.22,.61,.18,1);
-}
-.prow:hover{padding-left:8px}
-.pname{font-size:15.5px;color:var(--ink)}
-.prow:hover .pname{color:var(--accent-text)}
-.pval{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.04em;color:var(--ink-2);white-space:nowrap;flex-shrink:0}
-
 /* ═══════════ SOBRE MÍ ═══════════ */
 .about{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.8fr);gap:clamp(26px,4vw,56px);align-items:start}
 @media (max-width:900px){.about{grid-template-columns:1fr}}
@@ -404,7 +389,19 @@ body.moved .scrolldown{opacity:0;transform:translateY(6px);pointer-events:none}
   padding:22px 22px 20px;display:flex;flex-direction:column;gap:15px;margin:0;
 }
 .quote-body{font-family:"Instrument Serif",serif;font-size:18px;line-height:1.45;color:var(--ink-2);margin:0}
-.quote-foot{margin-top:auto;display:flex;flex-direction:column;gap:3px}
+/* Cabecera de la reseña: quién la escribe. El círculo es el hueco del retrato
+   y aguanta vacío —con la marca dentro— hasta que haya foto. */
+.quote-perfil{display:flex;align-items:center;gap:11px}
+.avatar{
+  width:38px;height:38px;border-radius:50%;flex-shrink:0;overflow:hidden;
+  border:1px solid var(--rule-2);display:flex;align-items:center;justify-content:center;
+  background:repeating-linear-gradient(-45deg,var(--hatch) 0 1px,transparent 1px 9px);
+}
+.avatar svg{width:13px;height:14px;color:var(--ink-3);opacity:.5}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.perfil-n{font-size:14.5px;font-weight:500;color:var(--ink);line-height:1.25}
+.perfil-t{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-3);line-height:1.5}
 .flow > #more-quotes{margin-top:22px}
 
 /* ═══════════ FAQ ═══════════ */
@@ -453,22 +450,6 @@ details .ans{padding:0 0 20px 28px;color:var(--ink-2);font-size:16px;line-height
 #contacto .btn-line{color:var(--invert-fg);border-color:var(--invert-bd)}
 #contacto .btn-line:hover{border-color:var(--invert-fg);color:var(--invert-fg)}
 
-/* ═══════════ MARCA — propuesta ═══════════ */
-.brandbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--rule);margin-top:34px}
-.brandbar>*{min-width:0}
-@media (max-width:820px){.brandbar{grid-template-columns:1fr}}
-.bcell{padding:30px 24px;border-right:1px solid var(--rule);display:flex;flex-direction:column;gap:18px;align-items:flex-start}
-.bcell:last-child{border-right:none}
-@media (max-width:820px){.bcell{border-right:none;border-bottom:1px solid var(--rule)}.bcell:last-child{border-bottom:none}}
-.bcell.dark{background:var(--ink);color:var(--paper)}
-.bcell.dark .micro{color:rgba(239,238,232,.6)}
-.bstage{display:flex;align-items:center;justify-content:center;width:100%;min-height:96px}
-.stack{display:flex;flex-direction:column;align-items:center;gap:9px;text-align:center}
-.stack-w{font-family:"Instrument Serif",serif;font-size:38px;letter-spacing:.14em;line-height:1;padding-left:.14em;display:inline-flex;align-items:baseline}
-.stack-s{font-family:"IBM Plex Mono",monospace;font-size:8px;letter-spacing:.28em;text-transform:uppercase;opacity:.72}
-.swatches{display:flex;gap:0;width:100%;height:34px;border:1px solid var(--rule)}
-.swatches>i{flex:1}
-
 /* ═══════════ PIE ═══════════ */
 .foot{border-top:1px solid var(--rule);padding-top:42px;padding-bottom:56px;margin-top:clamp(56px,7vw,96px)}
 .foot-in{display:flex;flex-wrap:wrap;gap:30px;justify-content:space-between;align-items:flex-start}
@@ -503,7 +484,7 @@ details .ans{padding:0 0 20px 28px;color:var(--ink-2);font-size:16px;line-height
    rejillas. Sin esto cada sección respiraba distinto y el conjunto bailaba. */
 .flow > * + *{margin-top:20px}
 .flow > .areas,.flow > .steps,.flow > .index,.flow > .quotes,
-.flow > .faq,.flow > .brandbar,.flow > .notice{margin-top:34px}
+.flow > .faq,.flow > .notice{margin-top:34px}
 .flow > .filters{margin-top:26px}
 .flow > .principles{margin-top:30px}
 .flow > .mt-lg{margin-top:38px}
@@ -544,7 +525,6 @@ a,button{-webkit-tap-highlight-color:transparent}
   .cta .actions{gap:10px}
   .cta .actions .btn{flex:1 1 100%;justify-content:center;padding:14px 20px;font-size:15px}
   .notice{font-size:14.5px;padding:14px 16px}
-  .bcell{padding:24px 20px}
   .foot-in{gap:22px}
 }
 
@@ -594,8 +574,7 @@ a,button{-webkit-tap-highlight-color:transparent}
       <span class="mark-sub">Medical Aesthetics<br>Dr. Bengoa</span>
     </a>
     <nav class="nav" id="nav" aria-label="Secciones de la página">
-      <a href="#precios">Precios</a>
-      <a href="#tratamientos">Tratamientos</a>
+      <a href="#tratamientos">Tratamientos y precios</a>
       <a href="#resultados">Antes y después</a>
       <a href="#especialidades">Especialidades</a>
       <a href="#sobre-mi">Sobre mí</a>
@@ -727,31 +706,31 @@ a,button{-webkit-tap-highlight-color:transparent}
       <div class="cases" id="cases">
         <figure class="case" data-cat="estetica labios">
           <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
-          <figcaption class="case-meta"><span class="case-name">Labios · ácido hialurónico</span><span class="micro">Foto pendiente</span></figcaption>
+          <figcaption class="case-meta"><span class="case-name">Labios · ácido hialurónico</span></figcaption>
         </figure>
         <figure class="case" data-cat="estetica ojeras">
           <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
-          <figcaption class="case-meta"><span class="case-name">Ojeras</span><span class="micro">Foto pendiente</span></figcaption>
+          <figcaption class="case-meta"><span class="case-name">Ojeras</span></figcaption>
         </figure>
         <figure class="case" data-cat="estetica superior">
           <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
-          <figcaption class="case-meta"><span class="case-name">Tercio superior</span><span class="micro">Foto pendiente</span></figcaption>
+          <figcaption class="case-meta"><span class="case-name">Tercio superior</span></figcaption>
         </figure>
         <figure class="case" data-cat="estetica rino">
           <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
-          <figcaption class="case-meta"><span class="case-name">Rinomodelación</span><span class="micro">Foto pendiente</span></figcaption>
+          <figcaption class="case-meta"><span class="case-name">Rinomodelación</span></figcaption>
         </figure>
         <figure class="case" data-cat="capilar">
           <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
-          <figcaption class="case-meta"><span class="case-name">Mesoterapia capilar</span><span class="micro">Foto pendiente</span></figcaption>
+          <figcaption class="case-meta"><span class="case-name">Mesoterapia capilar</span></figcaption>
         </figure>
         <figure class="case" data-cat="estetica mandibula">
           <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
-          <figcaption class="case-meta"><span class="case-name">Marcación mandibular</span><span class="micro">Foto pendiente</span></figcaption>
+          <figcaption class="case-meta"><span class="case-name">Marcación mandibular</span></figcaption>
         </figure>
       </div>
 
-      <p class="notice">Las imágenes muestran resultados reales, pero cada caso requiere una valoración individual y no todos los pacientes obtienen exactamente la misma evolución. <span class="micro" style="display:block;margin-top:8px">Maqueta: los seis huecos están vacíos a propósito. Se rellenan con fotografía clínica propia y consentimiento firmado del paciente. Los casos de injerto capilar se retiran hasta disponer de resultados propios con evolución suficiente.</span></p>
+      <p class="notice">Las imágenes muestran resultados reales, pero cada caso requiere una valoración individual y no todos los pacientes obtienen exactamente la misma evolución.</p>
     </div>
   </div>
 </section>
@@ -793,91 +772,20 @@ a,button{-webkit-tap-highlight-color:transparent}
   </div>
 </section>
 
-<!-- ══════════ TRATAMIENTOS ══════════ -->
+<!-- ══════════ TRATAMIENTOS Y PRECIOS ══════════ -->
 <section class="shell band" id="tratamientos">
   <div class="grid">
     <div class="rail">
       <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
       <div class="rail-k">Tratamientos</div>
-      <div class="rail-v">15 fichas · una por página</div>
+      <div class="rail-v">Qué se trata · y a qué precio</div>
     </div>
     <div class="flow">
-      <h2>Qué se puede tratar</h2>
-      <p class="copy">Cada tratamiento tiene su propia página: qué es, para quién está indicado, cómo se realiza, beneficios, duración y recuperación, resultados, preguntas frecuentes y precio.</p>
-
-      <div class="index">
-        <div>
-          <h4>Medicina estética</h4>
-          <ul class="tlist">
-            <li><a href="/tratamientos/neuromoduladores">Neuromoduladores <span class="tprice">350 €</span></a></li>
-            <li><a href="/tratamientos/acido-hialuronico">Ácido hialurónico <span class="tprice">330 € / vial</span></a></li>
-            <li><a href="/tratamientos/armonizacion-facial">Armonización facial <span class="tprice">Desde 1.900 €</span></a></li>
-            <li><a href="/tratamientos/ojeras">Tratamiento de ojeras <span class="tprice">390 €</span></a></li>
-            <li><a href="/tratamientos/labios">Aumento y definición de labios <span class="tprice">350 €</span></a></li>
-            <li><a href="/tratamientos/bioestimulacion-calidad-piel">Bioestimulación y calidad de la piel <span class="tprice">390 €</span></a></li>
-          </ul>
-        </div>
-        <div>
-          <h4>Medicina capilar</h4>
-          <ul class="tlist">
-            <li><a href="/tratamientos/primera-valoracion-capilar">Primera valoración capilar <span class="tprice">60 €</span></a></li>
-            <li><a href="/tratamientos/mesoterapia-capilar">Mesoterapia capilar <span class="tprice">250 € / sesión</span></a></li>
-            <li><a href="/tratamientos/prp-capilar">PRP capilar y bioestimulación <span class="tprice">250 € / sesión</span></a></li>
-            <li><a href="/tratamientos/tratamiento-medico-alopecia">Tratamiento médico de la alopecia <span class="tprice">A valorar</span></a></li>
-          </ul>
-        </div>
-        <div>
-          <h4>Cirugía capilar</h4>
-          <ul class="tlist">
-            <li><a href="/tratamientos/injerto-capilar-fue">Injerto capilar FUE <span class="tprice">Desde 4.500 €</span></a></li>
-            <li><a href="/tratamientos/diseno-linea-frontal">Diseño de la línea frontal <span class="tprice">Incluido</span></a></li>
-            <li><a href="/tratamientos/injerto-coronilla">Injerto capilar en coronilla <span class="tprice">Desde 4.500 €</span></a></li>
-            <li><a href="/tratamientos/injerto-cejas-barba">Injerto de cejas y barba <span class="tprice">Desde 2.500 €</span></a></li>
-            <li><a href="/tratamientos/postoperatorio">Postoperatorio y evolución <span class="tprice">Incluido</span></a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════ PRECIOS ══════════ -->
-<section class="shell band" id="precios">
-  <div class="grid">
-    <div class="rail">
-      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
-      <div class="rail-k">Precios</div>
-      <div class="rail-v">Tarifas por tratamiento</div>
-    </div>
-    <div class="flow">
-      <h2>Precios</h2>
-      <p class="copy">Cada tratamiento se indica tras una valoración médica. Los importes marcados como «desde» dependen del número de sesiones, de la cantidad de producto o de la extensión de la zona a tratar, y se cierran en consulta antes de empezar.</p>
-      <div class="prices">
-        <div class="pgroup">
-          <h4>Medicina estética</h4>
-          <a class="prow" href="/tratamientos/neuromoduladores"><span class="pname">Neuromoduladores</span><span class="pval">350 €</span></a>
-          <a class="prow" href="/tratamientos/acido-hialuronico"><span class="pname">Ácido hialurónico</span><span class="pval">330 € / vial</span></a>
-          <a class="prow" href="/tratamientos/armonizacion-facial"><span class="pname">Armonización facial</span><span class="pval">Desde 1.900 €</span></a>
-          <a class="prow" href="/tratamientos/ojeras"><span class="pname">Tratamiento de ojeras</span><span class="pval">390 €</span></a>
-          <a class="prow" href="/tratamientos/labios"><span class="pname">Aumento y definición de labios</span><span class="pval">350 €</span></a>
-          <a class="prow" href="/tratamientos/bioestimulacion-calidad-piel"><span class="pname">Bioestimulación y calidad de la piel</span><span class="pval">390 €</span></a>
-        </div>
-        <div class="pgroup">
-          <h4>Medicina capilar</h4>
-          <a class="prow" href="/tratamientos/primera-valoracion-capilar"><span class="pname">Primera valoración capilar</span><span class="pval">60 €</span></a>
-          <a class="prow" href="/tratamientos/mesoterapia-capilar"><span class="pname">Mesoterapia capilar</span><span class="pval">250 € por sesión</span></a>
-          <a class="prow" href="/tratamientos/prp-capilar"><span class="pname">PRP capilar y bioestimulación</span><span class="pval">250 € por sesión</span></a>
-          <a class="prow" href="/tratamientos/tratamiento-medico-alopecia"><span class="pname">Tratamiento médico de la alopecia</span><span class="pval">A valorar según diagnóstico</span></a>
-        </div>
-        <div class="pgroup">
-          <h4>Cirugía capilar</h4>
-          <a class="prow" href="/tratamientos/injerto-capilar-fue"><span class="pname">Injerto capilar FUE</span><span class="pval">Desde 4.500 €</span></a>
-          <a class="prow" href="/tratamientos/diseno-linea-frontal"><span class="pname">Diseño de la línea frontal</span><span class="pval">Incluido en el injerto capilar</span></a>
-          <a class="prow" href="/tratamientos/injerto-coronilla"><span class="pname">Injerto capilar en coronilla</span><span class="pval">Desde 4.500 €</span></a>
-          <a class="prow" href="/tratamientos/injerto-cejas-barba"><span class="pname">Injerto de cejas y barba</span><span class="pval">Desde 2.500 €</span></a>
-          <a class="prow" href="/tratamientos/postoperatorio"><span class="pname">Postoperatorio y evolución</span><span class="pval">Incluido en el tratamiento</span></a>
-        </div>
-      </div>
+      <h2>Tratamientos y precios</h2>
+      <p class="copy">Cada tratamiento tiene su propia página: qué es, para quién está indicado, cómo se realiza, cuánto dura y cuánto cuesta. Los importes marcados como «desde» dependen del número de sesiones, de la cantidad de producto o de la extensión de la zona a tratar, y se cierran en consulta antes de empezar.</p>
+      <!-- El índice se genera desde content/tratamientos.json: el precio vive en
+           un solo sitio y no hay dos listas que se contradigan. -->
+      <div class="index" id="index-tratamientos"></div>
       <p class="micro">La primera valoración capilar tiene un coste de 60 €. En medicina estética, la valoración se realiza junto al tratamiento.</p>
     </div>
   </div>
@@ -902,7 +810,7 @@ a,button{-webkit-tap-highlight-color:transparent}
         </div>
       </div>
       <div>
-        <div class="portrait"><span class="slot-lbl">Retrato · pendiente</span></div>
+        <div class="portrait"></div>
         <div class="principles" style="margin-top:18px;max-width:none">
           <div class="principle"><i></i><span>Escucharte bien</span></div>
           <div class="principle"><i></i><span>Ser honesto con lo que puede conseguirse</span></div>
@@ -925,53 +833,8 @@ a,button{-webkit-tap-highlight-color:transparent}
     <div class="flow">
       <h2>La confianza no se promete, se gana</h2>
       <p class="copy">Aquí puedes conocer la experiencia de algunos pacientes que han confiado en mí para sus tratamientos faciales y capilares. Son mensajes recibidos en consulta, publicados con su permiso y sin editar.</p>
-      <div class="quotes" id="quotes">
-        <figure class="quote">
-          <div class="micro">Rinomodelación</div>
-          <blockquote class="quote-body">No puedo estar más contenta ni más feliz con el resultado 😍 Eres un artista y un pedazo de profesional. Mil gracias de verdad, me ha quedado justo como quería, y gracias por transmitirme tanta confianza y tranquilidad ❤</blockquote>
-        </figure>
-        <figure class="quote">
-          <div class="micro">Tratamiento médico y mesoterapia capilar</div>
-          <blockquote class="quote-body">¡Hola, Dr. Bengoa! Solo para decirte que estoy súper contento con la medicación y las sesiones de mesoterapia. Ya noto el pelo con más fuerza y densidad; de verdad que se ve el cambio. Me da mucha confianza cómo llevas el tratamiento, así que, cuando llegue el momento, no dudo en hacerme la cirugía capilar contigo. ¡Gracias por todo!</blockquote>
-        </figure>
-        <figure class="quote">
-          <div class="micro">Neuromoduladores y ácido hialurónico</div>
-          <blockquote class="quote-body">Quiero agradecer al doctor Manuel Bengoa el gran trabajo que ha realizado conmigo en mi tratamiento de neuromoduladores y ácido hialurónico. Desde el primer momento ha demostrado ser un gran profesional; su experiencia se nota y le avala en cada detalle. Además de transmitir muchísima confianza, ha sido muy cercano y atento, resolviendo todas mis dudas con paciencia y sinceridad. El resultado me ha encantado y, sin duda, cualquier tratamiento estético que me realice en el futuro quiero seguir haciéndolo con él. Totalmente recomendable. Gracias de corazón ❤</blockquote>
-        </figure>
-        <figure class="quote">
-          <div class="micro">Mentón</div>
-          <blockquote class="quote-body">Buenas, Dr. Soy la paciente a la que infiltró el mentón. Solo quería decirle que no podía haber hecho mejor elección con usted. Ha sido un cambio brutal, pero a la vez sutil, que ha hecho que me sienta súper segura y guapa. Sin duda, volveré a elegirle para cualquier tratamiento de medicina estética. Un saludo.</blockquote>
-        </figure>
-        <figure class="quote">
-          <div class="micro">Tratamiento capilar</div>
-          <blockquote class="quote-body">¡Hola, Doc! Quería darte las gracias por todos estos meses de tratamiento capilar. Hice bien en confiar en el proceso y no tiene ni comparación con cómo estaba antes. Creía que no iba a tener solución, pero me diste mucha confianza y lo has demostrado con el resultado. Estoy súper contento. ¡Muchas gracias de nuevo!</blockquote>
-        </figure>
-        <figure class="quote">
-          <div class="micro">Tratamiento del bruxismo</div>
-          <blockquote class="quote-body">¡Buenos días, doctor! Hace ya unos días que me trataste lo del bruxismo. He estado comparando fotos del antes y el después y la diferencia es brutal. Estoy súper contenta con el resultado. Gracias por transmitirme tanta confianza ❤</blockquote>
-        </figure>
-        <figure class="quote" hidden>
-          <blockquote class="quote-body">No puedo estar más feliz con los resultados del doctor Bengoa. Desde el primer día me transmitió muchísima confianza y tranquilidad, y eso para mí fue muy importante. El resultado ha sido espectacular, incluso mejor de lo que imaginaba. Me siento increíble, me veo fenomenal.</blockquote>
-        </figure>
-        <figure class="quote" hidden>
-          <blockquote class="quote-body">Hace unos días estuve en la clínica para hacerme un tratamiento con el doctor Bengoa. No puedo estar más contenta, no solo por el resultado, que es espectacular, sino, sobre todo, por el trato tan humano, la confianza que me transmitió y la delicadeza al realizarme el tratamiento. Sin duda, volveré a ponerme en sus manos. ¡Gracias! 💕</blockquote>
-        </figure>
-        <figure class="quote" hidden>
-          <div class="micro">Rinomodelación</div>
-          <blockquote class="quote-body">¡Hola, doctor! Estoy súper contenta con la rinomodelación. La verdad es que el trato ha sido súper agradable y atento en todo momento. Muchas gracias por transmitirme confianza durante el proceso 😁</blockquote>
-        </figure>
-        <figure class="quote" hidden>
-          <blockquote class="quote-body">Cada día tengo más claro que la mejor decisión fue ponerme en manos del doctor Bengoa. Destaco su gran profesionalidad, asesoramiento y seguimiento. Y, por supuesto, sus resultados, que hablan por sí solos. Sin duda, se ha convertido en mi doctor de confianza. Tengo clarísimo que los siguientes tratamientos que me haga serán con el Dr. Bengoa. ¡Muchas gracias, Manuel!</blockquote>
-        </figure>
-        <figure class="quote" hidden>
-          <div class="micro">Mesoterapia y tratamiento médico capilar</div>
-          <blockquote class="quote-body">El cambio ha sido increíble. En solo tres meses he notado una diferencia enorme. Lo que más me preocupaba era el aclaramiento en la zona de la coronilla, pero gracias a la mesoterapia y al minoxidil he mejorado muchísimo. Ahora, con el nuevo tratamiento de dutasterida, estoy convencido de que seguiré fortaleciendo aún más el cabello. Muchas gracias, Manuel, por este gran cambio y por tu profesionalidad. ¡Seguimos adelante!</blockquote>
-        </figure>
-        <figure class="quote" hidden>
-          <div class="micro">Neuromoduladores</div>
-          <blockquote class="quote-body">¡No puedo estar más feliz con el resultado! Llevaba mucho tiempo queriendo realizarme un tratamiento con neuromoduladores, pero, debido a que tengo la piel súper sensible, quería esperar y escoger al mejor doctor para hacerlo. Este año me caso y no he podido tomar mejor decisión que ponerme en tus manos porque el resultado es increíble. Muchísimas gracias por todo 💕</blockquote>
-        </figure>
-      </div>
+      <!-- Las reseñas se generan desde content/testimonios.json -->
+      <div class="quotes" id="quotes"></div>
       <button class="btn btn-line" id="more-quotes" type="button">Ver las 12 reseñas</button>
     </div>
   </div>
@@ -1036,7 +899,6 @@ a,button{-webkit-tap-highlight-color:transparent}
           <a class="btn btn-line" href="#">WhatsApp</a>
           <a class="btn btn-line" href="#">Llamar</a>
         </div>
-        <p class="micro" style="margin-top:16px">Teléfono, WhatsApp y sistema de reserva pendientes de definir.</p>
       </div>
       <div>
         <h4 style="margin-bottom:6px">Puedes escribir para</h4>
@@ -1050,66 +912,6 @@ a,button{-webkit-tap-highlight-color:transparent}
       </div>
     </div>
   </div>
-  </div>
-</section>
-
-<!-- ══════════ PROPUESTA DE MARCA ══════════ -->
-<section class="shell band" id="marca">
-  <div class="grid">
-    <div class="rail">
-      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
-      <div class="rail-k">Marca</div>
-      <div class="rail-v">Propuesta · no es parte de la web</div>
-    </div>
-    <div class="flow">
-      <h2>Una marca que aguanta en pequeño</h2>
-      <p class="copy">Dos piezas y un solo dibujo. El <em>isologo</em> mete la A dentro del círculo: es lo que va en el avatar, el favicon, el sello y el bordado, y aguanta a 16 píxeles. El <em>logo</em> es solo el nombre, sin círculo, y su A es exactamente ese mismo vértice. La A deja de ser un chevrón de icono: tiene asta fina y asta gruesa cortadas en horizontal, como la de una serif de alto contraste, para que junto a la G y la O se lea como una letra y no como un símbolo pegado al lado.</p>
-      <div class="brandbar">
-        <div class="bcell">
-          <div class="bstage">
-            <svg width="76" height="76" viewBox="0 0 100 100" aria-hidden="true" style="color:var(--ink)"><use href="#goa-iso"/></svg>
-          </div>
-          <div>
-            <h4>Isologo</h4>
-            <p class="micro" style="margin-top:7px">Avatar, favicon, sello y bordado. Es la única pieza con círculo.</p>
-          </div>
-        </div>
-        <div class="bcell">
-          <div class="bstage">
-            <span class="mark" style="pointer-events:none">
-              <span class="mark-w" style="font-size:34px">GO<svg class="mark-a" aria-hidden="true"><use href="#goa-a"/></svg></span>
-            </span>
-          </div>
-          <div>
-            <h4>Logo</h4>
-            <p class="micro" style="margin-top:7px">Cabecera, papelería y firma de email. Sin círculo: la A no se escribe, se dibuja.</p>
-          </div>
-        </div>
-        <div class="bcell dark">
-          <div class="bstage">
-            <div class="stack">
-              <svg width="42" height="42" viewBox="0 0 100 100" aria-hidden="true"><use href="#goa-iso"/></svg>
-              <span class="stack-w">GO<svg class="mark-a" aria-hidden="true"><use href="#goa-a"/></svg></span>
-              <span class="stack-s">Medical Aesthetics</span>
-            </div>
-          </div>
-          <div>
-            <h4 style="color:rgba(239,238,232,.75)">Apilada</h4>
-            <p class="micro" style="margin-top:7px">Papelería, consentimientos y fondo oscuro. Se imprime en un solo color.</p>
-          </div>
-        </div>
-      </div>
-
-      <h4 class="mt-lg">Paleta v2 — fuera el crema y el dorado</h4>
-      <div class="swatches">
-        <i style="background:#EFEEE8" title="Hueso mineral #EFEEE8"></i>
-        <i style="background:#E3E3DB" title="Hueso sombra #E3E3DB"></i>
-        <i style="background:#1F5A4E" title="Verde quirófano #1F5A4E"></i>
-        <i style="background:#12201F" title="Negro petróleo #12201F"></i>
-      </div>
-      <p class="micro">Hueso mineral #EFEEE8 · hueso sombra #E3E3DB · verde quirófano #1F5A4E · negro petróleo #12201F</p>
-      <p class="copy">El crema con dorado es el uniforme de casi toda la medicina estética, y además tira hacia lo femenino cuando media consulta es cirugía capilar masculina. Este hueso es más frío y más limpio, el negro petróleo tiene verde dentro en vez de gris, y el acento es el verde del campo quirúrgico: dice medicina, no perfumería. Se gasta poco —filetes, un botón, el estado activo— para que siga significando algo.</p>
-    </div>
   </div>
 </section>
 
@@ -1130,19 +932,13 @@ a,button{-webkit-tap-highlight-color:transparent}
       <a href="#">Consentimientos informados</a>
     </div>
   </div>
-  <div class="pending">
-    <span class="micro">Maqueta de diseño v14 · marca en reposo y menú inferior</span>
-    <span class="micro">Falta: fotografía clínica y datos de contacto</span>
-    <span class="micro">Nº de registro sanitario pendiente</span>
-  </div>
 </footer>
 <!-- Barra de secciones de móvil: misma navegación, al alcance del pulgar.
      Es un segundo menú porque en escritorio vive dentro de la isla; el que no
      toca queda en display:none, así que solo hay uno a la vez para el lector. -->
 <div class="dock" id="dock">
   <nav class="nav" id="navd" aria-label="Secciones de la página">
-      <a href="#precios">Precios</a>
-      <a href="#tratamientos">Tratamientos</a>
+      <a href="#tratamientos">Tratamientos y precios</a>
       <a href="#resultados">Antes y después</a>
       <a href="#especialidades">Especialidades</a>
       <a href="#sobre-mi">Sobre mí</a>
@@ -1249,11 +1045,11 @@ a,button{-webkit-tap-highlight-color:transparent}
   if(markLink){ markLink.addEventListener("click",function(){ replayIntro(); }); }
 
   /* En reposo la marca respira: se pliega en la A del isologo y vuelve a
-     abrirse en GOA. Solo cuando la página lleva un rato quieta y está a la
-     vista, para que sea un detalle y no un parpadeo. */
-  var REPOSO=12000, ultimo=Date.now();
+     abrirse en GOA. "Quieto" es sin scroll ni interacción real: mover el ratón
+     por encima no cuenta, o el gesto no llegaba a verse nunca. */
+  var REPOSO=5000, ultimo=Date.now();
   function actividad(){ ultimo=Date.now(); }
-  ["scroll","pointerdown","pointermove","keydown","touchstart"].forEach(function(ev){
+  ["scroll","pointerdown","keydown","touchstart"].forEach(function(ev){
     addEventListener(ev, actividad, {passive:true});
   });
   function replayMarca(){

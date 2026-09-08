@@ -1,14 +1,74 @@
 [
-  {"tratamiento": "Rinomodelación", "texto": "No puedo estar más contenta ni más feliz con el resultado 😍 Eres un artista y un pedazo de profesional. Mil gracias de verdad, me ha quedado justo como quería, y gracias por transmitirme tanta confianza y tranquilidad ❤"},
-  {"tratamiento": "Tratamiento médico y mesoterapia capilar", "texto": "¡Hola, Dr. Bengoa! Solo para decirte que estoy súper contento con la medicación y las sesiones de mesoterapia. Ya noto el pelo con más fuerza y densidad; de verdad que se ve el cambio. Me da mucha confianza cómo llevas el tratamiento, así que, cuando llegue el momento, no dudo en hacerme la cirugía capilar contigo. ¡Gracias por todo!"},
-  {"tratamiento": "Neuromoduladores y ácido hialurónico", "texto": "Quiero agradecer al doctor Manuel Bengoa el gran trabajo que ha realizado conmigo en mi tratamiento de neuromoduladores y ácido hialurónico. Desde el primer momento ha demostrado ser un gran profesional; su experiencia se nota y le avala en cada detalle. Además de transmitir muchísima confianza, ha sido muy cercano y atento, resolviendo todas mis dudas con paciencia y sinceridad. El resultado me ha encantado y, sin duda, cualquier tratamiento estético que me realice en el futuro quiero seguir haciéndolo con él. Totalmente recomendable. Gracias de corazón ❤"},
-  {"tratamiento": "Mentón", "texto": "Buenas, Dr. Soy la paciente a la que infiltró el mentón. Solo quería decirle que no podía haber hecho mejor elección con usted. Ha sido un cambio brutal, pero a la vez sutil, que ha hecho que me sienta súper segura y guapa. Sin duda, volveré a elegirle para cualquier tratamiento de medicina estética. Un saludo."},
-  {"tratamiento": "Tratamiento capilar", "texto": "¡Hola, Doc! Quería darte las gracias por todos estos meses de tratamiento capilar. Hice bien en confiar en el proceso y no tiene ni comparación con cómo estaba antes. Creía que no iba a tener solución, pero me diste mucha confianza y lo has demostrado con el resultado. Estoy súper contento. ¡Muchas gracias de nuevo!"},
-  {"tratamiento": "Tratamiento del bruxismo", "texto": "¡Buenos días, doctor! Hace ya unos días que me trataste lo del bruxismo. He estado comparando fotos del antes y el después y la diferencia es brutal. Estoy súper contenta con el resultado. Gracias por transmitirme tanta confianza ❤"},
-  {"tratamiento": "", "texto": "No puedo estar más feliz con los resultados del doctor Bengoa. Desde el primer día me transmitió muchísima confianza y tranquilidad, y eso para mí fue muy importante. El resultado ha sido espectacular, incluso mejor de lo que imaginaba. Me siento increíble, me veo fenomenal."},
-  {"tratamiento": "", "texto": "Hace unos días estuve en la clínica para hacerme un tratamiento con el doctor Bengoa. No puedo estar más contenta, no solo por el resultado, que es espectacular, sino, sobre todo, por el trato tan humano, la confianza que me transmitió y la delicadeza al realizarme el tratamiento. Sin duda, volveré a ponerme en sus manos. ¡Gracias! 💕"},
-  {"tratamiento": "Rinomodelación", "texto": "¡Hola, doctor! Estoy súper contenta con la rinomodelación. La verdad es que el trato ha sido súper agradable y atento en todo momento. Muchas gracias por transmitirme confianza durante el proceso 😁"},
-  {"tratamiento": "", "texto": "Cada día tengo más claro que la mejor decisión fue ponerme en manos del doctor Bengoa. Destaco su gran profesionalidad, asesoramiento y seguimiento. Y, por supuesto, sus resultados, que hablan por sí solos. Sin duda, se ha convertido en mi doctor de confianza. Tengo clarísimo que los siguientes tratamientos que me haga serán con el Dr. Bengoa. ¡Muchas gracias, Manuel!"},
-  {"tratamiento": "Mesoterapia y tratamiento médico capilar", "texto": "El cambio ha sido increíble. En solo tres meses he notado una diferencia enorme. Lo que más me preocupaba era el aclaramiento en la zona de la coronilla, pero gracias a la mesoterapia y al minoxidil he mejorado muchísimo. Ahora, con el nuevo tratamiento de dutasterida, estoy convencido de que seguiré fortaleciendo aún más el cabello. Muchas gracias, Manuel, por este gran cambio y por tu profesionalidad. ¡Seguimos adelante!"},
-  {"tratamiento": "Neuromoduladores", "texto": "¡No puedo estar más feliz con el resultado! Llevaba mucho tiempo queriendo realizarme un tratamiento con neuromoduladores, pero, debido a que tengo la piel súper sensible, quería esperar y escoger al mejor doctor para hacerlo. Este año me caso y no he podido tomar mejor decisión que ponerme en tus manos porque el resultado es increíble. Muchísimas gracias por todo 💕"}
+  {
+    "nombre": "",
+    "foto": "",
+    "tratamiento": "Rinomodelación",
+    "texto": "No puedo estar más contenta ni más feliz con el resultado 😍 Eres un artista y un pedazo de profesional. Mil gracias de verdad, me ha quedado justo como quería, y gracias por transmitirme tanta confianza y tranquilidad ❤"
+  },
+  {
+    "nombre": "",
+    "foto": "",
+    "tratamiento": "Tratamiento médico y mesoterapia capilar",
+    "texto": "¡Hola, Dr. Bengoa! Solo para decirte que estoy súper contento con la medicación y las sesiones de mesoterapia. Ya noto el pelo con más fuerza y densidad; de verdad que se ve el cambio. Me da mucha confianza cómo llevas el tratamiento, así que, cuando llegue el momento, no dudo en hacerme la cirugía capilar contigo. ¡Gracias por todo!"
+  },
+  {
+    "nombre": "",
+    "foto": "",
+    "tratamiento": "Neuromoduladores y ácido hialurónico",
+    "texto": "Quiero agradecer al doctor Manuel Bengoa el gran trabajo que ha realizado conmigo en mi tratamiento de neuromoduladores y ácido hialurónico. Desde el primer momento ha demostrado ser un gran profesional; su experiencia se nota y le avala en cada detalle. Además de transmitir muchísima confianza, ha sido muy cercano y atento, resolviendo todas mis dudas con paciencia y sinceridad. El resultado me ha encantado y, sin duda, cualquier tratamiento estético que me realice en el futuro quiero seguir haciéndolo con él. Totalmente recomendable. Gracias de corazón ❤"
+  },
+  {
+    "nombre": "",
+    "foto": "",
+    "tratamiento": "Mentón",
+    "texto": "Buenas, Dr. Soy la paciente a la que infiltró el mentón. Solo quería decirle que no podía haber hecho mejor elección con usted. Ha sido un cambio brutal, pero a la vez sutil, que ha hecho que me sienta súper segura y guapa. Sin duda, volveré a elegirle para cualquier tratamiento de medicina estética. Un saludo."
+  },
+  {
+    "nombre": "",
+    "foto": "",
+    "tratamiento": "Tratamiento capilar",
+    "texto": "¡Hola, Doc! Quería darte las gracias por todos estos meses de tratamiento capilar. Hice bien en confiar en el proceso y no tiene ni comparación con cómo estaba antes. Creía que no iba a tener solución, pero me diste mucha confianza y lo has demostrado con el resultado. Estoy súper contento. ¡Muchas gracias de nuevo!"
+  },
+  {
+    "nombre": "",
+    "foto": "",
+    "tratamiento": "Tratamiento del bruxismo",
+    "texto": "¡Buenos días, doctor! Hace ya unos días que me trataste lo del bruxismo. He estado comparando fotos del antes y el después y la diferencia es brutal. Estoy súper contenta con el resultado. Gracias por transmitirme tanta confianza ❤"
+  },
+  {
+    "nombre": "",
+    "foto": "",
+    "tratamiento": "",
+    "texto": "No puedo estar más feliz con los resultados del doctor Bengoa. Desde el primer día me transmitió muchísima confianza y tranquilidad, y eso para mí fue muy importante. El resultado ha sido espectacular, incluso mejor de lo que imaginaba. Me siento increíble, me veo fenomenal."
+  },
+  {
+    "nombre": "",
+    "foto": "",
+    "tratamiento": "",
+    "texto": "Hace unos días estuve en la clínica para hacerme un tratamiento con el doctor Bengoa. No puedo estar más contenta, no solo por el resultado, que es espectacular, sino, sobre todo, por el trato tan humano, la confianza que me transmitió y la delicadeza al realizarme el tratamiento. Sin duda, volveré a ponerme en sus manos. ¡Gracias! 💕"
+  },
+  {
+    "nombre": "",
+    "foto": "",
+    "tratamiento": "Rinomodelación",
+    "texto": "¡Hola, doctor! Estoy súper contenta con la rinomodelación. La verdad es que el trato ha sido súper agradable y atento en todo momento. Muchas gracias por transmitirme confianza durante el proceso 😁"
+  },
+  {
+    "nombre": "",
+    "foto": "",
+    "tratamiento": "",
+    "texto": "Cada día tengo más claro que la mejor decisión fue ponerme en manos del doctor Bengoa. Destaco su gran profesionalidad, asesoramiento y seguimiento. Y, por supuesto, sus resultados, que hablan por sí solos. Sin duda, se ha convertido en mi doctor de confianza. Tengo clarísimo que los siguientes tratamientos que me haga serán con el Dr. Bengoa. ¡Muchas gracias, Manuel!"
+  },
+  {
+    "nombre": "",
+    "foto": "",
+    "tratamiento": "Mesoterapia y tratamiento médico capilar",
+    "texto": "El cambio ha sido increíble. En solo tres meses he notado una diferencia enorme. Lo que más me preocupaba era el aclaramiento en la zona de la coronilla, pero gracias a la mesoterapia y al minoxidil he mejorado muchísimo. Ahora, con el nuevo tratamiento de dutasterida, estoy convencido de que seguiré fortaleciendo aún más el cabello. Muchas gracias, Manuel, por este gran cambio y por tu profesionalidad. ¡Seguimos adelante!"
+  },
+  {
+    "nombre": "",
+    "foto": "",
+    "tratamiento": "Neuromoduladores",
+    "texto": "¡No puedo estar más feliz con el resultado! Llevaba mucho tiempo queriendo realizarme un tratamiento con neuromoduladores, pero, debido a que tengo la piel súper sensible, quería esperar y escoger al mejor doctor para hacerlo. Este año me caso y no he podido tomar mejor decisión que ponerme en tus manos porque el resultado es increíble. Muchísimas gracias por todo 💕"
+  }
 ]

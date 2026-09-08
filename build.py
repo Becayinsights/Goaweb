@@ -15,8 +15,10 @@ RAIZ = pathlib.Path(__file__).parent
 SITE = RAIZ / "site"
 E = html.escape
 
-DESC = ("Maqueta de diseno de la web de GOA Medical Aesthetics, por el Dr. Bengoa: "
-        "medicina estetica, medicina capilar y cirugia capilar.")
+# Lo que se ve al compartir el enlace. Sigue con noindex hasta que sea la web
+# definitiva, pero el texto ya es el del doctor, no el de una maqueta.
+DESC = ("Dr. Manuel Bengoa. Medicina estetica, medicina capilar y cirugia capilar "
+        "con enfoque medico y resultados naturales.")
 ICON = ('<link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 '
         'viewBox=%270 0 100 100%27><circle cx=%2750%27 cy=%2750%27 r=%2742%27 fill=%27none%27 '
         'stroke=%27%23EFEEE8%27 stroke-width=%276%27/><path fill=%27%23EFEEE8%27 '
@@ -54,9 +56,10 @@ img{max-width:100%}
   text-transform:uppercase;color:var(--ink-3)}
 .ficha-v{font-size:15.5px;color:var(--ink-2);line-height:1.45}
 .ficha-precio .ficha-v{font-family:"Instrument Serif",serif;font-size:26px;color:var(--ink);line-height:1.1}
-.pend{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 clamp(20px,3vw,40px)}
-@media (max-width:820px){.pend{grid-template-columns:1fr}}
-.pend div{padding:14px 0;border-top:1px solid var(--rule);font-size:15.5px;color:var(--ink-3)}
+.inc{border-top:1px solid var(--rule-2);margin-top:30px}
+.inc-b{padding:20px 0;border-bottom:1px solid var(--rule)}
+.inc-b h3{font-size:20px;margin:0 0 7px}
+.inc-b p{margin:0;color:var(--ink-2);font-size:15.5px;line-height:1.6;max-width:62ch}
 """
 
 
@@ -97,10 +100,10 @@ def cabeza(titulo, descripcion, canonica=None):
 <body>"""
 
 
-LINKS = """      <a href="/#precios">Precios</a>
-      <a href="/#tratamientos">Tratamientos</a>
+LINKS = """      <a href="/#tratamientos">Tratamientos y precios</a>
       <a href="/#resultados">Antes y después</a>
       <a href="/#especialidades">Especialidades</a>
+      <a href="/#sobre-mi">Sobre mí</a>
       <a href="/#faq">FAQ</a>"""
 
 
@@ -153,27 +156,103 @@ def pie():
       <p class="micro" style="margin-top:12px;max-width:44ch">Medicina estética · Medicina capilar · Cirugía capilar<br>by Dr. Bengoa</p>
     </div>
     <div class="foot-links">
-      <a href="/#precios">Precios</a>
+      <a href="/#tratamientos">Tratamientos</a>
       <a href="#">Aviso legal</a>
       <a href="#">Política de privacidad</a>
       <a href="#">Política de cookies</a>
       <a href="#">Consentimientos informados</a>
     </div>
   </div>
-  <div class="pending">
-    <span class="micro">Maqueta de diseño v14 · marca en reposo y menú inferior</span>
-    <span class="micro">Falta: fotografía clínica y datos de contacto</span>
-    <span class="micro">Nº de registro sanitario pendiente</span>
-  </div>
 </footer>"""
 
 
+def indice(d):
+    """El índice de tratamientos con su precio: una sola lista para las dos cosas."""
+    cols = []
+    for a in d["areas"]:
+        filas = "\n".join(
+            f'            <li><a href="/tratamientos/{t["slug"]}">{E(t["nombre"])} '
+            f'<span class="tprice">{E(t["precio_corto"])}</span></a></li>'
+            for t in a["tratamientos"])
+        cols.append(f'''        <div>
+          <h4>{E(a["nombre"])}</h4>
+          <ul class="tlist">
+{filas}
+          </ul>
+        </div>''')
+    return "\n".join(cols)
+
+
+def perfiles():
+    """Cada reseña se presenta como un perfil: retrato, nombre y tratamiento.
+
+    Nombre y foto salen del JSON y hoy están vacíos: son mensajes reales de
+    pacientes y no se inventa quién los firma. Sin ellos, el círculo enseña la
+    marca y el nombre queda en «Paciente».
+    """
+    fichas = []
+    for i, t in enumerate(json.loads(
+            (RAIZ / "content" / "testimonios.json").read_text(encoding="utf-8"))):
+        oculto = " hidden" if i >= 6 else ""
+        nombre = t.get("nombre") or "Paciente"
+        foto = (f'<img src="{E(t["foto"])}" alt="{E(nombre)}" width="38" height="38">'
+                if t.get("foto") else
+                '<svg aria-hidden="true"><use href="#goa-a"/></svg>')
+        sub = (f'\n            <div class="perfil-t">{E(t["tratamiento"])}</div>'
+               if t.get("tratamiento") else "")
+        fichas.append(f'''        <figure class="quote"{oculto}>
+          <div class="quote-perfil">
+            <span class="avatar">{foto}</span>
+            <span>
+            <div class="perfil-n">{E(nombre)}</div>{sub}
+            </span>
+          </div>
+          <blockquote class="quote-body">{E(t["texto"])}</blockquote>
+        </figure>''')
+    return "\n".join(fichas)
+
+
+def cierre():
+    """La banda de cierre: la misma llamada que en la home."""
+    return """<section class="shell band lit" id="contacto">
+  <div class="shell">
+  <div class="grid">
+    <div class="rail">
+      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
+      <div class="rail-k">Contacto</div>
+      <div class="rail-v">Reserva de cita</div>
+    </div>
+    <div class="cta">
+      <div>
+        <p class="eyebrow">Valoración</p>
+        <h2>¿Quieres valorar tu caso?</h2>
+        <p class="copy">Reserva tu cita y te orientaré sobre el tratamiento más adecuado para ti, con una visión médica clara, honesta y personalizada.</p>
+        <div class="actions">
+          <a class="btn btn-solid" href="#">Pedir valoración</a>
+          <a class="btn btn-line" href="#">WhatsApp</a>
+          <a class="btn btn-line" href="#">Llamar</a>
+        </div>
+      </div>
+      <div>
+        <h4 style="margin-bottom:6px">Puedes escribir para</h4>
+        <ul class="reasons">
+          <li>Primera valoración de medicina estética</li>
+          <li>Valoración capilar</li>
+          <li>Estudio de injerto capilar</li>
+          <li>Seguimiento de tratamientos</li>
+          <li>Dudas sobre procedimientos</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>"""
+
+
 def landing(d, todos, cuerpo):
-    """Una plantilla para las quince fichas; la ruta decide cuál se pinta."""
+    """Una plantilla para todas las fichas; la ruta decide cuál se pinta."""
     datos = {t["slug"]: {**t, "area": a["nombre"], "tag": a["tag"]} for a, t in todos}
-    pendiente = d["pendiente_landing"]
     js_datos = json.dumps(datos, ensure_ascii=False)
-    js_pend = json.dumps(pendiente, ensure_ascii=False)
     return f"""{cabeza("Tratamiento · GOA Medical Aesthetics", DESC)}
 
 {sprite(cuerpo)}
@@ -188,7 +267,7 @@ def landing(d, todos, cuerpo):
       <h1 id="t-nombre"></h1>
       <p class="lead" id="t-texto"></p>
       <div class="actions" style="margin-top:30px">
-        <a class="btn btn-solid" href="/#contacto">Pedir valoración</a>
+        <a class="btn btn-solid" href="#contacto">Pedir valoración</a>
         <a class="btn btn-line" href="/#tratamientos">Ver todos los tratamientos</a>
       </div>
     </div>
@@ -198,20 +277,23 @@ def landing(d, todos, cuerpo):
   </div>
 </section>
 
-<section class="shell band" id="estructura">
+<!-- Lo que va dentro del tratamiento y no se cobra aparte: el diseño previo y
+     el seguimiento no son productos sueltos. Solo aparece si la ficha lo trae. -->
+<section class="shell band" id="incluye" hidden>
   <div class="grid">
     <div class="rail">
       <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
-      <div class="rail-k">Ficha</div>
-      <div class="rail-v">Estructura común</div>
+      <div class="rail-k">Incluido</div>
+      <div class="rail-v">Sin coste aparte</div>
     </div>
     <div class="flow">
-      <h2>Lo que falta en esta ficha</h2>
-      <p class="copy">La estructura de cada tratamiento es siempre la misma. Arriba está lo que el doctor ya ha redactado; estos apartados quedan pendientes de escribir con él, porque son contenido clínico y no se inventan.</p>
-      <div class="pend" id="t-pend"></div>
+      <h2>Incluido en el tratamiento</h2>
+      <div class="inc" id="t-incluye"></div>
     </div>
   </div>
 </section>
+
+{cierre()}
 </main>
 
 {dock()}
@@ -222,7 +304,6 @@ def landing(d, todos, cuerpo):
 (function(){{
   "use strict";
   var DATOS = {js_datos};
-  var PEND = {js_pend};
   var slug = decodeURIComponent(location.pathname.replace(/\\/$/,"").split("/").pop() || "");
   if(!DATOS[slug]){{
     var q = new URLSearchParams(location.search).get("t");
@@ -251,12 +332,19 @@ def landing(d, todos, cuerpo):
   precio.children[1].textContent = t.precio;
   ficha.appendChild(precio);
 
-  var pend = document.getElementById("t-pend");
-  PEND.forEach(function(x){{
-    var d = document.createElement("div");
-    d.textContent = x;
-    pend.appendChild(d);
-  }});
+  var inc = t.incluye || [];
+  if(inc.length){{
+    var caja = document.getElementById("t-incluye");
+    inc.forEach(function(x){{
+      var b = document.createElement("div");
+      b.className = "inc-b";
+      b.innerHTML = "<h3></h3><p></p>";
+      b.children[0].textContent = x.titulo;
+      b.children[1].textContent = x.texto;
+      caja.appendChild(b);
+    }});
+    document.getElementById("incluye").hidden = false;
+  }}
 
   /* Tema e isla, igual que en la home */
   var root=document.documentElement, btn=document.getElementById("theme");
@@ -279,11 +367,11 @@ def landing(d, todos, cuerpo):
 
   /* La marca también respira aquí: en reposo se pliega en A y vuelve a GOA */
   var reduce=matchMedia("(prefers-reduced-motion: reduce)"), ultimo=Date.now();
-  ["scroll","pointerdown","pointermove","keydown","touchstart"].forEach(function(ev){{
+  ["scroll","pointerdown","keydown","touchstart"].forEach(function(ev){{
     addEventListener(ev,function(){{ ultimo=Date.now(); }},{{passive:true}});
   }});
   setInterval(function(){{
-    if(reduce.matches || document.hidden || Date.now()-ultimo < 12000) return;
+    if(reduce.matches || document.hidden || Date.now()-ultimo < 5000) return;
     ultimo=Date.now();
     island.classList.remove("intro"); void island.offsetWidth; island.classList.add("intro");
   }}, 1000);
@@ -299,6 +387,13 @@ def main():
     d, todos = cargar()
     css, cuerpo = partir_home()
     SITE.mkdir(exist_ok=True)
+
+    cuerpo = cuerpo.replace(
+        '<div class="index" id="index-tratamientos"></div>',
+        '<div class="index" id="index-tratamientos">\n' + indice(d) + '\n      </div>')
+    cuerpo = cuerpo.replace(
+        '<div class="quotes" id="quotes"></div>',
+        '<div class="quotes" id="quotes">\n' + perfiles() + '\n      </div>')
 
     (SITE / "goa.css").write_text(css + EXTRA_CSS, encoding="utf-8")
     (SITE / "index.html").write_text(

@@ -7,7 +7,7 @@ Proyecto independiente. **No comparte código, datos ni despliegue con Becay Ren
 
 | Fase | Estado |
 |---|---|
-| Diseño (home + sistema visual) | v14 publicada para revisión |
+| Diseño (home + fichas) | v15 publicada para revisión |
 | Contenido real (fotos, testimonios, datos de contacto) | pendiente del cliente |
 | Implementación Next.js | no empezada |
 | Área privada (fichas médicas, usuarios) | fuera de alcance en esta fase |
@@ -21,7 +21,7 @@ para que se pueda abrir sin cuenta.
 El enlace anterior, `goa-maqueta-becay.vercel.app`, sigue vivo como redirección 307
 que conserva la ruta: lo que ya se compartió no se queda muerto. Ver `deploy/README.md`.
 
-`site/` lo genera `build.py`: la home desde `design/goa-home.html`, las quince fichas
+`site/` lo genera `build.py`: la home desde `design/goa-home.html`, las trece fichas
 desde `content/tratamientos.json`, y las dos reglas que antes ponía el envoltorio del
 visor de artifacts —`img{max-width:100%}` y `[hidden]{display:none!important}`; sin la
 segunda, `.case{display:flex}` gana al atributo `hidden` y los filtros de la galería no
