@@ -114,7 +114,7 @@ def cabeza(titulo, descripcion, canonica=None):
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="description" content="{E(descripcion)}">
-<meta name="theme-color" content="#F3F1EA">
+<meta name="theme-color" content="#F8F6F0">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="GOA Medical Aesthetics">
 <meta property="og:title" content="{E(titulo)}">

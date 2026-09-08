@@ -3,6 +3,9 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 /* ═══════════ TOKENS ═══════════
+   Paleta v5: el mismo hueso, con más luz dentro. Sube unos puntos y no llega
+   al blanco a propósito —el blanco puro abarata y mata la calidez—, pero el
+   contraste con la tinta gana y la página respira mejor.
    Paleta v4. Un solo tema, el claro: el hueso mineral es la marca y en oscuro
   la web parecía otra. Mantener dos temas obligaba además a validar dos veces
   cada foto, cada velo y cada sombra, y de ahí salieron la mitad de los saltos
@@ -12,17 +15,17 @@
   marca. Ningún color literal fuera de este bloque.
    Ningún color literal fuera de este bloque. */
 :root{
-  --paper:#F3F1EA; --paper-2:#EBE8DF; --paper-3:#E5E2D8;
+  --paper:#F8F6F0; --paper-2:#F2EFE7; --paper-3:#ECE9E0;
   --ink:#0C1413; --ink-2:#3B4A47; --ink-3:#7B837D;
   --accent:#143F36; --accent-text:#123930; --accent-dim:rgba(20,63,54,.08);
   --rule:rgba(12,20,19,.11); --rule-2:rgba(12,20,19,.24);
-  --btn-ink:#F3F1EA;
-  --glass:rgba(248,246,240,.74); --glass-solid:#F5F3EC; --glass-bd:rgba(12,20,19,.09); --glass-hi:rgba(255,255,255,.8);
+  --btn-ink:#F8F6F0;
+  --glass:rgba(252,250,246,.74); --glass-solid:#FAF8F3; --glass-bd:rgba(12,20,19,.09); --glass-hi:rgba(255,255,255,.8);
   --glass-shadow:0 12px 40px rgba(12,20,19,.06); --glass-shadow-on:0 18px 52px rgba(12,20,19,.11);
   --hatch:rgba(12,20,19,.05);
-  --quote-bg:#F8F6F0;   /* la reseña se levanta del papel, no se hunde */
+  --quote-bg:#FDFCFA;   /* la reseña se levanta del papel, no se hunde */
   --shadow:0 1px 0 rgba(255,255,255,.8) inset, 0 24px 56px rgba(12,20,19,.06);
-  --hero-a:rgba(20,63,54,.12); --hero-b:rgba(12,20,19,.06); --hero-c:#EAE7DD;
+  --hero-a:rgba(20,63,54,.12); --hero-b:rgba(12,20,19,.06); --hero-c:#F3F0E8;
   color-scheme:light;
 }
 /* ═══════════ BANDA DE CIERRE ═══════════
@@ -30,7 +33,7 @@
    que el texto se lea en tinta. El cierre destaca por la imagen, no por
    oscurecerse: un bloque negro en una página de hueso es un parche. */
 :root{
-  --band-bg:#EDEAE1;
+  --band-bg:#F4F1E9;
   --band-fg:#0C1413;
   --band-fg2:rgba(12,20,19,.74);
   --band-bd:rgba(12,20,19,.2);
@@ -280,11 +283,11 @@ em{font-style:italic}
 .hero-bg::after{
   content:"";position:absolute;inset:0;z-index:1;
   background:linear-gradient(180deg,
-    rgba(243,241,234,.42) 0%,
-    rgba(243,241,234,.5) 30%,
-    rgba(243,241,234,.62) 52%,
-    rgba(243,241,234,.76) 70%,
-    rgba(243,241,234,.9) 86%,
+    rgba(248,246,240,.42) 0%,
+    rgba(248,246,240,.5) 30%,
+    rgba(248,246,240,.62) 52%,
+    rgba(248,246,240,.76) 70%,
+    rgba(248,246,240,.9) 86%,
     var(--paper) 100%);
 }
 .hero{padding-top:clamp(52px,7vw,96px);padding-bottom:clamp(48px,6vw,84px)}
@@ -476,20 +479,20 @@ details .ans{padding:0 0 20px 28px;color:var(--ink-2);font-size:var(--fs-6);line
        largo con pocas dibuja escalones al interpolar en 8 bits. */
     linear-gradient(180deg,
       var(--paper) 0%,
-      rgba(243,241,234,.94) 2.5%,
-      rgba(239,236,228,.86) 5%,
-      rgba(237,234,225,.78) 9%,
-      rgba(237,234,225,.83) 18%,
-      rgba(237,234,225,.85) 28%,
-      rgba(237,234,225,.84) 38%,
-      rgba(237,234,225,.8) 47%,
-      rgba(237,234,225,.73) 56%,
-      rgba(237,234,225,.64) 65%,
-      rgba(237,234,225,.55) 74%,
-      rgba(237,234,225,.5) 82%,
-      rgba(237,234,225,.56) 89%,
-      rgba(241,238,230,.72) 94%,
-      rgba(243,241,234,.9) 97.5%,
+      rgba(248,246,240,.94) 2.5%,
+      rgba(246,243,236,.86) 5%,
+      rgba(244,241,233,.78) 9%,
+      rgba(244,241,233,.83) 18%,
+      rgba(244,241,233,.85) 28%,
+      rgba(244,241,233,.84) 38%,
+      rgba(244,241,233,.8) 47%,
+      rgba(244,241,233,.73) 56%,
+      rgba(244,241,233,.64) 65%,
+      rgba(244,241,233,.55) 74%,
+      rgba(244,241,233,.5) 82%,
+      rgba(244,241,233,.56) 89%,
+      rgba(247,244,238,.72) 94%,
+      rgba(248,246,240,.9) 97.5%,
       var(--paper) 100%),
     radial-gradient(80% 70% at 84% 100%, rgba(20,63,54,.1) 0%, transparent 72%);
 }
@@ -508,17 +511,17 @@ details .ans{padding:0 0 20px 28px;color:var(--ink-2);font-size:var(--fs-6);line
   .band-bg::after{background:
     linear-gradient(180deg,
       var(--paper) 0%,
-      rgba(243,241,234,.95) 2%,
-      rgba(239,236,228,.9) 4.5%,
-      rgba(237,234,225,.85) 9%,
-      rgba(237,234,225,.89) 24%,
-      rgba(237,234,225,.9) 42%,
-      rgba(237,234,225,.87) 58%,
-      rgba(237,234,225,.8) 70%,
-      rgba(237,234,225,.7) 80%,
-      rgba(237,234,225,.63) 88%,
-      rgba(241,238,230,.74) 94%,
-      rgba(243,241,234,.9) 97.5%,
+      rgba(248,246,240,.95) 2%,
+      rgba(246,243,236,.9) 4.5%,
+      rgba(244,241,233,.85) 9%,
+      rgba(244,241,233,.89) 24%,
+      rgba(244,241,233,.9) 42%,
+      rgba(244,241,233,.87) 58%,
+      rgba(244,241,233,.8) 70%,
+      rgba(244,241,233,.7) 80%,
+      rgba(244,241,233,.63) 88%,
+      rgba(247,244,238,.74) 94%,
+      rgba(248,246,240,.9) 97.5%,
       var(--paper) 100%),
     radial-gradient(90% 50% at 80% 100%, rgba(20,63,54,.09) 0%, transparent 72%);}
 }

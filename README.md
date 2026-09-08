@@ -7,7 +7,7 @@ Proyecto independiente. **No comparte código, datos ni despliegue con Becay Ren
 
 | Fase | Estado |
 |---|---|
-| Diseño (home + fichas) | v21 publicada para revisión |
+| Diseño (home + fichas) | v22 publicada para revisión |
 | Contenido real (fotos, testimonios, datos de contacto) | pendiente del cliente |
 | Implementación Next.js | no empezada |
 | Área privada (fichas médicas, usuarios) | fuera de alcance en esta fase |
