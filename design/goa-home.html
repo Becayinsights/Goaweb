@@ -121,31 +121,14 @@ em{font-style:italic}
 }
 .island.on{box-shadow:inset 0 1px 0 var(--glass-hi), var(--glass-shadow-on);border-color:var(--rule-2)}
 .mark-fill{position:relative;display:inline-flex;flex-shrink:0}
-/* La marca entra como isologo —la A dentro del círculo— y se abre en logo:
-   el círculo se traza, crece y se va; la G y la O ocupan su sitio.
-   El mismo gesto se repite cuando la página lleva un rato quieta: la marca
-   se pliega en A y vuelve a abrirse en GOA. */
+/* La marca hace una sola cosa: pasar de A a GOA. La A arranca centrada en el
+   sitio que ocupará la palabra entera, y desde ahí se coloca mientras la G y
+   la O aparecen. Sin círculo y sin trazados: solo las letras. */
 .mark-go{display:inline-flex}
-.mark-ring{
-  position:absolute;left:50%;top:50%;width:1.72em;height:1.72em;
-  transform:translate(-50%,-50%);color:var(--accent);opacity:0;pointer-events:none;
-}
-.island.intro .mark-go{animation:goIn .6s 1.5s cubic-bezier(.22,.61,.18,1) both}
-.island.intro .mark-ring{animation:ringOpen .85s 1.45s cubic-bezier(.22,.61,.18,1) both}
-.island.intro .mark-ring circle{stroke-dasharray:264;animation:ringDraw 1.15s .22s cubic-bezier(.22,.61,.18,1) both}
-/* Durante la fase de isologo la A se queda sola en el centro del círculo;
-   al abrirse, cede su sitio a la palabra. */
-.island.intro .mark-fill{animation:aCenter 1.35s .15s cubic-bezier(.22,.61,.18,1) both}
-@keyframes aCenter{
-  0%,55%{transform:translateX(-.62em)}
-  100%{transform:none}
-}
-@keyframes goIn{from{opacity:0;transform:translateX(-7px)}to{opacity:1;transform:none}}
-@keyframes ringOpen{
-  0%{opacity:1;transform:translate(-50%,-50%) scale(1)}
-  60%{opacity:.5}
-  100%{opacity:0;transform:translate(-50%,-50%) scale(1.65)}
-}
+.island.intro .mark-fill{animation:aCenter .55s .5s cubic-bezier(.22,.61,.18,1) both}
+.island.intro .mark-go{animation:goIn .45s .6s ease both}
+@keyframes aCenter{from{transform:translateX(-.62em)}to{transform:none}}
+@keyframes goIn{from{opacity:0}to{opacity:1}}
 .nav{display:flex;gap:clamp(14px,1.7vw,22px);margin-left:auto;align-items:center}
 .nav a:not(.btn){
   font-size:13px;font-weight:400;color:var(--ink-2);text-decoration:none;
@@ -448,7 +431,6 @@ details .ans{padding:0 0 20px 28px;color:var(--ink-2);font-size:16px;line-height
 /* ═══════════ MOVIMIENTO ═══════════ */
 @keyframes riseIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @keyframes trackIn{from{opacity:0;letter-spacing:.44em}to{opacity:1;letter-spacing:.2em}}
-@keyframes islandIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
 @keyframes ringDraw{from{stroke-dashoffset:264}to{stroke-dashoffset:0}}
 @keyframes glyphIn{from{opacity:0;transform:translate(50px,54px) scale(.62) translate(-50px,-50px)}
                    to{opacity:1;transform:translate(50px,50px) scale(.66) translate(-50px,-50px)}}
@@ -457,7 +439,6 @@ details .ans{padding:0 0 20px 28px;color:var(--ink-2);font-size:16px;line-height
 .hero.intro .lead{animation:riseIn .7s .18s cubic-bezier(.22,.61,.18,1) both}
 .hero.intro .actions{animation:riseIn .7s .28s cubic-bezier(.22,.61,.18,1) both}
 .hero.intro .hero-side{animation:riseIn .8s .36s cubic-bezier(.22,.61,.18,1) both}
-.island.intro{animation:islandIn .6s cubic-bezier(.22,.61,.18,1) both}
 /* La marca se dibuja al entrar: el círculo se traza y la A sube a su sitio */
 .hero.intro .hg-ring{stroke-dasharray:264;animation:ringDraw 1.25s .42s cubic-bezier(.22,.61,.18,1) both}
 .hero.intro .hg-a{animation:glyphIn .75s 1s cubic-bezier(.22,.61,.18,1) both}
@@ -557,7 +538,7 @@ a,button{-webkit-tap-highlight-color:transparent}
 <div class="hbar">
   <header class="island intro" id="island">
     <a class="mark" href="#top" aria-label="GOA Medical Aesthetics — inicio">
-      <span class="mark-w"><span class="mark-go">GO</span><span class="mark-fill"><svg class="mark-a" aria-hidden="true"><use href="#goa-a"/></svg><svg class="mark-ring" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" stroke-width="6"/></svg></span></span>
+      <span class="mark-w"><span class="mark-go">GO</span><span class="mark-fill"><svg class="mark-a" aria-hidden="true"><use href="#goa-a"/></svg></span></span>
       <span class="mark-sub">Medical Aesthetics<br>Dr. Bengoa</span>
     </a>
     <nav class="nav" id="nav" aria-label="Secciones de la página">

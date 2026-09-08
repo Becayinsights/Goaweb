@@ -117,9 +117,7 @@ LINKS = """      <a href="/#tratamientos">Tratamientos y precios</a>
 def isla(volver=False):
     marca = ('<span class="mark-w"><span class="mark-go">GO</span><span class="mark-fill">'
              '<svg class="mark-a" aria-hidden="true"><use href="#goa-a"/></svg>'
-             '<svg class="mark-ring" viewBox="0 0 100 100" aria-hidden="true">'
-             '<circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" stroke-width="6"/>'
-             '</svg></span></span>')
+             '</span></span>')
     return f"""<div class="hbar">
   <header class="island intro" id="island">
     <a class="mark" href="/" aria-label="GOA Medical Aesthetics — inicio">
