@@ -259,7 +259,26 @@
     mega.hidden=!v;
     drops.forEach(function(b){ b.setAttribute("aria-expanded", String(v)); });
   }
-  drops.forEach(function(b){ b.addEventListener("click",function(e){ e.stopPropagation(); abrir(mega.hidden); }); });
+  var conRaton = matchMedia("(hover:hover) and (pointer:fine)").matches;
+  var cierre;
+  function entrar(){ clearTimeout(cierre); abrir(true); }
+  function salir(){ clearTimeout(cierre); cierre=setTimeout(function(){ abrir(false); }, 180); }
+  drops.forEach(function(b){
+    b.addEventListener("click",function(e){
+      e.stopPropagation();
+      if(conRaton){ abrir(false); location.href = "/#tratamientos"; }
+      else { abrir(mega.hidden); }
+    });
+    if(conRaton){
+      b.addEventListener("mouseenter", entrar);
+      b.addEventListener("mouseleave", salir);
+      b.addEventListener("focus", entrar);
+    }
+  });
+  if(conRaton){
+    mega.addEventListener("mouseenter", entrar);
+    mega.addEventListener("mouseleave", salir);
+  }
   document.addEventListener("click",function(e){ if(!mega.hidden && !mega.contains(e.target)) abrir(false); });
   mega.addEventListener("click",function(e){ if(e.target.closest("a")) abrir(false); });
   addEventListener("keydown",function(e){ if(e.key==="Escape" && !mega.hidden) abrir(false); });

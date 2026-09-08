@@ -1169,9 +1169,34 @@ a,button{-webkit-tap-highlight-color:transparent}
     mega.hidden=!v;
     drops.forEach(function(b){ b.setAttribute("aria-expanded", String(v)); });
   }
+  /* Con ratón se abre al pasar por encima, que es lo que se espera de un menú;
+     el clic entonces lleva a la sección. Sin ratón —táctil— el clic abre y
+     cierra, porque ahí no hay hover que valga. */
+  var conRaton = matchMedia("(hover:hover) and (pointer:fine)").matches;
+  var cierre;
+  function entrar(){ clearTimeout(cierre); abrir(true); }
+  function salir(){
+    clearTimeout(cierre);
+    /* Un respiro antes de cerrar: entre el botón y el panel hay un hueco y sin
+       él el menú se cerraba al cruzarlo. */
+    cierre = setTimeout(function(){ abrir(false); }, 180);
+  }
   drops.forEach(function(b){
-    b.addEventListener("click",function(e){ e.stopPropagation(); abrir(mega.hidden); });
+    b.addEventListener("click",function(e){
+      e.stopPropagation();
+      if(conRaton){ abrir(false); location.hash = "#tratamientos"; }
+      else { abrir(mega.hidden); }
+    });
+    if(conRaton){
+      b.addEventListener("mouseenter", entrar);
+      b.addEventListener("mouseleave", salir);
+      b.addEventListener("focus", entrar);
+    }
   });
+  if(conRaton){
+    mega.addEventListener("mouseenter", entrar);
+    mega.addEventListener("mouseleave", salir);
+  }
   document.addEventListener("click",function(e){
     if(!mega.hidden && !mega.contains(e.target)) abrir(false);
   });
