@@ -7,10 +7,24 @@ Proyecto independiente. **No comparte código, datos ni despliegue con Becay Ren
 
 | Fase | Estado |
 |---|---|
-| Diseño (home + fichas) | v15 publicada para revisión |
+| Diseño (home + fichas) | v17 publicada para revisión |
 | Contenido real (fotos, testimonios, datos de contacto) | pendiente del cliente |
 | Implementación Next.js | no empezada |
 | Área privada (fichas médicas, usuarios) | fuera de alcance en esta fase |
+
+## Sistema visual
+
+**Paleta v3.** El mismo concepto —hueso mineral, negro petróleo, verde
+quirófano— llevado más hondo: el negro deja de tirar a gris, el hueso se
+calienta un punto y los filetes se afinan. La sensación de material caro sale
+de ahí, no de meter más color. Ningún color literal fuera del bloque de tokens
+al principio de `design/goa-home.html`.
+
+**Dos escalas tipográficas y ninguna medida suelta.** La de texto tiene seis
+escalones (`--fs-1` a `--fs-6`) y la de la serif, que hace de display, dos
+(`--fs-d3`, `--fs-d4`) más los `clamp()` de h1 y h2. Antes había veintidós
+cuerpos distintos puestos a ojo y el conjunto bailaba. La única excepción es
+la marca, que conserva su propio tamaño.
 
 ## Maqueta alojada (la que se envía al cliente)
 

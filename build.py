@@ -21,8 +21,8 @@ DESC = ("Dr. Manuel Bengoa. Medicina estetica, medicina capilar y cirugia capila
         "con enfoque medico y resultados naturales.")
 ICON = ('<link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 '
         'viewBox=%270 0 100 100%27><circle cx=%2750%27 cy=%2750%27 r=%2742%27 fill=%27none%27 '
-        'stroke=%27%23EFEEE8%27 stroke-width=%276%27/><path fill=%27%23EFEEE8%27 '
-        'd=%27M48 18 L52 18 L28 80 L22 80 Z%27/><path fill=%27%23EFEEE8%27 '
+        'stroke=%27%23ECE8DE%27 stroke-width=%276%27/><path fill=%27%23ECE8DE%27 '
+        'd=%27M48 18 L52 18 L28 80 L22 80 Z%27/><path fill=%27%23ECE8DE%27 '
         'd=%27M46 18 L54 18 L78 80 L66 80 Z%27/></svg>">')
 TEMA = ('<script>\n'
         '/* El tema se estampa antes de la primera pintura: oscuro por defecto. */\n'
@@ -92,7 +92,7 @@ def cabeza(titulo, descripcion, canonica=None):
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="description" content="{E(descripcion)}">
-<meta name="theme-color" content="#0E1615">
+<meta name="theme-color" content="#0A100F">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="GOA Medical Aesthetics">
 <meta property="og:title" content="{E(titulo)}">
@@ -211,7 +211,7 @@ def menu_js():
     addEventListener(ev,function(){ ultimo=Date.now(); },{passive:true});
   });
   setInterval(function(){
-    if(reduce.matches || document.hidden || Date.now()-ultimo < 5000) return;
+    if(reduce.matches || document.hidden || Date.now()-ultimo < 2000) return;
     ultimo=Date.now();
     island.classList.remove("intro"); void island.offsetWidth; island.classList.add("intro");
   }, 1000);
@@ -486,12 +486,17 @@ def main():
         '<div class="quotes" id="quotes"></div>',
         '<div class="quotes" id="quotes">\n' + perfiles() + '\n      </div>')
 
-    # La fotografía del hero es opcional: si está, se copia y se enchufa; si no,
-    # el fondo se queda en las manchas de color y la página no se entera.
-    foto = RAIZ / "assets" / "hero.jpg"
-    if foto.exists():
-        (SITE / "hero.jpg").write_bytes(foto.read_bytes())
-        css += '\n:root{--hero-img:url("/hero.jpg")}\n'
+    # La fotografía del hero es opcional y no hace falta renombrarla: vale
+    # cualquier imagen que haya en assets/. Si no hay ninguna, el fondo se
+    # queda en las manchas de color y la página no se entera.
+    fotos = sorted(f for f in (RAIZ / "assets").glob("*")
+                   if f.suffix.lower() in (".jpg", ".jpeg", ".png", ".webp", ".avif"))
+    if fotos:
+        foto = next((f for f in fotos if f.stem.lower() == "hero"), fotos[0])
+        destino = "hero" + foto.suffix.lower()
+        (SITE / destino).write_bytes(foto.read_bytes())
+        css += f'\n:root{{--hero-img:url("/{destino}")}}\n'
+        print(f"{'foto del hero':20} {foto.name}")
 
     (SITE / "goa.css").write_text(css + EXTRA_CSS, encoding="utf-8")
     (SITE / "index.html").write_text(
