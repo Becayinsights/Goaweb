@@ -307,7 +307,9 @@ def main():
     (SITE / "tratamiento.html").write_text(landing(d, todos, cuerpo), encoding="utf-8")
     (SITE / "vercel.json").write_text(json.dumps({
         "cleanUrls": True,
-        "rewrites": [{"source": "/tratamientos/:slug", "destination": "/tratamiento.html"}],
+        # Con cleanUrls, /tratamiento.html redirige a /tratamiento: el destino de la
+        # reescritura tiene que ser ya la URL limpia o la ruta acaba en 404.
+        "rewrites": [{"source": "/tratamientos/:slug", "destination": "/tratamiento"}],
     }, indent=2) + "\n", encoding="utf-8")
 
     for f in ("goa.css", "index.html", "tratamiento.html", "vercel.json"):
