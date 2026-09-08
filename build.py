@@ -20,7 +20,7 @@ E = html.escape
 # A dónde lleva "Reservar cita". Vive en el proyecto de la clínica, que es donde
 # está la agenda; se pasa por entorno para poder apuntar a la URL definitiva sin
 # tocar el código:  RESERVAS=https://citas.dominio.es/reservar python3 build.py
-RESERVAS = os.environ.get("RESERVAS", "https://goa-citas.vercel.app/reservar")
+RESERVAS = os.environ.get("RESERVAS", "https://goa-citas-becay.vercel.app/reservar")
 
 DESC = ("Dr. Manuel Bengoa. Medicina estetica, medicina capilar y cirugia capilar "
         "con enfoque medico y resultados naturales.")
