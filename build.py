@@ -9,7 +9,7 @@
   tratamiento por la ruta. vercel.json reescribe /tratamientos/<slug> hacia
   ella, así que las URLs son las definitivas desde ya.
 """
-import json, html, pathlib, re
+import json, html, os, pathlib, re
 
 RAIZ = pathlib.Path(__file__).parent
 SITE = RAIZ / "site"
@@ -17,6 +17,11 @@ E = html.escape
 
 # Lo que se ve al compartir el enlace. Sigue con noindex hasta que sea la web
 # definitiva, pero el texto ya es el del doctor, no el de una maqueta.
+# A dónde lleva "Reservar cita". Vive en el proyecto de la clínica, que es donde
+# está la agenda; se pasa por entorno para poder apuntar a la URL definitiva sin
+# tocar el código:  RESERVAS=https://citas.dominio.es/reservar python3 build.py
+RESERVAS = os.environ.get("RESERVAS", "https://goa-citas.vercel.app/reservar")
+
 DESC = ("Dr. Manuel Bengoa. Medicina estetica, medicina capilar y cirugia capilar "
         "con enfoque medico y resultados naturales.")
 ICON = ('<link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 '
@@ -521,6 +526,9 @@ def main():
     cuerpo = cuerpo.replace(
         '<div class="index" id="index-mega"></div>',
         '<div class="index" id="index-mega">\n' + indice(d) + '\n      </div>')
+    cuerpo = cuerpo.replace(
+        '<a class="btn btn-solid" href="#">Reservar cita</a>',
+        f'<a class="btn btn-solid" href="{RESERVAS}">Reservar cita</a>')
     cuerpo = cuerpo.replace(
         '<div class="quotes" id="quotes"></div>',
         '<div class="quotes" id="quotes">\n' + perfiles() + '\n      </div>')
