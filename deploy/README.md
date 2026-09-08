@@ -1,6 +1,6 @@
 # Despliegue
 
-El sitio vive en Vercel y se despliega desde este repositorio: cada push a
+El sitio vive en https://goa-bengoa.vercel.app y se despliega desde este repositorio: cada push a
 `main` publica `site/`, que es lo que genera `build.py`.
 
 Ajustes del proyecto en Vercel:
