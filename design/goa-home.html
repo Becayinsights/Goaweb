@@ -19,6 +19,7 @@
   --glass:rgba(247,247,242,.72); --glass-solid:#F2F1EB; --glass-bd:rgba(18,32,31,.10); --glass-hi:rgba(255,255,255,.75);
   --glass-shadow:0 10px 34px rgba(18,32,31,.07); --glass-shadow-on:0 14px 40px rgba(18,32,31,.13);
   --hatch:rgba(18,32,31,.055);
+  --hero-a:rgba(31,90,78,.14); --hero-b:rgba(18,32,31,.07); --hero-c:#E6E5DE;
   --invert-bg:#12201F; --invert-fg:#EFEEE8; --invert-fg2:rgba(239,238,232,.74); --invert-bd:rgba(239,238,232,.28); --invert-accent:#7FBFA8;
   --shadow:0 1px 0 rgba(255,255,255,.75) inset, 0 20px 46px rgba(18,32,31,.07);
   color-scheme:light;
@@ -33,6 +34,8 @@
     --glass:rgba(21,31,30,.72); --glass-solid:#171F1E; --glass-bd:rgba(233,235,228,.12); --glass-hi:rgba(255,255,255,.07);
     --glass-shadow:0 12px 36px rgba(0,0,0,.34); --glass-shadow-on:0 16px 44px rgba(0,0,0,.5);
     --hatch:rgba(233,235,228,.06);
+  --hero-a:rgba(111,179,157,.17); --hero-b:rgba(0,0,0,.42); --hero-c:#101A19;
+    --hero-a:rgba(111,179,157,.17); --hero-b:rgba(0,0,0,.42); --hero-c:#101A19;
     --invert-bg:#E9EBE4; --invert-fg:#12201F; --invert-fg2:rgba(18,32,31,.72); --invert-bd:rgba(18,32,31,.26); --invert-accent:#1F5A4E;
     --shadow:0 1px 0 rgba(255,255,255,.05) inset, 0 22px 54px rgba(0,0,0,.45);
     color-scheme:dark;
@@ -47,6 +50,7 @@
   --glass:rgba(21,31,30,.72); --glass-solid:#171F1E; --glass-bd:rgba(233,235,228,.12); --glass-hi:rgba(255,255,255,.07);
   --glass-shadow:0 12px 36px rgba(0,0,0,.34); --glass-shadow-on:0 16px 44px rgba(0,0,0,.5);
   --hatch:rgba(233,235,228,.06);
+  --hero-a:rgba(111,179,157,.17); --hero-b:rgba(0,0,0,.42); --hero-c:#101A19;
   --invert-bg:#E9EBE4; --invert-fg:#12201F; --invert-fg2:rgba(18,32,31,.72); --invert-bd:rgba(18,32,31,.26); --invert-accent:#1F5A4E;
   --shadow:0 1px 0 rgba(255,255,255,.05) inset, 0 22px 54px rgba(0,0,0,.45);
   color-scheme:dark;
@@ -130,17 +134,47 @@ em{font-style:italic}
 @keyframes aCenter{from{transform:translateX(-.62em)}to{transform:none}}
 @keyframes goIn{from{opacity:0}to{opacity:1}}
 .nav{display:flex;gap:clamp(14px,1.7vw,22px);margin-left:auto;align-items:center}
-.nav a:not(.btn){
-  font-size:13px;font-weight:400;color:var(--ink-2);text-decoration:none;
+.nav a:not(.btn),.nav .drop{
+  font-family:inherit;font-size:13px;font-weight:400;color:var(--ink-2);text-decoration:none;
   padding:6px 0;position:relative;white-space:nowrap;transition:color .22s ease;
+  background:none;border:0;cursor:pointer;display:inline-flex;align-items:center;gap:6px;
 }
-.nav a:not(.btn)::after{
+.nav a:not(.btn)::after,.nav .drop::after{
   content:"";position:absolute;left:0;right:100%;bottom:0;height:1px;background:var(--accent);
   transition:right .3s cubic-bezier(.22,.61,.18,1);
 }
-.nav a:not(.btn):hover{color:var(--ink)}
-.nav a:not(.btn):hover::after,.nav a.here::after{right:0}
-.nav a.here{color:var(--ink)}
+.nav a:not(.btn):hover,.nav .drop:hover{color:var(--ink)}
+.nav a:not(.btn):hover::after,.nav .drop:hover::after,
+.nav a.here::after,.nav .drop.here::after,.nav .drop[aria-expanded="true"]::after{right:0}
+.nav a.here,.nav .drop.here,.nav .drop[aria-expanded="true"]{color:var(--ink)}
+/* El chevrón mira hacia abajo y gira al abrirse: el mismo signo que en la tira
+   de secciones de móvil, para no meter un icono nuevo en el sistema. */
+.drop .caret{font-size:12px;line-height:1;transform:rotate(90deg);transition:transform .3s cubic-bezier(.22,.61,.18,1)}
+.drop[aria-expanded="true"] .caret{transform:rotate(-90deg)}
+
+/* ═══════════ DESPLEGABLE DE TRATAMIENTOS ═══════════
+   La misma lista que la sección, al alcance del header. En escritorio se
+   coloca bajo la isla —el JS lee su posición—; en móvil sube desde la barra
+   inferior. Fixed en los dos casos: no depende de ningún ancestro. */
+.mega{
+  position:fixed;z-index:70;overflow:auto;-webkit-overflow-scrolling:touch;
+  border:1px solid var(--rule-2);border-radius:6px;background:var(--glass-solid);
+  box-shadow:inset 0 1px 0 var(--glass-hi), var(--glass-shadow-on);
+  animation:megaIn .22s cubic-bezier(.22,.61,.18,1) both;
+}
+@keyframes megaIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.mega-in{padding:clamp(20px,2.4vw,30px)}
+.mega .index{margin-top:0}
+.mega .tlist a{padding:9px 0;font-size:15px}
+.mega-todos{margin-top:20px;padding-top:16px;border-top:1px solid var(--rule);width:100%}
+@media (max-width:980px){
+  .mega{
+    left:12px;right:12px;width:auto;top:auto;
+    bottom:calc(80px + env(safe-area-inset-bottom));max-height:62vh;
+  }
+  @keyframes megaIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .mega .index{grid-template-columns:1fr;gap:24px}
+}
 .hact{display:flex;align-items:center;gap:8px;flex-shrink:0}
 /* ═══════════ BARRA DE SECCIONES — solo móvil ═══════════
    En móvil la cabecera se queda con lo imprescindible —marca, tema y la
@@ -230,7 +264,32 @@ em{font-style:italic}
 .icon-btn:hover{border-color:var(--rule-2);color:var(--ink)}
 .actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
 
-/* ═══════════ HERO ═══════════ */
+/* ═══════════ HERO ═══════════
+   Debajo del titular hay una imagen desenfocada: da profundidad sin competir
+   con el texto. Mientras no haya fotografía propia el fondo lo dibujan tres
+   manchas de la propia paleta; el día que la haya, basta con dejarla en
+   assets/hero.jpg y build.py la enchufa en --hero-img. */
+.hero-wrap{position:relative;isolation:isolate;overflow:hidden}
+.hero-bg{
+  position:absolute;inset:0;z-index:-1;background:var(--hero-c);
+  background-image:
+    radial-gradient(58% 62% at 76% 16%, var(--hero-a) 0%, transparent 68%),
+    radial-gradient(46% 54% at 12% 84%, var(--hero-a) 0%, transparent 66%),
+    radial-gradient(70% 78% at 44% 42%, var(--hero-b) 0%, transparent 74%);
+}
+/* La fotografía, desenfocada y desbordada para que el desenfoque no deje
+   bordes claros en las esquinas. */
+.hero-bg::before{
+  content:"";position:absolute;inset:-9%;z-index:0;
+  background:var(--hero-img) center/cover no-repeat;
+  filter:blur(30px) saturate(1.05);
+  opacity:.62;
+}
+/* Y un velo que la funde con el resto de la página, para que el texto se lea */
+.hero-bg::after{
+  content:"";position:absolute;inset:0;z-index:1;
+  background:linear-gradient(to bottom, transparent 34%, var(--paper) 100%);
+}
 .hero{padding-top:clamp(52px,7vw,96px);padding-bottom:clamp(48px,6vw,84px)}
 .hero-in{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:clamp(28px,5vw,72px);align-items:end}
 @media (max-width:980px){.hero-in{grid-template-columns:1fr;gap:34px;align-items:start}}
@@ -542,9 +601,9 @@ a,button{-webkit-tap-highlight-color:transparent}
       <span class="mark-sub">Medical Aesthetics<br>Dr. Bengoa</span>
     </a>
     <nav class="nav" id="nav" aria-label="Secciones de la página">
-      <a href="#tratamientos">Tratamientos y precios</a>
       <a href="#resultados">Antes y después</a>
       <a href="#especialidades">Especialidades</a>
+      <button class="drop" type="button" aria-expanded="false" aria-controls="mega">Tratamientos <span class="caret" aria-hidden="true">›</span></button>
       <a href="#sobre-mi">Sobre mí</a>
       <a href="#faq">FAQ</a>
     </nav>
@@ -558,7 +617,9 @@ a,button{-webkit-tap-highlight-color:transparent}
 <main id="top">
 
 <!-- ══════════ HERO ══════════ -->
-<section class="shell hero intro">
+<div class="hero-wrap">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <section class="shell hero intro">
   <div class="hero-in">
     <div>
       <p class="eyebrow">Medicina estética · Medicina capilar · Cirugía capilar</p>
@@ -581,7 +642,8 @@ a,button{-webkit-tap-highlight-color:transparent}
       <p>Tratamientos faciales, capilares y cirugía capilar diseñados según tu anatomía, tus objetivos y el resultado que realmente encaja contigo.</p>
     </aside>
   </div>
-</section>
+  </section>
+</div>
 
 
 
@@ -890,21 +952,30 @@ a,button{-webkit-tap-highlight-color:transparent}
       <p class="micro" style="margin-top:12px;max-width:44ch">Medicina estética · Medicina capilar · Cirugía capilar<br>by Dr. Bengoa</p>
     </div>
     <div class="foot-links">
-      <a href="#">Aviso legal</a>
-      <a href="#">Política de privacidad</a>
-      <a href="#">Política de cookies</a>
-      <a href="#">Consentimientos informados</a>
+      <a href="/aviso-legal">Aviso legal</a>
+      <a href="/privacidad">Política de privacidad</a>
+      <a href="/cookies">Política de cookies</a>
+      <a href="/consentimientos">Consentimientos informados</a>
     </div>
   </div>
 </footer>
 <!-- Barra de secciones de móvil: misma navegación, al alcance del pulgar.
      Es un segundo menú porque en escritorio vive dentro de la isla; el que no
      toca queda en display:none, así que solo hay uno a la vez para el lector. -->
+<!-- Desplegable de tratamientos: la lista se genera desde
+     content/tratamientos.json, la misma que la sección. -->
+<div class="mega" id="mega" hidden>
+  <div class="mega-in">
+    <div class="index" id="index-mega"></div>
+    <a class="link mega-todos" href="#tratamientos">Ver todos los tratamientos y precios <span class="arw" aria-hidden="true">→</span></a>
+  </div>
+</div>
+
 <div class="dock" id="dock">
   <nav class="nav" id="navd" aria-label="Secciones de la página">
-      <a href="#tratamientos">Tratamientos y precios</a>
       <a href="#resultados">Antes y después</a>
       <a href="#especialidades">Especialidades</a>
+      <button class="drop" type="button" aria-expanded="false" aria-controls="mega">Tratamientos <span class="caret" aria-hidden="true">›</span></button>
       <a href="#sobre-mi">Sobre mí</a>
       <a href="#faq">FAQ</a>
   </nav>
@@ -939,6 +1010,7 @@ a,button{-webkit-tap-highlight-color:transparent}
   /* La isla se asienta en cuanto la página se mueve. */
   var island=document.getElementById("island");
   var nav=document.getElementById("nav"), navd=document.getElementById("navd");
+  var drops=Array.prototype.slice.call(document.querySelectorAll(".drop"));
   function onScroll(){
     island.classList.toggle("on", window.scrollY > 12);
   }
@@ -966,6 +1038,7 @@ a,button{-webkit-tap-highlight-color:transparent}
       targets.forEach(function(t){
         if(t){ var r=t.querySelector(".rail"); if(r) r.classList.toggle("here", t.id===best); }
       });
+      drops.forEach(function(b){ b.classList.toggle("here", best==="tratamientos"); });
       links.forEach(function(a){
         var on = a.getAttribute("href")==="#"+best;
         a.classList.toggle("here", on);
@@ -1027,6 +1100,37 @@ a,button{-webkit-tap-highlight-color:transparent}
     if(Date.now() - ultimo < REPOSO) return;
     replayMarca();
   }, 1000);
+
+  /* Desplegable de tratamientos. En escritorio se cuelga de la isla leyendo su
+     posición real, así que no depende de ninguna medida escrita a mano; en
+     móvil el CSS lo ancla sobre la barra inferior. */
+  var mega=document.getElementById("mega");
+  function colocar(){
+    if(innerWidth > 980){
+      var r=island.getBoundingClientRect();
+      mega.style.top=(r.bottom + 8) + "px";
+      mega.style.left=r.left + "px";
+      mega.style.width=r.width + "px";
+      mega.style.maxHeight=(innerHeight - r.bottom - 32) + "px";
+    } else {
+      mega.style.top=mega.style.left=mega.style.width=mega.style.maxHeight="";
+    }
+  }
+  function abrir(v){
+    if(v) colocar();
+    mega.hidden=!v;
+    drops.forEach(function(b){ b.setAttribute("aria-expanded", String(v)); });
+  }
+  drops.forEach(function(b){
+    b.addEventListener("click",function(e){ e.stopPropagation(); abrir(mega.hidden); });
+  });
+  document.addEventListener("click",function(e){
+    if(!mega.hidden && !mega.contains(e.target)) abrir(false);
+  });
+  mega.addEventListener("click",function(e){ if(e.target.closest("a")) abrir(false); });
+  addEventListener("keydown",function(e){ if(e.key==="Escape" && !mega.hidden) abrir(false); });
+  addEventListener("resize",function(){ if(!mega.hidden) colocar(); });
+  addEventListener("scroll",function(){ if(!mega.hidden) colocar(); },{passive:true});
 
   /* Chevrones de la tira de secciones: aparecen solo si hay más que ver */
   var xr=document.getElementById("navx-r");

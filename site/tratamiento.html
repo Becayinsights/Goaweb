@@ -47,9 +47,9 @@
       <span class="mark-sub">Medical Aesthetics<br>Dr. Bengoa</span>
     </a>
     <nav class="nav" id="nav" aria-label="Secciones de la página">
-      <a href="/#tratamientos">Tratamientos y precios</a>
       <a href="/#resultados">Antes y después</a>
       <a href="/#especialidades">Especialidades</a>
+      <button class="drop" type="button" aria-expanded="false" aria-controls="mega">Tratamientos <span class="caret" aria-hidden="true">›</span></button>
       <a href="/#sobre-mi">Sobre mí</a>
       <a href="/#faq">FAQ</a>
     </nav>
@@ -68,7 +68,7 @@
       <h1 id="t-nombre"></h1>
       <p class="lead" id="t-texto"></p>
       <div class="actions" style="margin-top:30px">
-        <a class="btn btn-solid" href="#contacto">Pedir valoración</a>
+        <a class="btn btn-solid" href="/#contacto">Pedir valoración</a>
         <a class="btn btn-line" href="/#tratamientos">Ver todos los tratamientos</a>
       </div>
     </div>
@@ -124,121 +124,49 @@
   </div>
 </section>
 
-<section class="shell band" id="proceso-t">
-  <div class="grid">
-    <div class="rail">
-      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
-      <div class="rail-k">Método</div>
-      <div class="rail-v">Cuatro pasos · en este orden</div>
-    </div>
-    <div class="flow">
-      <h2>Analizar, diagnosticar, planificar y tratar</h2>
-      <p class="copy">Entiendo la estética desde una base médica. Cada rostro, cada patrón de alopecia y cada paciente requieren una estrategia distinta, y el orden importa: sin diagnóstico no hay plan, y sin plan no hay tratamiento que se sostenga en el tiempo.</p>
-      <div class="steps">
-        <div class="step">
-          <div class="step-n">Paso 01</div>
-          <h3>Analizar</h3>
-          <p>Valoración del rostro en conjunto o del patrón capilar completo, no de la zona que preocupa aislada.</p>
-        </div>
-        <div class="step">
-          <div class="step-n">Paso 02</div>
-          <h3>Diagnosticar</h3>
-          <p>Evaluar las necesidades del paciente, su anatomía, antecedentes, evolución y tratamientos previos para establecer un diagnóstico preciso y personalizado.</p>
-        </div>
-        <div class="step">
-          <div class="step-n">Paso 03</div>
-          <h3>Planificar</h3>
-          <p>Qué tratamiento o combinación tiene sentido, en qué orden y con qué expectativa realista.</p>
-        </div>
-        <div class="step">
-          <div class="step-n">Paso 04</div>
-          <h3>Tratar y seguir</h3>
-          <p>Ejecución y seguimiento cercano: la evolución a medio plazo forma parte del tratamiento.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="shell band" id="faq-t">
-  <div class="grid">
-    <div class="rail">
-      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
-      <div class="rail-k">FAQ</div>
-      <div class="rail-v">Preguntas frecuentes</div>
-    </div>
-    <div class="flow">
-      <h2>Lo que más se pregunta en consulta</h2>
-      <div class="faq">
-        <details open>
-          <summary>¿La primera valoración es personalizada?</summary>
-          <div class="ans">Sí. Cada caso requiere una valoración individual para estudiar indicación, objetivos y opciones reales.</div>
-        </details>
-        <details>
-          <summary>¿Todos los pacientes capilares necesitan injerto?</summary>
-          <div class="ans">No. En muchos casos es fundamental empezar por un diagnóstico médico y un plan de tratamiento.</div>
-        </details>
-        <details>
-          <summary>¿La medicina estética cambia la cara?</summary>
-          <div class="ans">Bien indicada, no. El objetivo es armonizar, prevenir y rejuvenecer manteniendo la naturalidad.</div>
-        </details>
-        <details>
-          <summary>¿Cuándo se ven los resultados?</summary>
-          <div class="ans">Depende del tratamiento. En consulta se explica qué evolución cabe esperar en cada caso.</div>
-        </details>
-        <details>
-          <summary>¿Puedo combinar varios tratamientos?</summary>
-          <div class="ans">Sí. En muchos pacientes la mejor estrategia es combinar técnicas de forma planificada.</div>
-        </details>
-        <details>
-          <summary>¿Hay casos reales publicados?</summary>
-          <div class="ans">Sí, en la web podrás ver antes y después de distintos tratamientos, siempre con consentimiento del paciente.</div>
-        </details>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="shell band lit" id="contacto">
-  <div class="shell">
-  <div class="grid">
-    <div class="rail">
-      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
-      <div class="rail-k">Contacto</div>
-      <div class="rail-v">Reserva de cita</div>
-    </div>
-    <div class="cta">
-      <div>
-        <p class="eyebrow">Valoración</p>
-        <h2>¿Quieres valorar tu caso?</h2>
-        <p class="copy">Reserva tu cita y te orientaré sobre el tratamiento más adecuado para ti, con una visión médica clara, honesta y personalizada.</p>
-        <div class="actions">
-          <a class="btn btn-solid" href="#">Pedir valoración</a>
-          <a class="btn btn-line" href="#">WhatsApp</a>
-          <a class="btn btn-line" href="#">Llamar</a>
-        </div>
-      </div>
-      <div>
-        <h4 style="margin-bottom:6px">Puedes escribir para</h4>
-        <ul class="reasons">
-          <li>Primera valoración de medicina estética</li>
-          <li>Valoración capilar</li>
-          <li>Estudio de injerto capilar</li>
-          <li>Seguimiento de tratamientos</li>
-          <li>Dudas sobre procedimientos</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  </div>
-</section>
 </main>
+
+<div class="mega" id="mega" hidden>
+  <div class="mega-in">
+    <div class="index">
+        <div>
+          <h4>Medicina estética</h4>
+          <ul class="tlist">
+            <li><a href="/tratamientos/neuromoduladores">Neuromoduladores <span class="tprice">350 €</span></a></li>
+            <li><a href="/tratamientos/acido-hialuronico">Ácido hialurónico <span class="tprice">330 € / vial</span></a></li>
+            <li><a href="/tratamientos/armonizacion-facial">Armonización facial <span class="tprice">Desde 1.900 €</span></a></li>
+            <li><a href="/tratamientos/ojeras">Tratamiento de ojeras <span class="tprice">390 €</span></a></li>
+            <li><a href="/tratamientos/labios">Aumento y definición de labios <span class="tprice">350 €</span></a></li>
+            <li><a href="/tratamientos/bioestimulacion-calidad-piel">Bioestimulación y calidad de la piel <span class="tprice">390 €</span></a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Medicina capilar</h4>
+          <ul class="tlist">
+            <li><a href="/tratamientos/primera-valoracion-capilar">Primera valoración capilar <span class="tprice">60 €</span></a></li>
+            <li><a href="/tratamientos/mesoterapia-capilar">Mesoterapia capilar <span class="tprice">250 € / sesión</span></a></li>
+            <li><a href="/tratamientos/prp-capilar">PRP capilar y bioestimulación <span class="tprice">250 € / sesión</span></a></li>
+            <li><a href="/tratamientos/tratamiento-medico-alopecia">Tratamiento médico de la alopecia <span class="tprice">A valorar</span></a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Cirugía capilar</h4>
+          <ul class="tlist">
+            <li><a href="/tratamientos/injerto-capilar-fue">Injerto capilar FUE <span class="tprice">Desde 4.500 €</span></a></li>
+            <li><a href="/tratamientos/injerto-coronilla">Injerto capilar en coronilla <span class="tprice">Desde 4.500 €</span></a></li>
+            <li><a href="/tratamientos/injerto-cejas-barba">Injerto de cejas y barba <span class="tprice">Desde 2.500 €</span></a></li>
+          </ul>
+        </div>
+      </div>
+    <a class="link mega-todos" href="/#tratamientos">Ver todos los tratamientos y precios <span class="arw" aria-hidden="true">→</span></a>
+  </div>
+</div>
 
 <div class="dock" id="dock">
   <nav class="nav" id="navd" aria-label="Secciones de la página">
-      <a href="/#tratamientos">Tratamientos y precios</a>
       <a href="/#resultados">Antes y después</a>
       <a href="/#especialidades">Especialidades</a>
+      <button class="drop" type="button" aria-expanded="false" aria-controls="mega">Tratamientos <span class="caret" aria-hidden="true">›</span></button>
       <a href="/#sobre-mi">Sobre mí</a>
       <a href="/#faq">FAQ</a>
   </nav>
@@ -255,10 +183,10 @@
     </div>
     <div class="foot-links">
       <a href="/#tratamientos">Tratamientos</a>
-      <a href="#">Aviso legal</a>
-      <a href="#">Política de privacidad</a>
-      <a href="#">Política de cookies</a>
-      <a href="#">Consentimientos informados</a>
+      <a href="/aviso-legal">Aviso legal</a>
+      <a href="/privacidad">Política de privacidad</a>
+      <a href="/cookies">Política de cookies</a>
+      <a href="/consentimientos">Consentimientos informados</a>
     </div>
   </div>
 </footer>
@@ -309,7 +237,7 @@
     document.getElementById("incluye").hidden = false;
   }
 
-  /* Tema e isla, igual que en la home */
+
   var root=document.documentElement, btn=document.getElementById("theme");
   function current(){ var s=root.getAttribute("data-theme"); return s || (matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"); }
   function label(){ var d=current()==="dark"; btn.textContent=d?"◐":"◑"; btn.title=d?"Ver en claro":"Ver en oscuro"; btn.setAttribute("aria-label",btn.title); }
@@ -320,6 +248,7 @@
     try{ localStorage.setItem("goa-theme",next); }catch(e){}
     label();
   });
+
   var island=document.getElementById("island"), navd=document.getElementById("navd");
   addEventListener("scroll",function(){ island.classList.toggle("on", scrollY>12); },{passive:true});
   var xr=document.getElementById("navx-r");
@@ -328,7 +257,32 @@
   addEventListener("resize",edges); edges();
   xr.addEventListener("click",function(){ navd.scrollBy({left:150,behavior:"smooth"}); });
 
-  /* La marca también respira aquí: en reposo se pliega en A y vuelve a GOA */
+  var mega=document.getElementById("mega");
+  var drops=Array.prototype.slice.call(document.querySelectorAll(".drop"));
+  function colocar(){
+    if(innerWidth > 980){
+      var r=island.getBoundingClientRect();
+      mega.style.top=(r.bottom + 8) + "px";
+      mega.style.left=r.left + "px";
+      mega.style.width=r.width + "px";
+      mega.style.maxHeight=(innerHeight - r.bottom - 32) + "px";
+    } else {
+      mega.style.top=mega.style.left=mega.style.width=mega.style.maxHeight="";
+    }
+  }
+  function abrir(v){
+    if(v) colocar();
+    mega.hidden=!v;
+    drops.forEach(function(b){ b.setAttribute("aria-expanded", String(v)); });
+  }
+  drops.forEach(function(b){ b.addEventListener("click",function(e){ e.stopPropagation(); abrir(mega.hidden); }); });
+  document.addEventListener("click",function(e){ if(!mega.hidden && !mega.contains(e.target)) abrir(false); });
+  mega.addEventListener("click",function(e){ if(e.target.closest("a")) abrir(false); });
+  addEventListener("keydown",function(e){ if(e.key==="Escape" && !mega.hidden) abrir(false); });
+  addEventListener("resize",function(){ if(!mega.hidden) colocar(); });
+  addEventListener("scroll",function(){ if(!mega.hidden) colocar(); },{passive:true});
+
+  /* La marca en reposo se pliega en A y vuelve a GOA */
   var reduce=matchMedia("(prefers-reduced-motion: reduce)"), ultimo=Date.now();
   ["scroll","pointerdown","keydown","touchstart"].forEach(function(ev){
     addEventListener(ev,function(){ ultimo=Date.now(); },{passive:true});
@@ -338,6 +292,7 @@
     ultimo=Date.now();
     island.classList.remove("intro"); void island.offsetWidth; island.classList.add("intro");
   }, 1000);
+
 })();
 </script>
 

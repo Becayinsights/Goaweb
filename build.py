@@ -107,9 +107,9 @@ def cabeza(titulo, descripcion, canonica=None):
 <body>"""
 
 
-LINKS = """      <a href="/#tratamientos">Tratamientos y precios</a>
-      <a href="/#resultados">Antes y después</a>
+LINKS = """      <a href="/#resultados">Antes y después</a>
       <a href="/#especialidades">Especialidades</a>
+      <button class="drop" type="button" aria-expanded="false" aria-controls="mega">Tratamientos <span class="caret" aria-hidden="true">›</span></button>
       <a href="/#sobre-mi">Sobre mí</a>
       <a href="/#faq">FAQ</a>"""
 
@@ -145,6 +145,79 @@ def dock():
 </div>"""
 
 
+def mega(d):
+    """El desplegable del header, con la misma lista que la sección."""
+    return f"""<div class="mega" id="mega" hidden>
+  <div class="mega-in">
+    <div class="index">
+{indice(d)}
+      </div>
+    <a class="link mega-todos" href="/#tratamientos">Ver todos los tratamientos y precios <span class="arw" aria-hidden="true">→</span></a>
+  </div>
+</div>"""
+
+
+def menu_js():
+    """El comportamiento del header, común a todas las páginas que no son la
+    home: tema, isla, tira de secciones, desplegable y marca en reposo."""
+    return """
+  var root=document.documentElement, btn=document.getElementById("theme");
+  function current(){ var s=root.getAttribute("data-theme"); return s || (matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"); }
+  function label(){ var d=current()==="dark"; btn.textContent=d?"\u25d0":"\u25d1"; btn.title=d?"Ver en claro":"Ver en oscuro"; btn.setAttribute("aria-label",btn.title); }
+  label();
+  btn.addEventListener("click",function(){
+    var next=current()==="dark"?"light":"dark";
+    root.setAttribute("data-theme",next);
+    try{ localStorage.setItem("goa-theme",next); }catch(e){}
+    label();
+  });
+
+  var island=document.getElementById("island"), navd=document.getElementById("navd");
+  addEventListener("scroll",function(){ island.classList.toggle("on", scrollY>12); },{passive:true});
+  var xr=document.getElementById("navx-r");
+  function edges(){ var m=navd.scrollWidth-navd.clientWidth; xr.classList.toggle("on", m>4 && navd.scrollLeft<m-4); }
+  navd.addEventListener("scroll",edges,{passive:true});
+  addEventListener("resize",edges); edges();
+  xr.addEventListener("click",function(){ navd.scrollBy({left:150,behavior:"smooth"}); });
+
+  var mega=document.getElementById("mega");
+  var drops=Array.prototype.slice.call(document.querySelectorAll(".drop"));
+  function colocar(){
+    if(innerWidth > 980){
+      var r=island.getBoundingClientRect();
+      mega.style.top=(r.bottom + 8) + "px";
+      mega.style.left=r.left + "px";
+      mega.style.width=r.width + "px";
+      mega.style.maxHeight=(innerHeight - r.bottom - 32) + "px";
+    } else {
+      mega.style.top=mega.style.left=mega.style.width=mega.style.maxHeight="";
+    }
+  }
+  function abrir(v){
+    if(v) colocar();
+    mega.hidden=!v;
+    drops.forEach(function(b){ b.setAttribute("aria-expanded", String(v)); });
+  }
+  drops.forEach(function(b){ b.addEventListener("click",function(e){ e.stopPropagation(); abrir(mega.hidden); }); });
+  document.addEventListener("click",function(e){ if(!mega.hidden && !mega.contains(e.target)) abrir(false); });
+  mega.addEventListener("click",function(e){ if(e.target.closest("a")) abrir(false); });
+  addEventListener("keydown",function(e){ if(e.key==="Escape" && !mega.hidden) abrir(false); });
+  addEventListener("resize",function(){ if(!mega.hidden) colocar(); });
+  addEventListener("scroll",function(){ if(!mega.hidden) colocar(); },{passive:true});
+
+  /* La marca en reposo se pliega en A y vuelve a GOA */
+  var reduce=matchMedia("(prefers-reduced-motion: reduce)"), ultimo=Date.now();
+  ["scroll","pointerdown","keydown","touchstart"].forEach(function(ev){
+    addEventListener(ev,function(){ ultimo=Date.now(); },{passive:true});
+  });
+  setInterval(function(){
+    if(reduce.matches || document.hidden || Date.now()-ultimo < 5000) return;
+    ultimo=Date.now();
+    island.classList.remove("intro"); void island.offsetWidth; island.classList.add("intro");
+  }, 1000);
+"""
+
+
 def sprite(cuerpo):
     ini = cuerpo.index('<svg aria-hidden="true" style="position:absolute')
     fin = cuerpo.index("</svg>", cuerpo.index("goa-iso")) + len("</svg>")
@@ -162,10 +235,10 @@ def pie():
     </div>
     <div class="foot-links">
       <a href="/#tratamientos">Tratamientos</a>
-      <a href="#">Aviso legal</a>
-      <a href="#">Política de privacidad</a>
-      <a href="#">Política de cookies</a>
-      <a href="#">Consentimientos informados</a>
+      <a href="/aviso-legal">Aviso legal</a>
+      <a href="/privacidad">Política de privacidad</a>
+      <a href="/cookies">Política de cookies</a>
+      <a href="/consentimientos">Consentimientos informados</a>
     </div>
   </div>
 </footer>"""
@@ -217,54 +290,6 @@ def perfiles():
     return "\n".join(fichas)
 
 
-def cierre():
-    """La banda de cierre: la misma llamada que en la home."""
-    return """<section class="shell band lit" id="contacto">
-  <div class="shell">
-  <div class="grid">
-    <div class="rail">
-      <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
-      <div class="rail-k">Contacto</div>
-      <div class="rail-v">Reserva de cita</div>
-    </div>
-    <div class="cta">
-      <div>
-        <p class="eyebrow">Valoración</p>
-        <h2>¿Quieres valorar tu caso?</h2>
-        <p class="copy">Reserva tu cita y te orientaré sobre el tratamiento más adecuado para ti, con una visión médica clara, honesta y personalizada.</p>
-        <div class="actions">
-          <a class="btn btn-solid" href="#">Pedir valoración</a>
-          <a class="btn btn-line" href="#">WhatsApp</a>
-          <a class="btn btn-line" href="#">Llamar</a>
-        </div>
-      </div>
-      <div>
-        <h4 style="margin-bottom:6px">Puedes escribir para</h4>
-        <ul class="reasons">
-          <li>Primera valoración de medicina estética</li>
-          <li>Valoración capilar</li>
-          <li>Estudio de injerto capilar</li>
-          <li>Seguimiento de tratamientos</li>
-          <li>Dudas sobre procedimientos</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  </div>
-</section>"""
-
-
-def seccion(cuerpo, ident, nuevo_id):
-    """Recorta una sección de la home para reutilizarla tal cual en las fichas.
-
-    El método y las preguntas frecuentes son los mismos en toda la web: se
-    escriben una vez, en la home, y de ahí salen. El id cambia para que los
-    enlaces del menú sigan apuntando a la home."""
-    ini = cuerpo.index(f'<section class="shell band" id="{ident}">')
-    fin = cuerpo.index("</section>", ini) + len("</section>")
-    return cuerpo[ini:fin].replace(f'id="{ident}"', f'id="{nuevo_id}"', 1)
-
-
 def galeria():
     """Tres huecos de antes y después. Van numerados: el nombre del tratamiento
     ya está en el título de la página y repetirlo tres veces no dice nada."""
@@ -275,6 +300,49 @@ def galeria():
         f'          <figcaption class="case-meta"><span class="case-name">Caso {n:02d}</span></figcaption>\n'
         '        </figure>'
         for n in (1, 2, 3))
+
+
+LEGALES = [
+    ("aviso-legal", "Aviso legal"),
+    ("privacidad", "Política de privacidad"),
+    ("cookies", "Política de cookies"),
+    ("consentimientos", "Consentimientos informados"),
+]
+
+
+def legal(slug, titulo, cuerpo, d):
+    """Una página por documento legal. El texto lo redacta quien corresponda;
+    la página existe desde ya para que ningún enlace del pie caiga en vacío."""
+    return f"""{cabeza(titulo + " · GOA Medical Aesthetics", DESC)}
+
+{sprite(cuerpo)}
+
+{isla()}
+
+<main id="top">
+<section class="shell trat">
+  <nav class="crumbs" aria-label="Migas"><a href="/">Inicio</a> · <span>{E(titulo)}</span></nav>
+  <h1>{E(titulo)}</h1>
+  <p class="lead">Por completar.</p>
+</section>
+</main>
+
+{mega(d)}
+
+{dock()}
+
+{pie()}
+
+<script>
+(function(){{
+  "use strict";
+{menu_js()}
+}})();
+</script>
+
+</body>
+</html>
+"""
 
 
 def landing(d, todos, cuerpo):
@@ -295,7 +363,7 @@ def landing(d, todos, cuerpo):
       <h1 id="t-nombre"></h1>
       <p class="lead" id="t-texto"></p>
       <div class="actions" style="margin-top:30px">
-        <a class="btn btn-solid" href="#contacto">Pedir valoración</a>
+        <a class="btn btn-solid" href="/#contacto">Pedir valoración</a>
         <a class="btn btn-line" href="/#tratamientos">Ver todos los tratamientos</a>
       </div>
     </div>
@@ -340,12 +408,9 @@ def landing(d, todos, cuerpo):
   </div>
 </section>
 
-{seccion(cuerpo, "proceso", "proceso-t")}
-
-{seccion(cuerpo, "faq", "faq-t")}
-
-{cierre()}
 </main>
+
+{mega(d)}
 
 {dock()}
 
@@ -397,35 +462,7 @@ def landing(d, todos, cuerpo):
     document.getElementById("incluye").hidden = false;
   }}
 
-  /* Tema e isla, igual que en la home */
-  var root=document.documentElement, btn=document.getElementById("theme");
-  function current(){{ var s=root.getAttribute("data-theme"); return s || (matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"); }}
-  function label(){{ var d=current()==="dark"; btn.textContent=d?"◐":"◑"; btn.title=d?"Ver en claro":"Ver en oscuro"; btn.setAttribute("aria-label",btn.title); }}
-  label();
-  btn.addEventListener("click",function(){{
-    var next=current()==="dark"?"light":"dark";
-    root.setAttribute("data-theme",next);
-    try{{ localStorage.setItem("goa-theme",next); }}catch(e){{}}
-    label();
-  }});
-  var island=document.getElementById("island"), navd=document.getElementById("navd");
-  addEventListener("scroll",function(){{ island.classList.toggle("on", scrollY>12); }},{{passive:true}});
-  var xr=document.getElementById("navx-r");
-  function edges(){{ var m=navd.scrollWidth-navd.clientWidth; xr.classList.toggle("on", m>4 && navd.scrollLeft<m-4); }}
-  navd.addEventListener("scroll",edges,{{passive:true}});
-  addEventListener("resize",edges); edges();
-  xr.addEventListener("click",function(){{ navd.scrollBy({{left:150,behavior:"smooth"}}); }});
-
-  /* La marca también respira aquí: en reposo se pliega en A y vuelve a GOA */
-  var reduce=matchMedia("(prefers-reduced-motion: reduce)"), ultimo=Date.now();
-  ["scroll","pointerdown","keydown","touchstart"].forEach(function(ev){{
-    addEventListener(ev,function(){{ ultimo=Date.now(); }},{{passive:true}});
-  }});
-  setInterval(function(){{
-    if(reduce.matches || document.hidden || Date.now()-ultimo < 5000) return;
-    ultimo=Date.now();
-    island.classList.remove("intro"); void island.offsetWidth; island.classList.add("intro");
-  }}, 1000);
+{menu_js()}
 }})();
 </script>
 
@@ -443,14 +480,26 @@ def main():
         '<div class="index" id="index-tratamientos"></div>',
         '<div class="index" id="index-tratamientos">\n' + indice(d) + '\n      </div>')
     cuerpo = cuerpo.replace(
+        '<div class="index" id="index-mega"></div>',
+        '<div class="index" id="index-mega">\n' + indice(d) + '\n      </div>')
+    cuerpo = cuerpo.replace(
         '<div class="quotes" id="quotes"></div>',
         '<div class="quotes" id="quotes">\n' + perfiles() + '\n      </div>')
+
+    # La fotografía del hero es opcional: si está, se copia y se enchufa; si no,
+    # el fondo se queda en las manchas de color y la página no se entera.
+    foto = RAIZ / "assets" / "hero.jpg"
+    if foto.exists():
+        (SITE / "hero.jpg").write_bytes(foto.read_bytes())
+        css += '\n:root{--hero-img:url("/hero.jpg")}\n'
 
     (SITE / "goa.css").write_text(css + EXTRA_CSS, encoding="utf-8")
     (SITE / "index.html").write_text(
         cabeza("GOA Medical Aesthetics", DESC) + "\n" + cuerpo.rstrip() + "\n\n</body>\n</html>\n",
         encoding="utf-8")
     (SITE / "tratamiento.html").write_text(landing(d, todos, cuerpo), encoding="utf-8")
+    for slug, titulo in LEGALES:
+        (SITE / f"{slug}.html").write_text(legal(slug, titulo, cuerpo, d), encoding="utf-8")
     (SITE / "vercel.json").write_text(json.dumps({
         "cleanUrls": True,
         # Con cleanUrls, /tratamiento.html redirige a /tratamiento: el destino de la
@@ -458,7 +507,8 @@ def main():
         "rewrites": [{"source": "/tratamientos/:slug", "destination": "/tratamiento"}],
     }, indent=2) + "\n", encoding="utf-8")
 
-    for f in ("goa.css", "index.html", "tratamiento.html", "vercel.json"):
+    for f in ["goa.css", "index.html", "tratamiento.html", "vercel.json"] + \
+             [f"{slug}.html" for slug, _ in LEGALES]:
         print(f"{f:20} {len((SITE/f).read_bytes()):>7,} bytes")
     print(f"{len(todos)} tratamientos con ficha propia")
 

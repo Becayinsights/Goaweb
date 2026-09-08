@@ -48,9 +48,9 @@
       <span class="mark-sub">Medical Aesthetics<br>Dr. Bengoa</span>
     </a>
     <nav class="nav" id="nav" aria-label="Secciones de la página">
-      <a href="#tratamientos">Tratamientos y precios</a>
       <a href="#resultados">Antes y después</a>
       <a href="#especialidades">Especialidades</a>
+      <button class="drop" type="button" aria-expanded="false" aria-controls="mega">Tratamientos <span class="caret" aria-hidden="true">›</span></button>
       <a href="#sobre-mi">Sobre mí</a>
       <a href="#faq">FAQ</a>
     </nav>
@@ -64,7 +64,9 @@
 <main id="top">
 
 <!-- ══════════ HERO ══════════ -->
-<section class="shell hero intro">
+<div class="hero-wrap">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <section class="shell hero intro">
   <div class="hero-in">
     <div>
       <p class="eyebrow">Medicina estética · Medicina capilar · Cirugía capilar</p>
@@ -87,7 +89,8 @@
       <p>Tratamientos faciales, capilares y cirugía capilar diseñados según tu anatomía, tus objetivos y el resultado que realmente encaja contigo.</p>
     </aside>
   </div>
-</section>
+  </section>
+</div>
 
 
 
@@ -543,21 +546,59 @@
       <p class="micro" style="margin-top:12px;max-width:44ch">Medicina estética · Medicina capilar · Cirugía capilar<br>by Dr. Bengoa</p>
     </div>
     <div class="foot-links">
-      <a href="#">Aviso legal</a>
-      <a href="#">Política de privacidad</a>
-      <a href="#">Política de cookies</a>
-      <a href="#">Consentimientos informados</a>
+      <a href="/aviso-legal">Aviso legal</a>
+      <a href="/privacidad">Política de privacidad</a>
+      <a href="/cookies">Política de cookies</a>
+      <a href="/consentimientos">Consentimientos informados</a>
     </div>
   </div>
 </footer>
 <!-- Barra de secciones de móvil: misma navegación, al alcance del pulgar.
      Es un segundo menú porque en escritorio vive dentro de la isla; el que no
      toca queda en display:none, así que solo hay uno a la vez para el lector. -->
+<!-- Desplegable de tratamientos: la lista se genera desde
+     content/tratamientos.json, la misma que la sección. -->
+<div class="mega" id="mega" hidden>
+  <div class="mega-in">
+    <div class="index" id="index-mega">
+        <div>
+          <h4>Medicina estética</h4>
+          <ul class="tlist">
+            <li><a href="/tratamientos/neuromoduladores">Neuromoduladores <span class="tprice">350 €</span></a></li>
+            <li><a href="/tratamientos/acido-hialuronico">Ácido hialurónico <span class="tprice">330 € / vial</span></a></li>
+            <li><a href="/tratamientos/armonizacion-facial">Armonización facial <span class="tprice">Desde 1.900 €</span></a></li>
+            <li><a href="/tratamientos/ojeras">Tratamiento de ojeras <span class="tprice">390 €</span></a></li>
+            <li><a href="/tratamientos/labios">Aumento y definición de labios <span class="tprice">350 €</span></a></li>
+            <li><a href="/tratamientos/bioestimulacion-calidad-piel">Bioestimulación y calidad de la piel <span class="tprice">390 €</span></a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Medicina capilar</h4>
+          <ul class="tlist">
+            <li><a href="/tratamientos/primera-valoracion-capilar">Primera valoración capilar <span class="tprice">60 €</span></a></li>
+            <li><a href="/tratamientos/mesoterapia-capilar">Mesoterapia capilar <span class="tprice">250 € / sesión</span></a></li>
+            <li><a href="/tratamientos/prp-capilar">PRP capilar y bioestimulación <span class="tprice">250 € / sesión</span></a></li>
+            <li><a href="/tratamientos/tratamiento-medico-alopecia">Tratamiento médico de la alopecia <span class="tprice">A valorar</span></a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Cirugía capilar</h4>
+          <ul class="tlist">
+            <li><a href="/tratamientos/injerto-capilar-fue">Injerto capilar FUE <span class="tprice">Desde 4.500 €</span></a></li>
+            <li><a href="/tratamientos/injerto-coronilla">Injerto capilar en coronilla <span class="tprice">Desde 4.500 €</span></a></li>
+            <li><a href="/tratamientos/injerto-cejas-barba">Injerto de cejas y barba <span class="tprice">Desde 2.500 €</span></a></li>
+          </ul>
+        </div>
+      </div>
+    <a class="link mega-todos" href="#tratamientos">Ver todos los tratamientos y precios <span class="arw" aria-hidden="true">→</span></a>
+  </div>
+</div>
+
 <div class="dock" id="dock">
   <nav class="nav" id="navd" aria-label="Secciones de la página">
-      <a href="#tratamientos">Tratamientos y precios</a>
       <a href="#resultados">Antes y después</a>
       <a href="#especialidades">Especialidades</a>
+      <button class="drop" type="button" aria-expanded="false" aria-controls="mega">Tratamientos <span class="caret" aria-hidden="true">›</span></button>
       <a href="#sobre-mi">Sobre mí</a>
       <a href="#faq">FAQ</a>
   </nav>
@@ -592,6 +633,7 @@
   /* La isla se asienta en cuanto la página se mueve. */
   var island=document.getElementById("island");
   var nav=document.getElementById("nav"), navd=document.getElementById("navd");
+  var drops=Array.prototype.slice.call(document.querySelectorAll(".drop"));
   function onScroll(){
     island.classList.toggle("on", window.scrollY > 12);
   }
@@ -619,6 +661,7 @@
       targets.forEach(function(t){
         if(t){ var r=t.querySelector(".rail"); if(r) r.classList.toggle("here", t.id===best); }
       });
+      drops.forEach(function(b){ b.classList.toggle("here", best==="tratamientos"); });
       links.forEach(function(a){
         var on = a.getAttribute("href")==="#"+best;
         a.classList.toggle("here", on);
@@ -680,6 +723,37 @@
     if(Date.now() - ultimo < REPOSO) return;
     replayMarca();
   }, 1000);
+
+  /* Desplegable de tratamientos. En escritorio se cuelga de la isla leyendo su
+     posición real, así que no depende de ninguna medida escrita a mano; en
+     móvil el CSS lo ancla sobre la barra inferior. */
+  var mega=document.getElementById("mega");
+  function colocar(){
+    if(innerWidth > 980){
+      var r=island.getBoundingClientRect();
+      mega.style.top=(r.bottom + 8) + "px";
+      mega.style.left=r.left + "px";
+      mega.style.width=r.width + "px";
+      mega.style.maxHeight=(innerHeight - r.bottom - 32) + "px";
+    } else {
+      mega.style.top=mega.style.left=mega.style.width=mega.style.maxHeight="";
+    }
+  }
+  function abrir(v){
+    if(v) colocar();
+    mega.hidden=!v;
+    drops.forEach(function(b){ b.setAttribute("aria-expanded", String(v)); });
+  }
+  drops.forEach(function(b){
+    b.addEventListener("click",function(e){ e.stopPropagation(); abrir(mega.hidden); });
+  });
+  document.addEventListener("click",function(e){
+    if(!mega.hidden && !mega.contains(e.target)) abrir(false);
+  });
+  mega.addEventListener("click",function(e){ if(e.target.closest("a")) abrir(false); });
+  addEventListener("keydown",function(e){ if(e.key==="Escape" && !mega.hidden) abrir(false); });
+  addEventListener("resize",function(){ if(!mega.hidden) colocar(); });
+  addEventListener("scroll",function(){ if(!mega.hidden) colocar(); },{passive:true});
 
   /* Chevrones de la tira de secciones: aparecen solo si hay más que ver */
   var xr=document.getElementById("navx-r");
