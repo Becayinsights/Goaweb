@@ -56,6 +56,22 @@ img{max-width:100%}
 .trat-foto img{width:100%;height:100%;object-fit:cover;display:block}
 @media (max-width:900px){.trat-foto{aspect-ratio:4/3;margin-bottom:20px}}
 .trat .lead{max-width:60ch;margin-top:22px;font-size:clamp(17px,1.6vw,19px)}
+/* Las cuatro características. Rejilla de cuatro que se parte en dos al
+   estrecharse: en una sola columna dejarían de leerse como un conjunto. */
+.rasgos{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin:30px 0 0;
+  background:var(--rule);border:1px solid var(--rule);
+}
+.rasgos > div{background:var(--paper);padding:12px 13px 13px}
+.rasgos dt{
+  font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3);
+}
+.rasgos dd{
+  margin:5px 0 0;font-family:"Instrument Serif",Georgia,serif;
+  font-size:17px;line-height:1.25;color:var(--ink);
+}
+@media (max-width:620px){.rasgos{grid-template-columns:repeat(2,1fr)}}
 .ficha{border-top:1px solid var(--rule-2)}
 .ficha-row{display:flex;flex-direction:column;gap:4px;padding:13px 0;border-bottom:1px solid var(--rule)}
 .ficha-k{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.14em;
@@ -95,6 +111,31 @@ def fondo():
         destino.write_bytes(foto.read_bytes())
         print(f"{'fondo de cierre':20} {foto.name} sin procesar (falta Pillow: pip install Pillow)")
     return '\n:root{--band-img:url("/cierre.jpg")}\n'
+
+
+def retrato():
+    """El retrato del doctor para «Sobre mí».
+
+    Basta con dejar en assets/ una imagen que se llame retrato.* y aparece sola;
+    mientras no esté, el hueco se queda como está. Se guarda a 900 px de ancho
+    en vertical: más resolución no se ve en pantalla y sí se paga al cargar.
+    """
+    fotos = [f for f in (RAIZ / "assets").glob("retrato.*")
+             if f.suffix.lower() in (".jpg", ".jpeg", ".png", ".webp")]
+    if not fotos:
+        return ""
+    foto, destino = fotos[0], SITE / "retrato.jpg"
+    try:
+        from PIL import Image
+        im = Image.open(foto).convert("RGB")
+        ancho = 900
+        if im.width > ancho:
+            im = im.resize((ancho, round(im.height * ancho / im.width)), Image.LANCZOS)
+        im.save(destino, quality=82, optimize=True, progressive=True)
+        print(f"{'retrato':20} {foto.name} -> {destino.stat().st_size:>7,} bytes")
+    except ImportError:
+        destino.write_bytes(foto.read_bytes())
+    return '\n.portrait{background:url("/retrato.jpg") center/cover no-repeat;border-color:var(--rule-2)}\n'
 
 
 def cargar():
@@ -406,6 +447,10 @@ def landing(d, todos, cuerpo):
       <nav class="crumbs" aria-label="Migas"><a href="/">Inicio</a> · <a href="/#tratamientos">Tratamientos</a> · <span id="crumb-area"></span></nav>
       <h1 id="t-nombre"></h1>
       <p class="lead" id="t-texto"></p>
+      <!-- Las cuatro preguntas que hace todo el mundo en consulta antes que
+           ninguna otra: cuándo se ve, cuánto se tarda, cuánto dura y si duele.
+           Van arriba y en grande porque son la decisión. -->
+      <dl class="rasgos" id="t-rasgos" hidden></dl>
       <div class="actions">
         <a class="btn btn-solid" href="/#contacto">Pedir valoración</a>
         <a class="btn btn-line" href="/#tratamientos">Ver todos los tratamientos</a>
@@ -477,6 +522,25 @@ def landing(d, todos, cuerpo):
   document.getElementById("t-nombre").textContent = t.nombre;
   document.getElementById("t-texto").textContent = t.texto;
 
+  var RASGOS = [["resultado","Resultado"],["aplicacion","Aplicación"],
+                ["duracion","Duración"],["anestesia","Anestesia"]];
+  var rasgos = document.getElementById("t-rasgos");
+  var hay = 0;
+  RASGOS.forEach(function(par){{
+    var v = (t.ficha || {{}})[par[0]];
+    if(!v) return;                 /* lo que no se ha dicho no se inventa */
+    /* Cada par en su caja: así la rejilla coloca parejas y no celdas sueltas,
+       y al estrecharse bajan juntas en vez de descolgarse la una de la otra.
+       Un div dentro de un dl es HTML válido justo para esto. */
+    var caja = document.createElement("div");
+    caja.innerHTML = "<dt></dt><dd></dd>";
+    caja.children[0].textContent = par[1];
+    caja.children[1].textContent = v;
+    rasgos.appendChild(caja);
+    hay++;
+  }});
+  rasgos.hidden = !hay;
+
   var ficha = document.getElementById("t-ficha");
   (t.datos || []).forEach(function(par){{
     var row = document.createElement("div");
@@ -534,6 +598,7 @@ def main():
         '<div class="quotes" id="quotes">\n' + perfiles() + '\n      </div>')
 
     css += fondo()
+    css += retrato()
 
     (SITE / "goa.css").write_text(css + EXTRA_CSS, encoding="utf-8")
     (SITE / "index.html").write_text(

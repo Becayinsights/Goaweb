@@ -1,19 +1,12 @@
-# assets
+# Imágenes
 
-Aquí va la fotografía de fondo de la banda de cierre —«¿Quieres valorar tu
-caso?»—, en su tamaño original. Vale cualquier imagen que haya en esta carpeta
-y no hace falta renombrarla; si hubiera varias, manda la que se llame `cierre`.
+Dos ficheros, reconocidos por el nombre. `build.py` los reduce y los prepara al
+generar el sitio; no hace falta tocarlos antes de subirlos.
 
-`build.py` no la copia tal cual: la reduce a 1400 px, la desenfoca y la guarda
-como `site/cierre.jpg`. De 1,2 MB a unos 30 KB. Se guarda ya desenfocada a
-propósito: el desenfoque por CSS lo recalcula el navegador en cada pintado y en
-un móvil se nota, y mandar cinco mil píxeles para verlos borrosos es peso
-tirado. Requiere Pillow (`pip install Pillow`); sin él se copia sin procesar y
-el build avisa.
+| Fichero | Dónde sale | Qué se hace con él |
+|---|---|---|
+| `cierre.*` (o cualquier imagen suelta) | Fondo del hero y de la banda de «¿Quieres valorar tu caso?» | Se reduce a 1400 px y se desenfoca al generar el sitio. Desenfocar por CSS obliga al navegador a recalcularlo en cada pintado. |
+| `retrato.*` | Sobre mí | Se reduce a 900 px de ancho. Mientras no exista, el hueco se queda con su trama. |
 
-Qué conviene que sea:
-
-- Horizontal, 2000 px o más de lado largo.
-- Un plano con poco detalle: al desenfocarse solo quedan las masas de color.
-- Tonos que convivan con la paleta —hueso, verde quirófano, negro petróleo—.
-- Sin caras reconocibles salvo que haya consentimiento firmado.
+Formatos: `.jpg`, `.jpeg`, `.png` o `.webp`. Sube el original tal cual, sin
+recortar ni comprimir: de eso se encarga el build.

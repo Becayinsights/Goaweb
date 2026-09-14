@@ -6,8 +6,22 @@
       "tag": "Facial",
       "tratamientos": [
         {
-          "slug": "neuromoduladores",
-          "nombre": "Neuromoduladores",
+          "slug": "primera-valoracion-estetica",
+          "nombre": "Primera valoración estética",
+          "precio": "60 €",
+          "precio_corto": "60 €",
+          "texto": "Consulta médica para estudiar el rostro en conjunto y no la zona que preocupa aislada. Incluye historia clínica, exploración facial y valoración de la anatomía, los antecedentes y los tratamientos previos. A partir de ahí se plantea qué tiene sentido en tu caso, en qué orden y con qué expectativa realista.",
+          "datos": [
+            [
+              "Incluye",
+              "Historia clínica, exploración facial y plan individualizado"
+            ]
+          ],
+          "duracion_min": 30
+        },
+        {
+          "slug": "tratamiento-anti-arrugas",
+          "nombre": "Tratamiento anti arrugas",
           "texto": "Tratamiento dirigido a suavizar las arrugas de expresión producidas por la contracción muscular, especialmente en el entrecejo, la frente y el contorno de los ojos. Permite conseguir un aspecto más descansado y prevenir que las líneas dinámicas se hagan más profundas, preservando la naturalidad y la expresión del rostro.",
           "datos": [
             [
@@ -16,7 +30,14 @@
             ]
           ],
           "precio": "350 €",
-          "precio_corto": "350 €"
+          "precio_corto": "350 €",
+          "ficha": {
+            "resultado": "15 días",
+            "aplicacion": "10 min",
+            "duracion": "4-6 meses",
+            "anestesia": "No necesaria"
+          },
+          "duracion_min": 30
         },
         {
           "slug": "acido-hialuronico",
@@ -29,7 +50,8 @@
             ]
           ],
           "precio": "330 € / vial",
-          "precio_corto": "330 € / vial"
+          "precio_corto": "330 € / vial",
+          "duracion_min": 30
         },
         {
           "slug": "armonizacion-facial",
@@ -46,7 +68,14 @@
             ]
           ],
           "precio": "Desde 1.900 €",
-          "precio_corto": "Desde 1.900 €"
+          "precio_corto": "Desde 1.900 €",
+          "ficha": {
+            "resultado": "Inmediato",
+            "aplicacion": "30 min",
+            "duracion": "12-18 meses",
+            "anestesia": "No necesaria"
+          },
+          "duracion_min": 60
         },
         {
           "slug": "ojeras",
@@ -59,7 +88,14 @@
             ]
           ],
           "precio": "390 €",
-          "precio_corto": "390 €"
+          "precio_corto": "390 €",
+          "ficha": {
+            "resultado": "Inmediato",
+            "aplicacion": "15 min",
+            "duracion": "12-18 meses",
+            "anestesia": "No necesaria"
+          },
+          "duracion_min": 30
         },
         {
           "slug": "labios",
@@ -72,7 +108,14 @@
             ]
           ],
           "precio": "350 €",
-          "precio_corto": "350 €"
+          "precio_corto": "350 €",
+          "ficha": {
+            "resultado": "Inmediato",
+            "aplicacion": "15 min",
+            "duracion": "10-12 meses",
+            "anestesia": "Anestesia tópica"
+          },
+          "duracion_min": 30
         },
         {
           "slug": "bioestimulacion-calidad-piel",
@@ -85,7 +128,70 @@
             ]
           ],
           "precio": "390 €",
-          "precio_corto": "390 €"
+          "precio_corto": "390 €",
+          "ficha": {
+            "resultado": "4-6 meses",
+            "aplicacion": "15 min",
+            "duracion": "24 meses",
+            "anestesia": "No necesaria"
+          },
+          "duracion_min": 30
+        },
+        {
+          "slug": "rinomodelacion",
+          "nombre": "Rinomodelación",
+          "precio": "390 €",
+          "precio_corto": "390 €",
+          "texto": "Tratamiento dirigido a mejorar la forma y las proporciones de la nariz sin cirugía mediante la aplicación estratégica de ácido hialurónico. Permite corregir pequeñas irregularidades, suavizar el caballete y elevar la punta, consiguiendo un perfil más armónico y manteniendo la naturalidad del rostro.",
+          "ficha": {
+            "resultado": "Inmediato",
+            "aplicacion": "20 min",
+            "duracion": "12-18 meses",
+            "anestesia": "No necesaria"
+          },
+          "duracion_min": 30
+        },
+        {
+          "slug": "marcacion-mandibular",
+          "nombre": "Marcación mandibular",
+          "precio": "A determinar según valoración",
+          "precio_corto": "A determinar",
+          "texto": "Tratamiento diseñado para definir el contorno mandibular y mejorar la estructura del tercio inferior del rostro mediante ácido hialurónico. Permite crear una mandíbula más marcada y equilibrada, adaptando el resultado a los rasgos y objetivos de cada paciente.",
+          "ficha": {
+            "resultado": "Inmediato",
+            "aplicacion": "20 min",
+            "duracion": "12-18 meses",
+            "anestesia": "No necesaria"
+          },
+          "duracion_min": 30
+        },
+        {
+          "slug": "reposicionamiento-pomulo",
+          "nombre": "Reposicionamiento de pómulo",
+          "precio": "590 €",
+          "precio_corto": "590 €",
+          "texto": "Tratamiento dirigido a recuperar el soporte y la proyección del tercio medio facial mediante la aplicación estratégica de ácido hialurónico. Permite reposicionar visualmente los tejidos, mejorar el contorno del pómulo y conseguir un aspecto más descansado y armónico sin modificar la expresión.",
+          "ficha": {
+            "resultado": "Inmediato",
+            "aplicacion": "15 min",
+            "duracion": "12-18 meses",
+            "anestesia": "No necesaria"
+          },
+          "duracion_min": 30
+        },
+        {
+          "slug": "aumento-menton",
+          "nombre": "Aumento de mentón",
+          "precio": "A determinar según valoración",
+          "precio_corto": "A determinar",
+          "texto": "Tratamiento diseñado para mejorar la proyección, la forma y las proporciones del mentón mediante ácido hialurónico. Permite equilibrar el perfil facial, definir el tercio inferior y mejorar la armonía entre la nariz, los labios y la mandíbula, con un resultado natural y personalizado.",
+          "ficha": {
+            "resultado": "Inmediato",
+            "aplicacion": "10 min",
+            "duracion": "12-18 meses",
+            "anestesia": "No necesaria"
+          },
+          "duracion_min": 30
         }
       ]
     },
@@ -105,7 +211,8 @@
             ]
           ],
           "precio": "60 €",
-          "precio_corto": "60 €"
+          "precio_corto": "60 €",
+          "duracion_min": 30
         },
         {
           "slug": "mesoterapia-capilar",
@@ -122,7 +229,13 @@
             ]
           ],
           "precio": "250 € por sesión",
-          "precio_corto": "250 € / sesión"
+          "precio_corto": "250 € / sesión",
+          "ficha": {
+            "resultado": "A partir de los 4 meses",
+            "aplicacion": "10 min",
+            "anestesia": "No necesaria"
+          },
+          "duracion_min": 30
         },
         {
           "slug": "prp-capilar",
@@ -139,7 +252,13 @@
             ]
           ],
           "precio": "250 € por sesión",
-          "precio_corto": "250 € / sesión"
+          "precio_corto": "250 € / sesión",
+          "ficha": {
+            "resultado": "A partir de los 4 meses",
+            "aplicacion": "10 min",
+            "anestesia": "No necesaria"
+          },
+          "duracion_min": 30
         },
         {
           "slug": "tratamiento-medico-alopecia",
@@ -152,7 +271,8 @@
             ]
           ],
           "precio": "A valorar según diagnóstico",
-          "precio_corto": "A valorar"
+          "precio_corto": "A valorar",
+          "duracion_min": 30
         }
       ]
     },
@@ -182,7 +302,14 @@
               "titulo": "Postoperatorio y evolución",
               "texto": "El seguimiento posterior forma parte del tratamiento. Durante los primeros días se controla la cicatrización y se proporcionan indicaciones sobre higiene, actividad física y cuidados de la zona receptora y donante. El cabello trasplantado comienza a crecer progresivamente y el resultado continúa evolucionando durante varios meses."
             }
-          ]
+          ],
+          "ficha": {
+            "resultado": "6-12 meses",
+            "aplicacion": "6 horas",
+            "duracion": "Indefinido",
+            "anestesia": "Local, sin sedación"
+          },
+          "duracion_min": 480
         },
         {
           "slug": "injerto-coronilla",
@@ -201,7 +328,14 @@
               "titulo": "Postoperatorio y evolución",
               "texto": "El seguimiento posterior forma parte del tratamiento. Durante los primeros días se controla la cicatrización y se proporcionan indicaciones sobre higiene, actividad física y cuidados de la zona receptora y donante. El cabello trasplantado comienza a crecer progresivamente y el resultado continúa evolucionando durante varios meses."
             }
-          ]
+          ],
+          "ficha": {
+            "resultado": "6-12 meses",
+            "aplicacion": "6 horas",
+            "duracion": "Indefinido",
+            "anestesia": "Local, sin sedación"
+          },
+          "duracion_min": 480
         },
         {
           "slug": "injerto-cejas-barba",
@@ -224,7 +358,14 @@
               "titulo": "Postoperatorio y evolución",
               "texto": "El seguimiento posterior forma parte del tratamiento. Durante los primeros días se controla la cicatrización y se proporcionan indicaciones sobre higiene, actividad física y cuidados de la zona receptora y donante. El cabello trasplantado comienza a crecer progresivamente y el resultado continúa evolucionando durante varios meses."
             }
-          ]
+          ],
+          "ficha": {
+            "resultado": "6-12 meses",
+            "aplicacion": "3 horas",
+            "duracion": "Indefinido",
+            "anestesia": "Local, sin sedación"
+          },
+          "duracion_min": 240
         }
       ]
     }
