@@ -232,6 +232,175 @@
       "tratamientos": [
         "aumento-menton"
       ]
+    },
+    {
+      "id": "antiarrugas-1-entrecejo",
+      "titulo": "Caso 16",
+      "vista": "Entrecejo",
+      "cats": [
+        "estetica",
+        "antiarrugas"
+      ],
+      "tratamiento": "Anti arrugas",
+      "tratamientos": [
+        "tratamiento-anti-arrugas"
+      ]
+    },
+    {
+      "id": "antiarrugas-2-entrecejo",
+      "titulo": "Caso 17",
+      "vista": "Entrecejo",
+      "cats": [
+        "estetica",
+        "antiarrugas"
+      ],
+      "tratamiento": "Anti arrugas",
+      "tratamientos": [
+        "tratamiento-anti-arrugas"
+      ]
+    },
+    {
+      "id": "antiarrugas-1-frente",
+      "titulo": "Caso 16",
+      "vista": "Frente",
+      "cats": [
+        "estetica",
+        "antiarrugas"
+      ],
+      "tratamiento": "Anti arrugas",
+      "tratamientos": [
+        "tratamiento-anti-arrugas"
+      ]
+    },
+    {
+      "id": "antiarrugas-2-frente",
+      "titulo": "Caso 17",
+      "vista": "Frente",
+      "cats": [
+        "estetica",
+        "antiarrugas"
+      ],
+      "tratamiento": "Anti arrugas",
+      "tratamientos": [
+        "tratamiento-anti-arrugas"
+      ]
+    },
+    {
+      "id": "antiarrugas-1-pdgallo",
+      "titulo": "Caso 16",
+      "vista": "Patas de gallo",
+      "cats": [
+        "estetica",
+        "antiarrugas"
+      ],
+      "tratamiento": "Anti arrugas",
+      "tratamientos": [
+        "tratamiento-anti-arrugas"
+      ]
+    },
+    {
+      "id": "antiarrugas-2-pdgallo",
+      "titulo": "Caso 17",
+      "vista": "Patas de gallo",
+      "cats": [
+        "estetica",
+        "antiarrugas"
+      ],
+      "tratamiento": "Anti arrugas",
+      "tratamientos": [
+        "tratamiento-anti-arrugas"
+      ]
+    },
+    {
+      "id": "ojeras-1.1",
+      "titulo": "Caso 18",
+      "vista": "Tres cuartos",
+      "cats": [
+        "estetica",
+        "ojeras"
+      ],
+      "tratamiento": "Tratamiento de ojeras",
+      "tratamientos": [
+        "ojeras"
+      ]
+    },
+    {
+      "id": "ojeras-1.2",
+      "titulo": "Caso 18",
+      "vista": "Frontal",
+      "cats": [
+        "estetica",
+        "ojeras"
+      ],
+      "tratamiento": "Tratamiento de ojeras",
+      "tratamientos": [
+        "ojeras"
+      ]
+    },
+    {
+      "id": "rino-2",
+      "titulo": "Caso 19",
+      "vista": "",
+      "cats": [
+        "estetica",
+        "rino"
+      ],
+      "tratamiento": "Rinomodelación",
+      "tratamientos": [
+        "rinomodelacion"
+      ]
+    },
+    {
+      "id": "rino-3",
+      "titulo": "Caso 20",
+      "vista": "",
+      "cats": [
+        "estetica",
+        "rino"
+      ],
+      "tratamiento": "Rinomodelación",
+      "tratamientos": [
+        "rinomodelacion"
+      ]
+    },
+    {
+      "id": "rino-4",
+      "titulo": "Caso 21",
+      "vista": "",
+      "cats": [
+        "estetica",
+        "rino"
+      ],
+      "tratamiento": "Rinomodelación",
+      "tratamientos": [
+        "rinomodelacion"
+      ]
+    },
+    {
+      "id": "rino-5",
+      "titulo": "Caso 22",
+      "vista": "",
+      "cats": [
+        "estetica",
+        "rino"
+      ],
+      "tratamiento": "Rinomodelación",
+      "tratamientos": [
+        "rinomodelacion"
+      ]
+    },
+    {
+      "id": "rino-6",
+      "titulo": "Caso 23",
+      "vista": "",
+      "cats": [
+        "estetica",
+        "rino"
+      ],
+      "tratamiento": "Rinomodelación",
+      "tratamientos": [
+        "rinomodelacion"
+      ]
     }
   ]
 }

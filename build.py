@@ -402,7 +402,7 @@ def figura(c, visible=True):
     """Una ficha de antes y después. La imagen va con loading=lazy porque estas
     fotos están abajo del todo y no deben retrasar lo que se ve al entrar."""
     cats = " ".join(c.get("cats", []))
-    pie = c.get("tratamiento") or c.get("vista") or ""
+    pie = " · ".join(x for x in (c.get("tratamiento"), c.get("vista")) if x)
     return (
         f'        <figure class="case{"" if visible else " seen"}" data-cat="{cats}">\n'
         f'          <div class="slot con-foto">'
@@ -449,7 +449,8 @@ def filtros():
     un filtro que no encuentra nada es una promesa incumplida."""
     nombres = {"estetica": "Medicina estética", "capilar": "Capilar", "labios": "Labios",
                "ojeras": "Ojeras", "superior": "Tercio superior", "rino": "Rinomodelación",
-               "mandibula": "Marcación mandibular", "menton": "Mentón", "pomulo": "Pómulo"}
+               "mandibula": "Marcación mandibular", "menton": "Mentón", "pomulo": "Pómulo",
+               "antiarrugas": "Anti arrugas"}
     hay = []
     for c in casos():
         for x in c.get("cats", []):
@@ -658,7 +659,8 @@ def landing(d, todos, cuerpo):
         + \'<span class="slot-lbl izq">Antes</span><span class="slot-lbl der">Después</span></div>\'
         + \'<figcaption class="case-meta"><span class="case-name"></span><span class="case-det"></span></figcaption>\';
       f.querySelector(".case-name").textContent = c.titulo;
-      f.querySelector(".case-det").textContent = c.tratamiento || c.vista || "";
+      f.querySelector(".case-det").textContent =
+        [c.tratamiento, c.vista].filter(Boolean).join(" · ");
       caja.appendChild(f);
     }});
     document.getElementById("resultados-t").hidden = false;

@@ -396,12 +396,16 @@ em{font-style:italic}
 }
 .slot.con-foto .izq{left:9px}
 .slot.con-foto .der{left:calc(50% + 9px)}
+/* El pie puede llevar tratamiento y zona —«Anti arrugas · Entrecejo»—, así que
+   se le deja envolver y alinearse a la derecha en vez de forzar una sola línea
+   que empujaría al número de caso. */
 .case-det{font-family:"IBM Plex Mono",monospace;font-size:var(--fs-1);letter-spacing:.14em;
-  text-transform:uppercase;color:var(--ink-3);white-space:nowrap}
+  text-transform:uppercase;color:var(--ink-3);text-align:right;line-height:1.5}
 .slot-half + .slot-half{border-left:1px solid var(--rule)}
 .slot-lbl{font-family:"IBM Plex Mono",monospace;font-size:var(--fs-1);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3)}
 .case-meta{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
 .case-name{font-family:"Instrument Serif",Georgia,serif;font-size:var(--fs-d4);color:var(--ink)}
+#mas-casos{margin-top:26px}
 .notice{
   margin-top:26px;padding:16px 18px;border-left:2px solid var(--accent);background:var(--accent-dim);
   font-size:var(--fs-5);line-height:1.6;color:var(--ink-2);max-width:70ch;
@@ -523,7 +527,8 @@ p + .actions,.copy + .actions,.lead + .actions{margin-top:28px}
 
 .flow > * + *{margin-top:20px}
 .flow > .areas,.flow > .steps,.flow > .index,.flow > .quotes,
-.flow > .faq,.flow > .notice{margin-top:34px}
+.flow > .faq,.flow > #mas-casos{margin-top:26px}
+.notice{margin-top:34px}
 .flow > .filters{margin-top:26px}
 .flow > .principles{margin-top:30px}
 .flow > .mt-lg{margin-top:38px}
@@ -562,7 +567,8 @@ a,button{-webkit-tap-highlight-color:transparent}
   .quote{padding:20px}
   .cta .actions{gap:10px}
   .cta .actions .btn{flex:1 1 100%;justify-content:center;padding:14px 20px;font-size:var(--fs-5)}
-  .notice{font-size:var(--fs-5);padding:14px 16px}
+  #mas-casos{margin-top:26px}
+.notice{font-size:var(--fs-5);padding:14px 16px}
   .foot-in{gap:22px}
 }
 
