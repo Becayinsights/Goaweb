@@ -102,6 +102,97 @@
       "tratamientos": [
         "labios"
       ]
+    },
+    {
+      "id": "mandibula-1.1",
+      "titulo": "Caso 09",
+      "vista": "Frontal",
+      "cats": [
+        "estetica",
+        "mandibula"
+      ],
+      "tratamiento": "Marcación mandibular",
+      "tratamientos": [
+        "marcacion-mandibular"
+      ]
+    },
+    {
+      "id": "mandibula-1.2",
+      "titulo": "Caso 09",
+      "vista": "Tres cuartos",
+      "cats": [
+        "estetica",
+        "mandibula"
+      ],
+      "tratamiento": "Marcación mandibular",
+      "tratamientos": [
+        "marcacion-mandibular"
+      ]
+    },
+    {
+      "id": "mandibula-2.1",
+      "titulo": "Caso 10",
+      "vista": "Tres cuartos",
+      "cats": [
+        "estetica",
+        "mandibula"
+      ],
+      "tratamiento": "Marcación mandibular",
+      "tratamientos": [
+        "marcacion-mandibular"
+      ]
+    },
+    {
+      "id": "mandibula-2.2",
+      "titulo": "Caso 10",
+      "vista": "Perfil",
+      "cats": [
+        "estetica",
+        "mandibula"
+      ],
+      "tratamiento": "Marcación mandibular",
+      "tratamientos": [
+        "marcacion-mandibular"
+      ]
+    },
+    {
+      "id": "mandibula-3.1",
+      "titulo": "Caso 11",
+      "vista": "Tres cuartos",
+      "cats": [
+        "estetica",
+        "mandibula"
+      ],
+      "tratamiento": "Marcación mandibular",
+      "tratamientos": [
+        "marcacion-mandibular"
+      ]
+    },
+    {
+      "id": "mandibula-4.1",
+      "titulo": "Caso 12",
+      "vista": "Frontal",
+      "cats": [
+        "estetica",
+        "mandibula"
+      ],
+      "tratamiento": "Marcación mandibular",
+      "tratamientos": [
+        "marcacion-mandibular"
+      ]
+    },
+    {
+      "id": "mandibula-4.2",
+      "titulo": "Caso 12",
+      "vista": "Tres cuartos",
+      "cats": [
+        "estetica",
+        "mandibula"
+      ],
+      "tratamiento": "Marcación mandibular",
+      "tratamientos": [
+        "marcacion-mandibular"
+      ]
     }
   ]
 }

@@ -392,7 +392,7 @@ def casos():
         return []
     fuera = []
     for c in json.loads(fichero.read_text(encoding="utf-8")).get("casos", []):
-        par = [(RAIZ / "assets" / "casos" / f'{c["id"]}-{lado}.jpg') for lado in ("antes", "despues")]
+        par = [(RAIZ / "assets" / "casos" / f'{c["id"]}-{lado}.webp') for lado in ("antes", "despues")]
         if all(f.exists() for f in par):
             fuera.append(c)
     return fuera
@@ -406,8 +406,8 @@ def figura(c, visible=True):
     return (
         f'        <figure class="case{"" if visible else " seen"}" data-cat="{cats}">\n'
         f'          <div class="slot con-foto">'
-        f'<img src="/casos/{c["id"]}-antes.jpg" alt="Antes" loading="lazy" width="900" height="1125">'
-        f'<img src="/casos/{c["id"]}-despues.jpg" alt="Después" loading="lazy" width="900" height="1125">'
+        f'<img src="/casos/{c["id"]}-antes.webp" alt="Antes" loading="lazy" width="750" height="938">'
+        f'<img src="/casos/{c["id"]}-despues.webp" alt="Después" loading="lazy" width="750" height="938">'
         f'<span class="slot-lbl izq">Antes</span><span class="slot-lbl der">Después</span></div>\n'
         f'          <figcaption class="case-meta"><span class="case-name">{E(c["titulo"])}</span>'
         + (f'<span class="case-det">{E(pie)}</span>' if pie else "")
@@ -415,15 +415,24 @@ def figura(c, visible=True):
 
 
 def copiar_casos():
-    """Las fotos ya vienen reducidas de assets/casos; aquí solo se copian."""
+    """Las fotos ya vienen reducidas y en WebP desde assets/casos; aquí solo se
+    copian. WebP porque en fotografía pesa en torno a la mitad que un JPEG de la
+    misma calidad, y lo entiende cualquier navegador desde 2020."""
     origen, destino = RAIZ / "assets" / "casos", SITE / "casos"
     if not origen.exists():
         return
     destino.mkdir(exist_ok=True)
     n = 0
-    for f in origen.glob("*.jpg"):
+    vivos = set()
+    for f in origen.glob("*.webp"):
         (destino / f.name).write_bytes(f.read_bytes())
+        vivos.add(f.name)
         n += 1
+    # Y se barre lo que ya no existe en assets: si no, una foto retirada o
+    # recodificada se queda publicada para siempre en site/.
+    for viejo in destino.iterdir():
+        if viejo.name not in vivos:
+            viejo.unlink()
     if n:
         print(f"{'casos':20} {n} fotografías")
 
@@ -644,8 +653,8 @@ def landing(d, todos, cuerpo):
       var f = document.createElement("figure");
       f.className = "case seen";
       f.innerHTML = \'<div class="slot con-foto">\'
-        + \'<img src="/casos/\' + c.id + \'-antes.jpg" alt="Antes" loading="lazy">\'
-        + \'<img src="/casos/\' + c.id + \'-despues.jpg" alt="Después" loading="lazy">\'
+        + \'<img src="/casos/\' + c.id + \'-antes.webp" alt="Antes" loading="lazy">\'
+        + \'<img src="/casos/\' + c.id + \'-despues.webp" alt="Después" loading="lazy">\'
         + \'<span class="slot-lbl izq">Antes</span><span class="slot-lbl der">Después</span></div>\'
         + \'<figcaption class="case-meta"><span class="case-name"></span><span class="case-det"></span></figcaption>\';
       f.querySelector(".case-name").textContent = c.titulo;
