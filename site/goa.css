@@ -589,6 +589,8 @@ a,button{-webkit-tap-highlight-color:transparent}
 
 :root{--band-img:url("/cierre.jpg")}
 
+.portrait{background:url("/retrato.jpg") center/cover no-repeat;border-color:var(--rule-2)}
+
 /* Reglas que antes ponía el envoltorio del visor de artifacts y ahora son nuestras */
 img{max-width:100%}
 [hidden]{display:none!important}   /* sin esto, .case{display:flex} gana al hidden */

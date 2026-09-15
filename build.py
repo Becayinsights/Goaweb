@@ -88,16 +88,18 @@ img{max-width:100%}
 def fondo():
     """Prepara la fotografía de fondo de la banda de cierre.
 
-    Vale cualquier imagen que haya en assets/ y no hace falta renombrarla. Se
+    Tiene que llamarse cierre.*; antes valía cualquier imagen suelta de assets/
+    y en cuanto entró una segunda foto el fondo del hero pasó a ser el retrato
+    del doctor desenfocado. Los ficheros se reconocen por el nombre, siempre. Se
     guarda ya desenfocada y reducida: el desenfoque por CSS lo recalcula el
     navegador en cada pintado y en un móvil se nota, y una foto de cinco mil
     píxeles para verse borrosa es peso tirado. De 1,2 MB a unos 30 KB.
     """
-    fotos = sorted(f for f in (RAIZ / "assets").glob("*")
-                   if f.suffix.lower() in (".jpg", ".jpeg", ".png", ".webp"))
+    fotos = [f for f in (RAIZ / "assets").glob("cierre.*")
+             if f.suffix.lower() in (".jpg", ".jpeg", ".png", ".webp")]
     if not fotos:
         return ""
-    foto = next((f for f in fotos if f.stem.lower() == "cierre"), fotos[0])
+    foto = fotos[0]
     destino = SITE / "cierre.jpg"
     try:
         from PIL import Image, ImageFilter
@@ -128,6 +130,12 @@ def retrato():
     try:
         from PIL import Image
         im = Image.open(foto).convert("RGB")
+        alto = round(im.width * 4 / 3)
+        if im.height > alto:
+            # Anclado arriba y no al centro: en un retrato la cabeza está en la
+            # mitad de arriba, y centrar el recorte le corta la frente.
+            arriba = round(im.height * 0.045)
+            im = im.crop((0, arriba, im.width, min(arriba + alto, im.height)))
         ancho = 900
         if im.width > ancho:
             im = im.resize((ancho, round(im.height * ancho / im.width)), Image.LANCZOS)
@@ -440,9 +448,20 @@ def filtros():
                 hay.append(x)
     if len(hay) < 2:
         return ""                    # con una sola categoría, filtrar no filtra nada
+    # Y si dos categorías seleccionan exactamente los mismos casos, sobra una:
+    # dos botones distintos que hacen lo mismo confunden más de lo que ayudan.
+    vistos, limpio = [], []
+    for x in hay:
+        conjunto = {c["id"] for c in casos() if x in c.get("cats", [])}
+        if conjunto in vistos:
+            continue
+        vistos.append(conjunto)
+        limpio.append(x)
+    if len(limpio) < 2:
+        return ""
     botones = ['        <button class="chip" type="button" data-f="all" aria-pressed="true">Todos</button>']
     botones += [f'        <button class="chip" type="button" data-f="{x}" aria-pressed="false">{nombres.get(x, x.title())}</button>'
-                for x in hay]
+                for x in limpio]
     return "\n".join(botones)
 
 
