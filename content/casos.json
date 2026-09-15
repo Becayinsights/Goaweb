@@ -193,6 +193,45 @@
       "tratamientos": [
         "marcacion-mandibular"
       ]
+    },
+    {
+      "id": "menton-1",
+      "titulo": "Caso 13",
+      "vista": "",
+      "cats": [
+        "estetica",
+        "menton"
+      ],
+      "tratamiento": "Aumento de mentón",
+      "tratamientos": [
+        "aumento-menton"
+      ]
+    },
+    {
+      "id": "menton-2",
+      "titulo": "Caso 14",
+      "vista": "",
+      "cats": [
+        "estetica",
+        "menton"
+      ],
+      "tratamiento": "Aumento de mentón",
+      "tratamientos": [
+        "aumento-menton"
+      ]
+    },
+    {
+      "id": "menton-3",
+      "titulo": "Caso 15",
+      "vista": "",
+      "cats": [
+        "estetica",
+        "menton"
+      ],
+      "tratamiento": "Aumento de mentón",
+      "tratamientos": [
+        "aumento-menton"
+      ]
     }
   ]
 }
