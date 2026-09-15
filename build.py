@@ -375,16 +375,75 @@ def perfiles():
     return "\n".join(fichas)
 
 
-def galeria():
-    """Tres huecos de antes y después. Van numerados: el nombre del tratamiento
-    ya está en el título de la página y repetirlo tres veces no dice nada."""
-    return "\n".join(
-        '        <figure class="case seen">\n'
-        '          <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div>'
-        '<div class="slot-half"><span class="slot-lbl">Después</span></div></div>\n'
-        f'          <figcaption class="case-meta"><span class="case-name">Caso {n:02d}</span></figcaption>\n'
-        '        </figure>'
-        for n in (1, 2, 3))
+def casos():
+    """Los casos con fotografía. Solo salen los que tienen las dos imágenes: un
+    antes sin después no es un caso, y un hueco vacío al lado de fotos reales
+    hace que toda la sección parezca a medio hacer."""
+    fichero = RAIZ / "content" / "casos.json"
+    if not fichero.exists():
+        return []
+    fuera = []
+    for c in json.loads(fichero.read_text(encoding="utf-8")).get("casos", []):
+        par = [(RAIZ / "assets" / "casos" / f'{c["id"]}-{lado}.jpg') for lado in ("antes", "despues")]
+        if all(f.exists() for f in par):
+            fuera.append(c)
+    return fuera
+
+
+def figura(c, visible=True):
+    """Una ficha de antes y después. La imagen va con loading=lazy porque estas
+    fotos están abajo del todo y no deben retrasar lo que se ve al entrar."""
+    cats = " ".join(c.get("cats", []))
+    pie = c.get("tratamiento") or c.get("vista") or ""
+    return (
+        f'        <figure class="case{"" if visible else " seen"}" data-cat="{cats}">\n'
+        f'          <div class="slot con-foto">'
+        f'<img src="/casos/{c["id"]}-antes.jpg" alt="Antes" loading="lazy" width="900" height="1125">'
+        f'<img src="/casos/{c["id"]}-despues.jpg" alt="Después" loading="lazy" width="900" height="1125">'
+        f'<span class="slot-lbl izq">Antes</span><span class="slot-lbl der">Después</span></div>\n'
+        f'          <figcaption class="case-meta"><span class="case-name">{E(c["titulo"])}</span>'
+        + (f'<span class="case-det">{E(pie)}</span>' if pie else "")
+        + '</figcaption>\n        </figure>')
+
+
+def copiar_casos():
+    """Las fotos ya vienen reducidas de assets/casos; aquí solo se copian."""
+    origen, destino = RAIZ / "assets" / "casos", SITE / "casos"
+    if not origen.exists():
+        return
+    destino.mkdir(exist_ok=True)
+    n = 0
+    for f in origen.glob("*.jpg"):
+        (destino / f.name).write_bytes(f.read_bytes())
+        n += 1
+    if n:
+        print(f"{'casos':20} {n} fotografías")
+
+
+def galeria(slug=None):
+    """Los casos de una ficha de tratamiento. Si no hay ninguno, quien llama
+    esconde la sección entera."""
+    elegidos = [c for c in casos() if slug is None or slug in c.get("tratamientos", [])]
+    return "\n".join(figura(c, visible=False) for c in elegidos)
+
+
+def filtros():
+    """Los filtros salen de los casos que hay, no de una lista escrita a mano:
+    un filtro que no encuentra nada es una promesa incumplida."""
+    nombres = {"estetica": "Medicina estética", "capilar": "Capilar", "labios": "Labios",
+               "ojeras": "Ojeras", "superior": "Tercio superior", "rino": "Rinomodelación",
+               "mandibula": "Marcación mandibular", "menton": "Mentón", "pomulo": "Pómulo"}
+    hay = []
+    for c in casos():
+        for x in c.get("cats", []):
+            if x not in hay:
+                hay.append(x)
+    if len(hay) < 2:
+        return ""                    # con una sola categoría, filtrar no filtra nada
+    botones = ['        <button class="chip" type="button" data-f="all" aria-pressed="true">Todos</button>']
+    botones += [f'        <button class="chip" type="button" data-f="{x}" aria-pressed="false">{nombres.get(x, x.title())}</button>'
+                for x in hay]
+    return "\n".join(botones)
 
 
 LEGALES = [
@@ -434,6 +493,7 @@ def landing(d, todos, cuerpo):
     """Una plantilla para todas las fichas; la ruta decide cuál se pinta."""
     datos = {t["slug"]: {**t, "area": a["nombre"], "tag": a["tag"]} for a, t in todos}
     js_datos = json.dumps(datos, ensure_ascii=False)
+    js_casos = json.dumps({c["id"]: c for c in casos()}, ensure_ascii=False)
     return f"""{cabeza("Tratamiento · GOA Medical Aesthetics", DESC)}
 
 {sprite(cuerpo)}
@@ -479,7 +539,7 @@ def landing(d, todos, cuerpo):
   </div>
 </section>
 
-<section class="shell band" id="resultados-t">
+<section class="shell band" id="resultados-t" hidden>
   <div class="grid">
     <div class="rail">
       <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
@@ -489,9 +549,7 @@ def landing(d, todos, cuerpo):
     <div class="flow">
       <h2>Antes y después</h2>
       <p class="copy">Cada paciente parte de una anatomía distinta, por eso cada tratamiento se adapta de forma personalizada. Los resultados deben interpretarse según el punto de partida, el tratamiento realizado y el seguimiento.</p>
-      <div class="cases">
-{galeria()}
-      </div>
+      <div class="cases" id="t-casos"></div>
       <p class="notice">Las imágenes muestran resultados reales, pero cada caso requiere una valoración individual y no todos los pacientes obtienen exactamente la misma evolución.</p>
     </div>
   </div>
@@ -556,6 +614,28 @@ def landing(d, todos, cuerpo):
   precio.children[1].textContent = t.precio;
   ficha.appendChild(precio);
 
+  /* Los casos de este tratamiento. Si no tiene ninguno, la sección entera se
+     queda fuera: mejor no prometer un antes y después que no existe. */
+  var CASOS = {js_casos};
+  var mios = Object.keys(CASOS).map(function(k){{ return CASOS[k]; }})
+    .filter(function(c){{ return (c.tratamientos || []).indexOf(slug) > -1; }});
+  if(mios.length){{
+    var caja = document.getElementById("t-casos");
+    mios.forEach(function(c){{
+      var f = document.createElement("figure");
+      f.className = "case seen";
+      f.innerHTML = \'<div class="slot con-foto">\'
+        + \'<img src="/casos/\' + c.id + \'-antes.jpg" alt="Antes" loading="lazy">\'
+        + \'<img src="/casos/\' + c.id + \'-despues.jpg" alt="Después" loading="lazy">\'
+        + \'<span class="slot-lbl izq">Antes</span><span class="slot-lbl der">Después</span></div>\'
+        + \'<figcaption class="case-meta"><span class="case-name"></span><span class="case-det"></span></figcaption>\';
+      f.querySelector(".case-name").textContent = c.titulo;
+      f.querySelector(".case-det").textContent = c.tratamiento || c.vista || "";
+      caja.appendChild(f);
+    }});
+    document.getElementById("resultados-t").hidden = false;
+  }}
+
   var inc = t.incluye || [];
   if(inc.length){{
     var caja = document.getElementById("t-incluye");
@@ -594,11 +674,19 @@ def main():
         '<a class="btn btn-solid" href="#">Reservar cita</a>',
         f'<a class="btn btn-solid" href="{RESERVAS}">Reservar cita</a>')
     cuerpo = cuerpo.replace(
+        '<div class="cases" id="cases"></div>',
+        '<div class="cases" id="cases">\n' + galeria() + '\n      </div>')
+    cuerpo = cuerpo.replace(
+        '<div class="filters" id="filtros" role="group" aria-label="Filtrar casos por tratamiento"></div>',
+        ('<div class="filters" id="filtros" role="group" aria-label="Filtrar casos por tratamiento">\n'
+         + filtros() + '\n      </div>') if filtros() else '')
+    cuerpo = cuerpo.replace(
         '<div class="quotes" id="quotes"></div>',
         '<div class="quotes" id="quotes">\n' + perfiles() + '\n      </div>')
 
     css += fondo()
     css += retrato()
+    copiar_casos()
 
     (SITE / "goa.css").write_text(css + EXTRA_CSS, encoding="utf-8")
     (SITE / "index.html").write_text(

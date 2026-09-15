@@ -1,0 +1,10 @@
+{
+  "_nota": "Cada caso necesita una pareja de ficheros en assets/casos/: <id>-antes.jpg y <id>-despues.jpg. 'cats' decide en qué filtros aparece, y debe coincidir con los data-f de la sección de resultados. 'tratamientos' son los slugs de las fichas donde también sale el caso; vacío significa que solo sale en la home. 'tratamiento' es el texto que se lee bajo la foto: mientras esté vacío no se escribe nada, porque decir qué se hizo en un caso clínico no es cosa de adivinarla.",
+  "casos": [
+    { "id": "capilar-1.1", "titulo": "Caso 01", "vista": "Coronilla",     "cats": ["capilar"], "tratamiento": "", "tratamientos": [] },
+    { "id": "capilar-2.1", "titulo": "Caso 02", "vista": "Vista superior", "cats": ["capilar"], "tratamiento": "", "tratamientos": [] },
+    { "id": "capilar-3",   "titulo": "Caso 03", "vista": "Vista cenital",  "cats": ["capilar"], "tratamiento": "", "tratamientos": [] },
+    { "id": "capilar-4.1", "titulo": "Caso 04", "vista": "Coronilla",      "cats": ["capilar"], "tratamiento": "", "tratamientos": [] },
+    { "id": "capilar-4.2", "titulo": "Caso 04", "vista": "Línea frontal",  "cats": ["capilar"], "tratamiento": "", "tratamientos": [] }
+  ]
+}

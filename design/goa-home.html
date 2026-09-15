@@ -387,6 +387,20 @@ em{font-style:italic}
   display:flex;align-items:flex-end;justify-content:center;padding:12px 0;
   background:repeating-linear-gradient(-45deg,var(--hatch) 0 1px,transparent 1px 9px);
 }
+/* Con fotografía el hueco se ensancha: dos retratos 4:5 uno al lado del otro
+   son 8:5, y con la proporción de antes cada mitad salía estrecha y recortaba
+   la cabeza por los lados. */
+.slot.con-foto{aspect-ratio:8/5;gap:0}
+.slot.con-foto img{width:100%;height:100%;object-fit:cover;display:block}
+.slot.con-foto img + img{border-left:1px solid var(--rule)}
+.slot.con-foto .slot-lbl{
+  position:absolute;bottom:9px;padding:3px 8px;border-radius:2px;
+  background:rgba(248,246,240,.88);color:var(--ink-2);
+}
+.slot.con-foto .izq{left:9px}
+.slot.con-foto .der{left:calc(50% + 9px)}
+.case-det{font-family:"IBM Plex Mono",monospace;font-size:var(--fs-1);letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3);white-space:nowrap}
 .slot-half + .slot-half{border-left:1px solid var(--rule)}
 .slot-lbl{font-family:"IBM Plex Mono",monospace;font-size:var(--fs-1);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3)}
 .case-meta{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
@@ -717,43 +731,9 @@ a,button{-webkit-tap-highlight-color:transparent}
       <h2>Casos reales. Resultados reales</h2>
       <p class="copy">Cada paciente parte de una anatomía distinta, por eso cada tratamiento se adapta de forma personalizada. Los resultados deben interpretarse según el punto de partida, el tratamiento realizado y el seguimiento.</p>
 
-      <div class="filters" role="group" aria-label="Filtrar casos por tratamiento">
-        <button class="chip" type="button" data-f="all" aria-pressed="true">Todos</button>
-        <button class="chip" type="button" data-f="estetica" aria-pressed="false">Medicina estética</button>
-        <button class="chip" type="button" data-f="capilar" aria-pressed="false">Capilar</button>
-        <button class="chip" type="button" data-f="labios" aria-pressed="false">Labios</button>
-        <button class="chip" type="button" data-f="ojeras" aria-pressed="false">Ojeras</button>
-        <button class="chip" type="button" data-f="superior" aria-pressed="false">Tercio superior</button>
-        <button class="chip" type="button" data-f="rino" aria-pressed="false">Rinomodelación</button>
-        <button class="chip" type="button" data-f="mandibula" aria-pressed="false">Marcación mandibular</button>
-      </div>
+      <div class="filters" id="filtros" role="group" aria-label="Filtrar casos por tratamiento"></div>
 
-      <div class="cases" id="cases">
-        <figure class="case" data-cat="estetica labios">
-          <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
-          <figcaption class="case-meta"><span class="case-name">Labios · ácido hialurónico</span></figcaption>
-        </figure>
-        <figure class="case" data-cat="estetica ojeras">
-          <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
-          <figcaption class="case-meta"><span class="case-name">Ojeras</span></figcaption>
-        </figure>
-        <figure class="case" data-cat="estetica superior">
-          <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
-          <figcaption class="case-meta"><span class="case-name">Tercio superior</span></figcaption>
-        </figure>
-        <figure class="case" data-cat="estetica rino">
-          <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
-          <figcaption class="case-meta"><span class="case-name">Rinomodelación</span></figcaption>
-        </figure>
-        <figure class="case" data-cat="capilar">
-          <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
-          <figcaption class="case-meta"><span class="case-name">Mesoterapia capilar</span></figcaption>
-        </figure>
-        <figure class="case" data-cat="estetica mandibula">
-          <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
-          <figcaption class="case-meta"><span class="case-name">Marcación mandibular</span></figcaption>
-        </figure>
-      </div>
+      <div class="cases" id="cases"></div>
 
       <p class="notice">Las imágenes muestran resultados reales, pero cada caso requiere una valoración individual y no todos los pacientes obtienen exactamente la misma evolución.</p>
     </div>

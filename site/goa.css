@@ -384,6 +384,20 @@ em{font-style:italic}
   display:flex;align-items:flex-end;justify-content:center;padding:12px 0;
   background:repeating-linear-gradient(-45deg,var(--hatch) 0 1px,transparent 1px 9px);
 }
+/* Con fotografía el hueco se ensancha: dos retratos 4:5 uno al lado del otro
+   son 8:5, y con la proporción de antes cada mitad salía estrecha y recortaba
+   la cabeza por los lados. */
+.slot.con-foto{aspect-ratio:8/5;gap:0}
+.slot.con-foto img{width:100%;height:100%;object-fit:cover;display:block}
+.slot.con-foto img + img{border-left:1px solid var(--rule)}
+.slot.con-foto .slot-lbl{
+  position:absolute;bottom:9px;padding:3px 8px;border-radius:2px;
+  background:rgba(248,246,240,.88);color:var(--ink-2);
+}
+.slot.con-foto .izq{left:9px}
+.slot.con-foto .der{left:calc(50% + 9px)}
+.case-det{font-family:"IBM Plex Mono",monospace;font-size:var(--fs-1);letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3);white-space:nowrap}
 .slot-half + .slot-half{border-left:1px solid var(--rule)}
 .slot-lbl{font-family:"IBM Plex Mono",monospace;font-size:var(--fs-1);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3)}
 .case-meta{display:flex;justify-content:space-between;gap:10px;align-items:baseline}

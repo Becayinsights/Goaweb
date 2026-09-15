@@ -94,7 +94,7 @@
   </div>
 </section>
 
-<section class="shell band" id="resultados-t">
+<section class="shell band" id="resultados-t" hidden>
   <div class="grid">
     <div class="rail">
       <svg class="rail-mark" aria-hidden="true"><use href="#goa-a"/></svg>
@@ -104,20 +104,7 @@
     <div class="flow">
       <h2>Antes y después</h2>
       <p class="copy">Cada paciente parte de una anatomía distinta, por eso cada tratamiento se adapta de forma personalizada. Los resultados deben interpretarse según el punto de partida, el tratamiento realizado y el seguimiento.</p>
-      <div class="cases">
-        <figure class="case seen">
-          <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
-          <figcaption class="case-meta"><span class="case-name">Caso 01</span></figcaption>
-        </figure>
-        <figure class="case seen">
-          <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
-          <figcaption class="case-meta"><span class="case-name">Caso 02</span></figcaption>
-        </figure>
-        <figure class="case seen">
-          <div class="slot"><div class="slot-half"><span class="slot-lbl">Antes</span></div><div class="slot-half"><span class="slot-lbl">Después</span></div></div>
-          <figcaption class="case-meta"><span class="case-name">Caso 03</span></figcaption>
-        </figure>
-      </div>
+      <div class="cases" id="t-casos"></div>
       <p class="notice">Las imágenes muestran resultados reales, pero cada caso requiere una valoración individual y no todos los pacientes obtienen exactamente la misma evolución.</p>
     </div>
   </div>
@@ -244,6 +231,28 @@
   precio.innerHTML = '<span class="ficha-k">Precio</span><span class="ficha-v"></span>';
   precio.children[1].textContent = t.precio;
   ficha.appendChild(precio);
+
+  /* Los casos de este tratamiento. Si no tiene ninguno, la sección entera se
+     queda fuera: mejor no prometer un antes y después que no existe. */
+  var CASOS = {"capilar-1.1": {"id": "capilar-1.1", "titulo": "Caso 01", "vista": "Coronilla", "cats": ["capilar"], "tratamiento": "", "tratamientos": []}, "capilar-2.1": {"id": "capilar-2.1", "titulo": "Caso 02", "vista": "Vista superior", "cats": ["capilar"], "tratamiento": "", "tratamientos": []}, "capilar-3": {"id": "capilar-3", "titulo": "Caso 03", "vista": "Vista cenital", "cats": ["capilar"], "tratamiento": "", "tratamientos": []}, "capilar-4.1": {"id": "capilar-4.1", "titulo": "Caso 04", "vista": "Coronilla", "cats": ["capilar"], "tratamiento": "", "tratamientos": []}, "capilar-4.2": {"id": "capilar-4.2", "titulo": "Caso 04", "vista": "Línea frontal", "cats": ["capilar"], "tratamiento": "", "tratamientos": []}};
+  var mios = Object.keys(CASOS).map(function(k){ return CASOS[k]; })
+    .filter(function(c){ return (c.tratamientos || []).indexOf(slug) > -1; });
+  if(mios.length){
+    var caja = document.getElementById("t-casos");
+    mios.forEach(function(c){
+      var f = document.createElement("figure");
+      f.className = "case seen";
+      f.innerHTML = '<div class="slot con-foto">'
+        + '<img src="/casos/' + c.id + '-antes.jpg" alt="Antes" loading="lazy">'
+        + '<img src="/casos/' + c.id + '-despues.jpg" alt="Después" loading="lazy">'
+        + '<span class="slot-lbl izq">Antes</span><span class="slot-lbl der">Después</span></div>'
+        + '<figcaption class="case-meta"><span class="case-name"></span><span class="case-det"></span></figcaption>';
+      f.querySelector(".case-name").textContent = c.titulo;
+      f.querySelector(".case-det").textContent = c.tratamiento || c.vista || "";
+      caja.appendChild(f);
+    });
+    document.getElementById("resultados-t").hidden = false;
+  }
 
   var inc = t.incluye || [];
   if(inc.length){
