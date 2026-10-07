@@ -388,7 +388,8 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
       <button class="teaser press" id="bodyHint" hidden><b>Calcula tus objetivos</b><span class="lbl">Cuerpo →</span></button>
       <div class="goal"><div class="gh"><span class="lbl">Calorías</span><b id="gK"></b></div><div class="bar"><b id="bK"></b></div></div>
       <div class="goal"><div class="gh"><span class="lbl">Proteína</span><b id="gP"></b></div><div class="bar"><b id="bP"></b></div></div>
-      <div class="lbl" id="cf" style="margin-top:14px"></div>
+      <div class="goal"><div class="gh"><span class="lbl">Carbohidratos</span><b id="gC"></b></div><div class="bar"><b id="bC"></b></div></div>
+      <div class="goal"><div class="gh"><span class="lbl">Grasa</span><b id="gF"></b></div><div class="bar"><b id="bF"></b></div></div>
       <ul class="rows" id="meals" style="margin-top:10px"></ul>
     </div>
   </section>
@@ -417,6 +418,7 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
       </div>
       <span class="lbl" style="display:block;margin-top:22px">Actividad</span>
       <div class="seg" id="bAct"><button data-v="1.375">1–2 días</button><button data-v="1.55">3–5 días</button><button data-v="1.725">6–7 días</button><i></i></div>
+      <p class="note" id="bMiss" hidden></p>
       <div class="target" id="target" hidden>
         <div><b id="tK"></b><span class="lbl">kcal / día</span></div>
         <div><b id="tP"></b><span class="lbl">proteína g</span></div>
@@ -707,11 +709,9 @@ swipeable($('meals'),li=>{const m=S.food[today()],i=+li.dataset.i,x=m[i];collaps
 function renderMac(){
   const m=S.food[today()]||[],s=m.reduce((a,x)=>({k:a.k+x.k,p:a.p+x.p,c:a.c+x.c,f:a.f+x.f}),{k:0,p:0,c:0,f:0});
   const g=S.goals,R=Math.round;
-  $('gK').innerHTML=`<span>0</span><small>${g.kcal?` / ${g.kcal}`:' kcal'}</small>`;count($('gK').firstChild,s.k);
-  $('gP').innerHTML=`<span>0</span><small>${g.prot?` / ${g.prot} g`:' g'}</small>`;count($('gP').firstChild,s.p);
-  $('bK').style.width=(g.kcal?Math.min(1,s.k/g.kcal):s.k?1:0)*100+'%';
-  $('bP').style.width=(g.prot?Math.min(1,s.p/g.prot):s.p?1:0)*100+'%';
-  $('cf').textContent=`Carbos ${R(s.c)}${g.carb?' / '+g.carb:''} g · Grasa ${R(s.f)}${g.fat?' / '+g.fat:''} g`;
+  for(const[id,v,goal,u]of[['K',s.k,g.kcal,' kcal'],['P',s.p,g.prot,' g'],['C',s.c,g.carb,' g'],['F',s.f,g.fat,' g']]){
+    $('g'+id).innerHTML=`<span>0</span><small>${goal?` / ${goal}${u}`:u}</small>`;count($('g'+id).firstChild,v);
+    $('b'+id).style.width=(goal?Math.min(1,v/goal):v?1:0)*100+'%'}
   $('bodyHint').hidden=!!g.kcal;
   $('mCount').textContent=m.length?`${m.length} comida${m.length>1?'s':''}`:'';
   $('meals').innerHTML=m.map((x,i)=>`<li class="row sw meal" data-i="${i}"><div class="del">Quitar</div><div class="in"><span class="n">${x.t}</span><div class="tx"><div class="t">${esc(x.n)}</div>
@@ -745,6 +745,8 @@ function renderBody(){const b=S.body||{};
   segSet('bSex',b.sex||'m');segSet('bAct',b.act||1.55);
   for(const[id,k]of[['bAge','age'],['bH','h'],['bW','w']])if(document.activeElement!==$(id))$(id).value=b[k]||'';
   const t=targets({act:1.55,...b});$('target').hidden=!t;
+  const miss=[['edad','age'],['altura','h'],['peso','w']].filter(([,k])=>!(b[k]>0)).map(([n])=>n);
+  $('bMiss').hidden=!!t||miss.length===3;$('bMiss').textContent=miss.length?`Falta ${miss.join(' y ')} para calcular tus objetivos.`:'';
   if(t){count($('tK'),t.kcal);count($('tP'),t.prot);count($('tC'),t.carb);count($('tF'),t.fat)}}
 function setBody(p){S.body={act:1.55,sex:'m',...S.body,...p};const t=targets(S.body);
   if(t)S.goals={kcal:t.kcal,prot:t.prot,carb:t.carb,fat:t.fat};save();renderBody();renderMac()}
@@ -752,8 +754,9 @@ $('bSex').onclick=e=>{const x=e.target.closest('button');if(x){buzz(5);setBody({
 $('bAct').onclick=e=>{const x=e.target.closest('button');if(x){buzz(5);setBody({act:+x.dataset.v})}};
 // recalcula mientras escribes, sin esperar a salir del campo
 // un solo temporizador que lee los tres campos juntos: si saltas rápido de uno a otro no se pisa nada
-let bodyT;const numIn=id=>+String($(id).value).replace(',','.')||0;
-for(const id of['bAge','bH','bW'])$(id).oninput=()=>{clearTimeout(bodyT);bodyT=setTimeout(()=>setBody({age:numIn('bAge'),h:numIn('bH'),w:numIn('bW')}),350)};
+let bodyT;const numIn=id=>{const m=String($(id).value).replace(',','.').match(/\d+(\.\d+)?/);return m?+m[0]:0};
+const readBody=()=>{let h=numIn('bH');if(h>0&&h<3)h=Math.round(h*100);setBody({age:numIn('bAge'),h,w:numIn('bW')})};
+for(const id of['bAge','bH','bW']){$(id).oninput=()=>{clearTimeout(bodyT);bodyT=setTimeout(readBody,300)};$(id).onchange=$(id).onblur=()=>{clearTimeout(bodyT);readBody()}}
 $('pName').onchange=async()=>{const n=$('pName').value.trim();if(!n)return;
   if(!AUTH){S.name=n;save();renderHab();return toast('Guardado')}
   try{const r=await api('/api/auth',{method:'POST',body:JSON.stringify({action:'profile',name:n})});setAuth({...AUTH,user:r.user});toast('Guardado');renderHab()}catch(x){toast(x.message)}};
@@ -883,6 +886,8 @@ function renderAll(anim){renderHab(anim);renderTasks();renderMac();renderCuenta(
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){renderAll();pull()}});
 
 /* ---------------- arranque ---------------- */
+// objetivos siempre al día con el método actual, aunque se guardaran con una versión anterior
+{const t=targets(S.body),g=t&&{kcal:t.kcal,prot:t.prot,carb:t.carb,fat:t.fat};if(g&&JSON.stringify(g)!==JSON.stringify(S.goals)){S.goals=g;save()}}
 renderAll(true);requestAnimationFrame(moveInd);
 (async()=>{
   const q=new URLSearchParams(location.search);

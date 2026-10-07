@@ -1,5 +1,5 @@
 // Offline: la app abre sin red; la IA y la sincronización necesitan conexión.
-const C = 'habitos-v8';
+const C = 'habitos-v9';
 const FILES = ['/', '/manifest.json', '/icon-192.png', '/icon-180.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(C).then(c => c.addAll(FILES))); self.skipWaiting(); });
 self.addEventListener('activate', e => {
