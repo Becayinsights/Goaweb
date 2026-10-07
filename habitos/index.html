@@ -13,7 +13,7 @@
 <link rel="icon" href="/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@200..700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&family=Funnel+Sans:wght@300..800&family=Geist+Mono:wght@400;500&display=swap">
 <title>Hábitos</title>
 <style>
 :root{
@@ -21,7 +21,8 @@
   --ink:#F2EFE8; --ink-2:rgba(242,239,232,.62); --ink-3:rgba(242,239,232,.34); --ink-4:rgba(242,239,232,.14);
   --rule:rgba(242,239,232,.08); --rule-2:rgba(242,239,232,.18);
   --acc:#9CC3B4; --warn:#E08A7C;
-  --sans:"Geist",ui-sans-serif,system-ui,-apple-system,sans-serif;
+  --sans:"Funnel Sans",ui-sans-serif,system-ui,-apple-system,sans-serif;
+  --disp:"Funnel Display",var(--sans);
   --mono:"Geist Mono",ui-monospace,Menlo,monospace;
   --sb:env(safe-area-inset-bottom); --st:env(safe-area-inset-top);
   /* muelles calculados (k=190 c=20 y k=260 c=16), al estilo de UIKit */
@@ -32,7 +33,7 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 [hidden]{display:none!important}
 html,body{background:#000;color:var(--ink);min-height:100%}
-body{font:400 16px/1.45 var(--sans);font-feature-settings:"ss01","cv11";-webkit-font-smoothing:antialiased;
+body{font:400 16px/1.45 var(--sans);-webkit-font-smoothing:antialiased;
   overscroll-behavior-y:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 button,input,textarea{font:inherit;color:inherit;background:none;border:0;outline:0;border-radius:0}
 input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text}
@@ -43,9 +44,9 @@ body.modal .app{transform:scale(.93) translateY(calc(var(--st) + 8px));border-ra
 
 /* tipografía */
 .lbl{font:500 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
-h1{font:650 34px/1.05 var(--sans);letter-spacing:-.035em;margin-top:10px}
+h1{font:600 34px/1.02 var(--disp);letter-spacing:-.04em;margin-top:10px}
 h1 i{font-style:normal;color:var(--ink-3)}
-h2{font:600 20px/1.2 var(--sans);letter-spacing:-.02em}
+h2{font:600 20px/1.2 var(--disp);letter-spacing:-.025em}
 .num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
 .sec{margin-top:40px}
 .sec-h{display:flex;align-items:baseline;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid var(--rule)}
@@ -66,7 +67,7 @@ h2{font:600 20px/1.2 var(--sans);letter-spacing:-.02em}
 
 /* progreso */
 .prog{margin-top:28px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;position:relative}
-.big{font:200 96px/.8 var(--sans);letter-spacing:-.06em;font-variant-numeric:tabular-nums;position:relative}
+.big{font:300 100px/.8 var(--disp);letter-spacing:-.065em;font-variant-numeric:tabular-nums;position:relative}
 .big small{font-size:30px;font-weight:300;color:var(--ink-3);letter-spacing:-.02em;margin-left:4px}
 .big.glow::after{content:"";position:absolute;inset:-30px -40px;border-radius:50%;background:radial-gradient(closest-side,rgba(156,195,180,.35),transparent);
   animation:halo 1.4s var(--out) both;pointer-events:none}
@@ -172,16 +173,16 @@ h2{font:600 20px/1.2 var(--sans);letter-spacing:-.02em}
 @keyframes sc{from{background-position:0 100%}to{background-position:0 0}}
 input[type=file]{display:none}
 .res{display:none;margin-top:22px}.res.on{display:block}
-.kc{font:200 72px/.9 var(--sans);letter-spacing:-.05em;margin-top:14px;font-variant-numeric:tabular-nums}
+.kc{font:300 76px/.9 var(--disp);letter-spacing:-.05em;margin-top:14px;font-variant-numeric:tabular-nums}
 .kc small{font-size:20px;font-weight:400;color:var(--ink-3);margin-left:6px;letter-spacing:0}
 .trio{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:18px}
 .trio div{background:var(--bg-2);border-radius:16px;padding:14px}
-.trio b{display:block;font:300 30px/1 var(--sans);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.trio b{display:block;font:300 32px/1 var(--disp);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
 .trio span{display:block;margin-top:8px}
 .acts{display:flex;gap:10px;margin-top:22px}.acts .btn{flex:1}
 .goal{margin-top:18px}
 .goal .gh{display:flex;justify-content:space-between;align-items:baseline}
-.goal .gh b{font:300 30px/1 var(--sans);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.goal .gh b{font:300 32px/1 var(--disp);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
 .goal .gh small{font-size:15px;color:var(--ink-3);letter-spacing:-.01em}
 .meal .n{width:40px}
 
@@ -233,7 +234,10 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
 .gate{position:fixed;inset:0;background:var(--bg);z-index:20;display:none;flex-direction:column;justify-content:flex-end;
   padding:calc(var(--st) + 40px) 24px calc(var(--sb) + 36px);max-width:540px;margin:0 auto}
 .gate.on{display:flex}
-.gate h1{font-size:52px;font-weight:600;letter-spacing:-.05em;line-height:.98;margin:14px 0 20px}
+.gate h1{font:600 56px/.95 var(--disp);letter-spacing:-.055em;margin:18px 0 24px}
+.mark{display:flex;align-items:center;gap:10px}
+.mark b{font:600 19px/1 var(--disp);letter-spacing:-.04em}
+.mark svg{flex:none}
 .gate .field{font-size:18px;letter-spacing:-.01em;padding:16px 0}
 .pw{position:relative}.pw .field{padding-right:70px}
 .eye{position:absolute;right:0;top:50%;transform:translateY(-50%);font:500 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);padding:10px 0 10px 10px}
@@ -256,8 +260,8 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
 <!-- ACCESO -->
 <section class="gate" id="gate">
   <div class="st" id="gBox">
-    <div class="lbl" style="--i:0" id="gLbl">Hábitos</div>
-    <h1 style="--i:1" id="gH">Cada día,<br><span style="color:var(--ink-3)">un poco mejor.</span></h1>
+    <div class="mark" style="--i:0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="m8 12.3 2.8 2.8L16.2 9" stroke-linecap="round" stroke-linejoin="round"/></svg><b>hábitos</b><span class="lbl" id="gLbl" style="margin-left:auto">Tracker personal</span></div>
+    <h1 style="--i:1" id="gH"></h1>
     <form id="gForm" style="--i:2" autocomplete="on">
       <input class="field" id="gName" name="name" placeholder="Nombre" autocomplete="given-name" hidden>
       <input class="field" id="gEmail" name="email" type="email" placeholder="Email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false">
@@ -514,7 +518,7 @@ function renderHab(anim){
   const t=curDay(),now=new Date(),h=now.getHours(),past=t!==today();
   const DN=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],pd=parse(t);
   $('date').innerHTML=past?`<button class="lnk lbl" id="backToday" style="font-size:11px">← Volver a hoy</button>`:`${DN[now.getDay()]} ${now.getDate()} ${MON[now.getMonth()]}`;
-  const nm=ME?.name?`,<br><i>${esc(ME.name.split(' ')[0])}</i>`:'';
+  const who=(ME?.name||S.name||'').trim().split(/\s+/)[0],nm=who?`,<br><i>${esc(who)}.</i>`:'.';
   $('hello').innerHTML=past?`${fmtDay(t)==='Ayer'?'Ayer':DN[pd.getDay()]}<br><i>${pd.getDate()} ${MON[pd.getMonth()]}</i>`
     :(h<6?'Buenas noches':h<14?'Buenos días':h<21?'Buenas tardes':'Buenas noches')+nm;
   // en un día pasado salen todos los hábitos de ese día de la semana, aunque se crearan después
@@ -659,11 +663,13 @@ function renderCuenta(){
   $('syncDot').classList.toggle('on',syncState==='ok');
   $('syncTx').textContent=syncState==='ok'?'Sincronizado':syncState==='off'?'Sin conexión · guardado en el móvil':'Guardado en el móvil';
   $('invSec').hidden=!ME?.admin;
-  if(document.activeElement!==$('pName'))$('pName').value=ME?.name||'';
+  if(document.activeElement!==$('pName'))$('pName').value=ME?.name||S.name||'';
+  $('pwBtn').hidden=$('logBtn').hidden=!AUTH;if(!AUTH)$('pwForm').hidden=true;
   $('goalK').value=S.goals.kcal||'';$('goalP').value=S.goals.prot||'';
 }
 $('goalK').onchange=$('goalP').onchange=()=>{S.goals={kcal:+$('goalK').value||0,prot:+$('goalP').value||0};save();renderMac()};
 $('pName').onchange=async()=>{const n=$('pName').value.trim();if(!n)return;
+  if(!AUTH){S.name=n;save();renderHab();return toast('Guardado')}
   try{const r=await api('/api/auth',{method:'POST',body:JSON.stringify({action:'profile',name:n})});setAuth({...AUTH,user:r.user});toast('Guardado');renderHab()}catch(x){toast(x.message)}};
 $('pwBtn').onclick=()=>{$('pwForm').hidden=!$('pwForm').hidden;if(!$('pwForm').hidden)$('pwOld').focus()};
 $('pwForm').onsubmit=async e=>{e.preventDefault();
@@ -698,8 +704,8 @@ $('members').onclick=async e=>{const b=e.target.closest('[data-a]');if(!b)return
 /* ---------------- acceso: entrar, crear cuenta, olvidé, restablecer ---------------- */
 let gMode='login',gInvite=null,gReset=null;
 const GM={
-  login:{lbl:'Hábitos',h:'Cada día,<br><span style="color:var(--ink-3)">un poco mejor.</span>',go:'Entrar',name:0,email:1,pw:1,forgot:1},
-  setup:{lbl:'Primera cuenta',h:'Empecemos.',go:'Crear cuenta',name:1,email:1,pw:1},
+  login:{lbl:'Tracker personal',h:'Tu día,<br><span style="color:var(--ink-3)">medido.</span>',go:'Entrar',name:0,email:1,pw:1,forgot:1},
+  setup:{lbl:'Primera cuenta',h:'Empieza<br><span style="color:var(--ink-3)">a medir.</span>',go:'Crear cuenta',name:1,email:1,pw:1},
   register:{lbl:'Invitación',h:'',go:'Crear cuenta',name:1,email:1,pw:1,back:1},
   forgot:{lbl:'Contraseña',h:'¿La has<br><span style="color:var(--ink-3)">olvidado?</span>',go:'Enviar enlace',name:0,email:1,pw:0,back:1},
   reset:{lbl:'Contraseña',h:'Elige una<br><span style="color:var(--ink-3)">nueva.</span>',go:'Guardar y entrar',name:0,email:0,pw:1},
