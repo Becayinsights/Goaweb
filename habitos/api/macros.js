@@ -12,9 +12,14 @@ export default async function handler(req, res) {
   const m = /^data:(image\/\w+);base64,(.+)$/.exec(req.body?.image || '');
   if (!m) return res.status(400).json({ error: 'Imagen no válida' });
   try {
+    // la nota del usuario («3 huevos, 150 g de arroz») manda sobre lo que se intuye en la foto
+    const note = String(req.body?.note || '').trim().slice(0, 300);
+    const text = note
+      ? `${PROMPT}\n\nLa persona añade: «${note}». Trátalo como dato fiable: úsalo para identificar los alimentos y fijar cantidades, y estima con la foto solo lo que no diga.`
+      : PROMPT;
     const out = await claude(await auth(req), [
       { type: 'image', source: { type: 'base64', media_type: m[1], data: m[2] } },
-      { type: 'text', text: PROMPT },
+      { type: 'text', text },
     ], 400);
     if (out.error) return res.status(422).json(out);
     for (const k of ['kcal', 'protein', 'carbs', 'fat']) out[k] = Number(out[k]) || 0;
