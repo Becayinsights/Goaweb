@@ -24,7 +24,7 @@ Responde SOLO con JSON: {"items":[{"kind":"habit","title":"","days":null,"dates"
 
 Dictado: """${text}"""`;
   try {
-    const out = await claude(req, await auth(req), [{ type: 'text', text: prompt }], 800);
+    const out = await claude(await auth(req), [{ type: 'text', text: prompt }], 800);
     const ok = d => /^\d{4}-\d{2}-\d{2}$/.test(d);
     const items = (out.items || []).filter(i => i && i.title).slice(0, 30).map(i => i.kind === 'task'
       ? { kind: 'task', title: String(i.title).slice(0, 120), date: ok(i.date) ? i.date : null }

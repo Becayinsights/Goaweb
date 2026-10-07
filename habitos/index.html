@@ -234,7 +234,13 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
   padding:calc(var(--st) + 40px) 24px calc(var(--sb) + 36px);max-width:540px;margin:0 auto}
 .gate.on{display:flex}
 .gate h1{font-size:52px;font-weight:600;letter-spacing:-.05em;line-height:.98;margin:14px 0 20px}
-.gate .field{font:500 20px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;margin-bottom:18px}
+.gate .field{font-size:18px;letter-spacing:-.01em;padding:16px 0}
+.pw{position:relative}.pw .field{padding-right:70px}
+.eye{position:absolute;right:0;top:50%;transform:translateY(-50%);font:500 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);padding:10px 0 10px 10px}
+.glinks{display:flex;justify-content:space-between;margin-top:18px}
+.lnk{font-size:14px;color:var(--ink-2);padding:6px 0}
+.dayhead{display:flex;align-items:center;gap:10px}
+.week span{cursor:pointer}.week span.sel i{outline:1.5px solid var(--ink);outline-offset:2px}
 
 .toast{position:fixed;left:50%;top:calc(var(--st) + 12px);transform:translate(-50%,calc(-100% - 40px)) scale(.9);background:rgba(242,239,232,.96);color:var(--bg);
   padding:12px 18px;border-radius:99px;font:600 13.5px/1 var(--sans);letter-spacing:-.01em;transition:transform .6s var(--spring);z-index:30;display:flex;gap:14px;align-items:center;white-space:nowrap;
@@ -249,20 +255,18 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
 
 <!-- ACCESO -->
 <section class="gate" id="gate">
-  <div class="st">
-    <div class="lbl" style="--i:0">Hábitos · privado</div>
-    <h1 style="--i:1">Cada día,<br><span style="color:var(--ink-3)">un poco mejor.</span></h1>
-    <div id="gSetup" hidden style="--i:2">
-      <p class="note" style="margin-bottom:18px">Aún no hay nadie. La primera cuenta es la del administrador: podrá invitar al resto.</p>
-      <input class="field" id="gName" placeholder="Tu nombre" style="font:400 20px/1 var(--sans);letter-spacing:-.01em;text-transform:none" autocomplete="given-name">
-      <button class="btn w" id="gCreate">Crear mi cuenta</button>
-    </div>
-    <div id="gJoin" style="--i:2">
-      <input class="field" id="gCode" placeholder="Código" autocomplete="off" autocapitalize="characters" spellcheck="false">
-      <button class="btn w" id="gGo">Entrar</button>
-    </div>
-    <button class="btn ghost w" id="gLocal" style="margin-top:10px;--i:3">Usar sin cuenta</button>
+  <div class="st" id="gBox">
+    <div class="lbl" style="--i:0" id="gLbl">Hábitos</div>
+    <h1 style="--i:1" id="gH">Cada día,<br><span style="color:var(--ink-3)">un poco mejor.</span></h1>
+    <form id="gForm" style="--i:2" autocomplete="on">
+      <input class="field" id="gName" name="name" placeholder="Nombre" autocomplete="given-name" hidden>
+      <input class="field" id="gEmail" name="email" type="email" placeholder="Email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false">
+      <div class="pw" id="gPwWrap"><input class="field" id="gPw" name="password" type="password" placeholder="Contraseña" autocomplete="current-password">
+        <button type="button" class="eye" id="gEye" aria-label="Ver contraseña">Ver</button></div>
+      <button class="btn w" id="gGo" style="margin-top:22px">Entrar</button>
+    </form>
     <div class="err" id="gErr"></div>
+    <div class="glinks" style="--i:3"><button class="lnk" id="gForgot">¿Has olvidado tu contraseña?</button><button class="lnk" id="gBack" hidden>Volver</button></div>
   </div>
 </section>
 
@@ -292,7 +296,6 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
           <input type="text" id="habIn" placeholder="Nuevo hábito" autocomplete="off" enterkeyhint="done">
           <button class="chip">Añadir</button>
         </form>
-        <p class="note">Toca los días para programar cada hábito. Ninguno marcado = todos los días.</p>
       </div>
     </div>
     <button class="teaser press" id="teaser" hidden></button>
@@ -354,21 +357,15 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
 
   <!-- CUENTA -->
   <section class="view" id="v-cue">
-    <div class="lbl">Ajustes</div><h1 id="cName">Cuenta</h1>
+    <div class="lbl" id="cMail">Cuenta</div><h1 id="cName">Cuenta</h1>
     <div class="who"><i class="dot" id="syncDot"></i><span class="lbl" id="syncTx"></span></div>
 
     <div class="sec" id="invSec" hidden>
-      <div class="sec-h"><h2>Invitar</h2><span class="lbl" id="memCount"></span></div>
+      <div class="sec-h"><h2>Personas</h2><span class="lbl" id="memCount"></span></div>
       <form class="add" id="invForm">
-        <input type="text" id="invIn" placeholder="Nombre (p. ej. Papá)" autocomplete="off" enterkeyhint="send">
-        <button class="chip">Crear</button>
+        <input type="text" id="invIn" placeholder="Invitar a… (nombre)" autocomplete="off" enterkeyhint="send">
+        <button class="chip">Invitar</button>
       </form>
-      <div class="inv" id="invCard">
-        <div class="lbl">Invitación para <span id="invWho"></span></div>
-        <div class="code" id="invCode"></div>
-        <button class="btn w" id="invShare">Enviar invitación</button>
-        <p class="note">Abre el enlace en Safari o Chrome, añade la app a la pantalla de inicio y entra con el código.</p>
-      </div>
       <ul class="rows" id="members"></ul>
     </div>
 
@@ -380,15 +377,16 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
       </div>
     </div>
 
-    <div class="sec" id="keySec" hidden>
-      <div class="sec-h"><h2>IA</h2></div>
-      <p class="note">La voz y el escáner usan Claude. Si el servidor no tiene clave, pega aquí la tuya de Anthropic: se guarda solo en este móvil.</p>
-      <input class="field" id="keyIn" type="password" placeholder="sk-ant-…" autocomplete="off">
-    </div>
-
     <div class="sec">
-      <div class="sec-h"><h2>Sesión</h2></div>
-      <button class="teaser press" id="logBtn"><b id="logTx"></b><span class="lbl">→</span></button>
+      <div class="sec-h"><h2>Perfil</h2></div>
+      <label><span class="lbl" style="display:block;margin-top:18px">Nombre</span><input class="field" id="pName" autocomplete="off"></label>
+      <button class="teaser press" id="pwBtn"><b>Cambiar contraseña</b><span class="lbl">→</span></button>
+      <form id="pwForm" hidden>
+        <input class="field" id="pwOld" type="password" placeholder="Contraseña actual" autocomplete="current-password">
+        <input class="field" id="pwNew" type="password" placeholder="Nueva contraseña" autocomplete="new-password">
+        <button class="btn w" style="margin-top:16px">Guardar</button>
+      </form>
+      <button class="teaser press" id="logBtn"><b>Cerrar sesión</b><span class="lbl">→</span></button>
     </div>
   </section>
 </div>
@@ -466,16 +464,18 @@ let S=LS.get('state',null);
 if(!S){S=fresh();const oh=LS.get('habits',null);
   if(oh){S.habits=oh.map(h=>({id:h.id,t:h.t,days:null,dates:null,from:'2000-01-01'}));S.log=LS.get('log',{});S.food=LS.get('food',{})}}
 S.goals=S.goals||{kcal:0,prot:0};S.tasks=S.tasks||[];
-let ME=LS.get('me',null);
-let SRV={store:false,ai:false,setup:false};
-const hdr=()=>{const h={'Content-Type':'application/json'};if(ME?.code)h['x-code']=ME.code;const k=LS.get('key','');if(k)h['x-anthropic-key']=k;return h};
+let AUTH=LS.get('auth',null);     // {token,user}
+let ME=AUTH?.user||null;
+let SRV={store:true,setup:false};
+const hdr=()=>{const h={'Content-Type':'application/json'};if(AUTH?.token)h.Authorization='Bearer '+AUTH.token;return h};
 async function api(path,opt={}){const r=await fetch(path,{...opt,headers:hdr()});let j={};try{j=await r.json()}catch{}
+  if(r.status===401&&AUTH&&!path.includes('auth')){logout();throw new Error('Tu sesión ha caducado')}
   if(!r.ok)throw Object.assign(new Error(j.error||'Sin conexión'),{status:r.status});return j}
 
 let pushT=null,syncState='local';
-function save(){S.updated=Date.now();LS.set('state',S);if(ME&&SRV.store){clearTimeout(pushT);pushT=setTimeout(push,700)}}
+function save(){S.updated=Date.now();LS.set('state',S);if(AUTH){clearTimeout(pushT);pushT=setTimeout(push,700)}}
 async function push(){try{await api('/api/data',{method:'PUT',body:JSON.stringify(S)});setSync('ok')}catch{setSync('off')}}
-async function pull(){if(!ME||!SRV.store)return;
+async function pull(){if(!AUTH)return;
   try{const r=await api('/api/data');
     if(r&&r.updated>S.updated){S=r;S.goals=S.goals||{kcal:0,prot:0};S.tasks=S.tasks||[];LS.set('state',S);renderAll()}
     else if(S.updated>(r?.updated||0))await push();setSync('ok')}catch{setSync('off')}}
@@ -501,17 +501,24 @@ function collapse(li,cb){li.classList.add('out');setTimeout(cb,RM?0:380)}
 /* ---------------- hábitos ---------------- */
 const activeOn=(h,k)=>(!h.from||k>=h.from)&&(h.dates?h.dates.includes(k):h.days?h.days.includes(parse(k).getDay()):true);
 const todays=k=>S.habits.filter(h=>activeOn(h,k));
-function ratio(k){const hs=todays(k);if(!hs.length)return null;const d=S.log[k]||[];return hs.filter(h=>d.includes(h.id)).length/hs.length}
+// un día en el que marcaste algo se mide contra todos sus hábitos; uno sin tocar, solo contra los que ya existían
+const dayHabits=k=>(S.log[k]||[]).length?S.habits.filter(h=>activeOn({...h,from:null},k)):todays(k);
+function ratio(k){const hs=dayHabits(k);if(!hs.length)return null;const d=S.log[k]||[];return hs.filter(h=>d.includes(h.id)).length/hs.length}
 function streak(){let s=0,k=today();if((ratio(k)??0)<1)k=addDays(k,-1);
   for(let i=0;i<400;i++,k=addDays(k,-1)){const r=ratio(k);if(r===null)continue;if(r<1)break;s++}return s}
 function sched(h){if(h.dates)return'Solo '+h.dates.map(fmtDay).join(', ');if(h.days)return h.days.slice().sort((a,b)=>((a+6)%7)-((b+6)%7)).map(d=>DOWN[d]).join(' · ');return'Cada día'}
 let editing=false;
+let day=null;   // null = hoy; si no, el día de la semana que estás revisando
+const curDay=()=>day&&day<today()?day:today();
 function renderHab(anim){
-  const t=today(),now=new Date(),h=now.getHours();
-  $('date').textContent=`${['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'][now.getDay()]} ${now.getDate()} ${MON[now.getMonth()]}`;
+  const t=curDay(),now=new Date(),h=now.getHours(),past=t!==today();
+  const DN=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],pd=parse(t);
+  $('date').innerHTML=past?`<button class="lnk lbl" id="backToday" style="font-size:11px">← Volver a hoy</button>`:`${DN[now.getDay()]} ${now.getDate()} ${MON[now.getMonth()]}`;
   const nm=ME?.name?`,<br><i>${esc(ME.name.split(' ')[0])}</i>`:'';
-  $('hello').innerHTML=(h<6?'Buenas noches':h<14?'Buenos días':h<21?'Buenas tardes':'Buenas noches')+nm;
-  const list=editing?S.habits:todays(t),done=S.log[t]||[];
+  $('hello').innerHTML=past?`${fmtDay(t)==='Ayer'?'Ayer':DN[pd.getDay()]}<br><i>${pd.getDate()} ${MON[pd.getMonth()]}</i>`
+    :(h<6?'Buenas noches':h<14?'Buenos días':h<21?'Buenas tardes':'Buenas noches')+nm;
+  // en un día pasado salen todos los hábitos de ese día de la semana, aunque se crearan después
+  const list=editing?S.habits:past?S.habits.filter(x=>activeOn({...x,from:null},t)):todays(t),done=S.log[t]||[];
   $('habits').classList.toggle('st',!!anim);
   $('habits').innerHTML=list.length?list.map((x,i)=>`
     <li class="row ${!editing&&done.includes(x.id)?'done':''}" data-id="${x.id}" style="--i:${i}"><div class="in">
@@ -524,17 +531,17 @@ function renderHab(anim){
   renderProg();
 }
 function renderProg(){
-  const t=today(),r=ratio(t)??0,hs=todays(t),done=S.log[t]||[],n=hs.filter(x=>done.includes(x.id)).length;
+  const t=curDay(),r=ratio(t)??0,hs=dayHabits(t),done=S.log[t]||[],n=hs.filter(x=>done.includes(x.id)).length;
   count($('pct'),Math.round(r*100));
   $('pbar').style.width=r*100+'%';
   $('cnt').textContent=hs.length?(r>=1?'Día completo':`${n} de ${hs.length} hechos`):'Día libre';
   const s=streak();$('streak').textContent=s?`Racha · ${s} día${s>1?'s':''}`:'Sin racha aún';
-  let w='';for(let i=6;i>=0;i--){const k=addDays(t,-i),q=ratio(k);
-    w+=`<span class="${i?'':'t'}"><i style="background:${q===null?'var(--ink-4)':q>=1?'var(--ink)':q>0?`rgba(242,239,232,${.2+q*.45})`:'var(--ink-4)'};${!i&&q>=1?'transform:scale(1.25)':''}"></i>${DOW[parse(k).getDay()]}</span>`}
+  let w='';for(let i=6;i>=0;i--){const k=addDays(today(),-i),q=ratio(k);
+    w+=`<span data-k="${k}" class="${i?'':'t'} ${k===t?'sel':''}"><i style="background:${q===null?'var(--ink-4)':q>=1?'var(--ink)':q>0?`rgba(242,239,232,${.2+q*.45})`:'var(--ink-4)'};${!i&&q>=1?'transform:scale(1.25)':''}"></i>${DOW[parse(k).getDay()]}</span>`}
   $('week').innerHTML=w;
   document.querySelector('#habWrap .editOnly').hidden=!editing;
-  const tt=S.tasks.filter(x=>!x.done&&x.date&&x.date<=t).length;
-  $('teaser').hidden=!tt||editing;
+  const tt=S.tasks.filter(x=>!x.done&&x.date&&x.date<=today()).length;
+  $('teaser').hidden=!tt||editing||t!==today();
   $('teaser').innerHTML=`<b>${tt} tarea${tt>1?'s':''} para hoy</b><span class="lbl">Ver →</span>`;
 }
 $('habits').onclick=e=>{
@@ -547,12 +554,15 @@ $('habits').onclick=e=>{
       li.querySelector('.s').textContent=sched(h)}
     return}
   // marcar sin repintar la lista: la animación vive en la propia fila
-  const t=today(),arr=S.log[t]||[],was=arr.includes(id);
+  const t=curDay(),arr=S.log[t]||[],was=arr.includes(id);
+  if(!was&&h.from&&h.from>t)h.from=t;
   S.log[t]=was?arr.filter(x=>x!==id):[...arr,id];save();
   li.classList.toggle('done',!was);li.classList.remove('pop');if(!was){void li.offsetWidth;li.classList.add('pop')}
   buzz(was?6:[10,30,10]);renderProg();
   if(!was&&ratio(t)>=1){const b=$('pct');b.classList.remove('glow');void b.offsetWidth;b.classList.add('glow');buzz([20,60,20,60,40]);toast('Día completo')}
 };
+$('week').onclick=e=>{const sp=e.target.closest('[data-k]');if(!sp||editing)return;day=sp.dataset.k===today()?null:sp.dataset.k;buzz(5);renderHab(true)};
+$('date').onclick=e=>{if(e.target.closest('#backToday')){day=null;buzz(5);renderHab(true)}};
 $('editBtn').onclick=()=>{editing=!editing;$('habWrap').classList.toggle('editing',editing);$('editBtn').classList.toggle('on',editing);renderHab(true)};
 $('habForm').onsubmit=e=>{e.preventDefault();const v=$('habIn').value.trim();if(!v)return;
   S.habits.push({id:uid(),t:v,days:null,dates:null,from:today()});save();$('habIn').value='';renderHab()};
@@ -643,52 +653,83 @@ function renderMac(){
     <div class="s">${R(x.k)} kcal · P ${R(x.p)} · C ${R(x.c)} · G ${R(x.f)}</div></div></div></li>`).join('');
 }
 
-/* ---------------- cuenta + invitaciones ---------------- */
+/* ---------------- cuenta + personas ---------------- */
 function renderCuenta(){
-  $('cName').innerHTML=ME?esc(ME.name):'Cuenta';
-  $('syncDot').classList.toggle('on',!!ME&&syncState==='ok');
-  $('syncTx').textContent=!ME?'Sin cuenta · datos solo en este móvil':!SRV.store?'Sincronización pendiente de activar':syncState==='ok'?'Sincronizado':'Sin conexión · se guarda en el móvil';
+  $('cName').textContent=ME?.name||'Cuenta';$('cMail').textContent=ME?.email||'';
+  $('syncDot').classList.toggle('on',syncState==='ok');
+  $('syncTx').textContent=syncState==='ok'?'Sincronizado':syncState==='off'?'Sin conexión · guardado en el móvil':'Guardado en el móvil';
   $('invSec').hidden=!ME?.admin;
-  $('keySec').hidden=SRV.ai&&!!ME;
-  $('logTx').textContent=ME?'Cerrar sesión':'Entrar con un código';
+  if(document.activeElement!==$('pName'))$('pName').value=ME?.name||'';
   $('goalK').value=S.goals.kcal||'';$('goalP').value=S.goals.prot||'';
 }
 $('goalK').onchange=$('goalP').onchange=()=>{S.goals={kcal:+$('goalK').value||0,prot:+$('goalP').value||0};save();renderMac()};
-$('keyIn').value=LS.get('key','');$('keyIn').onchange=()=>LS.set('key',$('keyIn').value.trim());
-$('logBtn').onclick=()=>{if(ME&&!confirm('¿Cerrar sesión? Tus datos siguen guardados en la nube.'))return;
-  if(ME){ME=null;LS.del('me')}LS.del('localOk');showGate()};
-async function loadMembers(){if(!ME?.admin||!SRV.store)return;
-  try{const l=await api('/api/invite');$('memCount').textContent=`${l.length} persona${l.length>1?'s':''}`;
-    $('members').innerHTML=l.map((u,i)=>`<li class="row" data-code="${u.code}" data-name="${esc(u.name)}" style="--i:${i}"><div class="in"><div class="tx"><div class="t">${esc(u.name)}${u.admin?' <span class="lbl">· admin</span>':''}</div>
-      <div class="s">${u.code}</div></div>${u.admin?'':`<button class="chip" data-a="share">Enviar</button><button class="x" style="display:grid" data-a="del">${XS}</button>`}</div></li>`).join('')}
-  catch(e){$('members').innerHTML=`<li class="empty">${esc(e.message)}</li>`}}
-const inviteUrl=c=>`${location.origin}/?c=${c}`;
-async function share(name,code){const text=`Te regalo mi app de hábitos. Ábrela, añádela a tu pantalla de inicio y entra con este código: ${code}`;
-  try{if(navigator.share){await navigator.share({title:'Hábitos',text,url:inviteUrl(code)});return}}catch{return}
-  try{await navigator.clipboard.writeText(text+'\n'+inviteUrl(code));toast('Invitación copiada')}catch{prompt('Copia la invitación',text+' '+inviteUrl(code))}}
-$('invForm').onsubmit=async e=>{e.preventDefault();const n=$('invIn').value.trim();if(!n)return;
-  try{const u=await api('/api/invite',{method:'POST',body:JSON.stringify({name:n})});$('invIn').value='';
-    $('invWho').textContent=u.name;$('invCode').textContent=u.code;const c=$('invCard');c.classList.remove('on');void c.offsetWidth;c.classList.add('on');
-    $('invShare').onclick=()=>share(u.name,u.code);loadMembers();buzz([10,30,10])}
-  catch(x){toast(x.message)}};
-$('members').onclick=async e=>{const b=e.target.closest('[data-a]');if(!b)return;const li=b.closest('.row'),c=li.dataset.code,n=li.dataset.name;
-  if(b.dataset.a==='share')return share(n,c);
-  if(!confirm(`¿Quitar a ${n}? Se borrarán sus datos.`))return;
-  try{await api('/api/invite?code='+encodeURIComponent(c),{method:'DELETE'});collapse(li,loadMembers)}catch(x){toast(x.message)}};
+$('pName').onchange=async()=>{const n=$('pName').value.trim();if(!n)return;
+  try{const r=await api('/api/auth',{method:'POST',body:JSON.stringify({action:'profile',name:n})});setAuth({...AUTH,user:r.user});toast('Guardado');renderHab()}catch(x){toast(x.message)}};
+$('pwBtn').onclick=()=>{$('pwForm').hidden=!$('pwForm').hidden;if(!$('pwForm').hidden)$('pwOld').focus()};
+$('pwForm').onsubmit=async e=>{e.preventDefault();
+  try{const r=await api('/api/auth',{method:'POST',body:JSON.stringify({action:'password',current:$('pwOld').value,password:$('pwNew').value})});
+    setAuth(r);$('pwForm').reset();$('pwForm').hidden=true;toast('Contraseña cambiada')}catch(x){toast(x.message)}};
+$('logBtn').onclick=()=>{if(confirm('¿Cerrar sesión?'))logout()};
+function setAuth(a){AUTH=a;ME=a?.user||null;a?LS.set('auth',a):LS.del('auth');renderCuenta()}
+function logout(){setAuth(null);LS.del('state');S=fresh();renderAll();showGate('login')}
 
-/* ---------------- acceso ---------------- */
-function showGate(){$('gate').classList.add('on');$('gSetup').hidden=!SRV.setup;$('gJoin').hidden=SRV.setup;$('gErr').textContent=''}
-async function join(code){
-  try{const r=await api('/api/me',{method:'POST',body:JSON.stringify({code})});
-    ME={code:code.toUpperCase().trim(),...r.user};LS.set('me',ME);SRV={...SRV,...r,setup:false};
-    $('gate').classList.remove('on');history.replaceState(null,'','/');await pull();renderAll(true);loadMembers();toast(`Hola, ${ME.name}`)}
-  catch(x){$('gErr').textContent=x.message}}
-$('gGo').onclick=()=>{const c=$('gCode').value.trim();if(c)join(c)};
-$('gCode').onkeydown=e=>{if(e.key==='Enter')$('gGo').click()};
-$('gCreate').onclick=async()=>{try{const r=await api('/api/me',{method:'POST',body:JSON.stringify({setup:$('gName').value.trim()||'Admin'})});
-  ME={code:r.code,...r.user};LS.set('me',ME);SRV.setup=false;$('gate').classList.remove('on');save();renderAll(true);loadMembers();
-  alert(`Tu código personal es ${r.code}\n\nGuárdalo: sirve para entrar desde otro móvil.`)}catch(x){$('gErr').textContent=x.message}};
-$('gLocal').onclick=()=>{LS.set('localOk',1);$('gate').classList.remove('on')};
+async function loadMembers(){if(!ME?.admin)return;
+  try{const {users:us,invites:iv}=await api('/api/invite');$('memCount').textContent=`${us.length}`;
+    $('members').innerHTML=us.map((u,i)=>`<li class="row" data-id="${u.id}" data-name="${esc(u.name)}" style="--i:${i}"><div class="in"><div class="tx"><div class="t">${esc(u.name)}</div>
+      <div class="s">${esc(u.email)}${u.admin?' · admin':''}</div></div>${u.admin?'':`<button class="chip" data-a="reset">Contraseña</button><button class="x" style="display:grid" data-a="del">${XS}</button>`}</div></li>`).join('')
+    +iv.map(v=>`<li class="row" data-inv="${v.token}" data-name="${esc(v.name)}" data-link="${v.link}"><div class="in"><div class="tx"><div class="t" style="color:var(--ink-2)">${esc(v.name)}</div>
+      <div class="s">Invitación pendiente</div></div><button class="chip" data-a="send">Enviar</button><button class="x" style="display:grid" data-a="cancel">${XS}</button></div></li>`).join('')}
+  catch(e){$('members').innerHTML=`<li class="empty">${esc(e.message)}</li>`}}
+async function share(text,url){
+  try{if(navigator.share){await navigator.share({title:'Hábitos',text,url});return}}catch{return}
+  try{await navigator.clipboard.writeText(text+'\n'+url);toast('Enlace copiado')}catch{prompt('Copia el enlace',url)}}
+const inviteText=n=>`${n}, te regalo mi app de hábitos. Crea tu cuenta aquí:`;
+$('invForm').onsubmit=async e=>{e.preventDefault();const n=$('invIn').value.trim();if(!n)return;
+  try{const v=await api('/api/invite',{method:'POST',body:JSON.stringify({name:n})});$('invIn').value='';buzz([10,30,10]);
+    await loadMembers();share(inviteText(v.name),v.link)}catch(x){toast(x.message)}};
+$('members').onclick=async e=>{const b=e.target.closest('[data-a]');if(!b)return;const li=b.closest('.row'),n=li.dataset.name,a=b.dataset.a;
+  try{
+    if(a==='send')return share(inviteText(n),li.dataset.link);
+    if(a==='reset'){const r=await api('/api/invite',{method:'POST',body:JSON.stringify({reset:li.dataset.id})});return share(`${n}, entra aquí para elegir una contraseña nueva:`,r.link)}
+    if(a==='cancel'){await api('/api/invite?invite='+encodeURIComponent(li.dataset.inv),{method:'DELETE'});return collapse(li,loadMembers)}
+    if(a==='del'&&confirm(`¿Quitar a ${n}? Se borrarán sus datos.`)){await api('/api/invite?user='+encodeURIComponent(li.dataset.id),{method:'DELETE'});collapse(li,loadMembers)}
+  }catch(x){toast(x.message)}};
+
+/* ---------------- acceso: entrar, crear cuenta, olvidé, restablecer ---------------- */
+let gMode='login',gInvite=null,gReset=null;
+const GM={
+  login:{lbl:'Hábitos',h:'Cada día,<br><span style="color:var(--ink-3)">un poco mejor.</span>',go:'Entrar',name:0,email:1,pw:1,forgot:1},
+  setup:{lbl:'Primera cuenta',h:'Empecemos.',go:'Crear cuenta',name:1,email:1,pw:1},
+  register:{lbl:'Invitación',h:'',go:'Crear cuenta',name:1,email:1,pw:1,back:1},
+  forgot:{lbl:'Contraseña',h:'¿La has<br><span style="color:var(--ink-3)">olvidado?</span>',go:'Enviar enlace',name:0,email:1,pw:0,back:1},
+  reset:{lbl:'Contraseña',h:'Elige una<br><span style="color:var(--ink-3)">nueva.</span>',go:'Guardar y entrar',name:0,email:0,pw:1},
+};
+function showGate(m){gMode=m;const c=GM[m];$('gate').classList.add('on');
+  const box=$('gBox');box.classList.remove('st');void box.offsetWidth;box.classList.add('st');
+  $('gLbl').textContent=c.lbl;$('gH').innerHTML=m==='register'?`Hola${gInvite?.name?', <span style="color:var(--ink-3)">'+esc(gInvite.name)+'</span>':''}.`:c.h;
+  $('gName').hidden=!c.name;$('gEmail').hidden=!c.email;$('gPwWrap').hidden=!c.pw;$('gGo').textContent=c.go;
+  $('gPw').autocomplete=m==='login'?'current-password':'new-password';$('gPw').placeholder=m==='login'?'Contraseña':'Contraseña (mínimo 6)';
+  $('gForgot').hidden=!c.forgot;$('gBack').hidden=!c.back;$('gErr').textContent='';
+  if(c.name&&gInvite?.name&&!$('gName').value)$('gName').value=gInvite.name}
+$('gEye').onclick=()=>{const p=$('gPw');p.type=p.type==='password'?'text':'password';$('gEye').textContent=p.type==='password'?'Ver':'Ocultar'};
+$('gForgot').onclick=()=>showGate('forgot');
+$('gBack').onclick=()=>showGate('login');
+$('gForm').onsubmit=async e=>{e.preventDefault();const go=$('gGo');if(go.disabled)return;
+  const email=$('gEmail').value.trim(),password=$('gPw').value,name=$('gName').value.trim();
+  const body=gMode==='login'?{action:'login',email,password}:gMode==='forgot'?{action:'forgot',email}
+    :gMode==='reset'?{action:'reset',token:gReset,password}:{action:'register',name,email,password,invite:gInvite?.token};
+  go.disabled=true;$('gErr').textContent='';
+  try{const r=await api('/api/auth',{method:'POST',body:JSON.stringify(body)});
+    if(gMode==='forgot'){$('gErr').style.color='var(--ink-2)';
+      $('gErr').textContent=r.sent?'Si hay una cuenta con ese email, te hemos enviado un enlace.':`Pídele a ${r.admin||'quien te invitó'} un enlace para cambiarla.`;return}
+    $('gErr').style.color='';await enter(r)}
+  catch(x){$('gErr').style.color='';$('gErr').textContent=x.message;buzz([20,40,20])}finally{go.disabled=false}};
+async function enter(r){
+  // si cambia de cuenta, empieza limpio; si venía de usar la app sin cuenta, conserva lo que tenía
+  const other=AUTH&&AUTH.user?.id!==r.user.id;if(other){LS.del('state');S=fresh()}
+  setAuth({token:r.token,user:r.user});history.replaceState(null,'','/');$('gate').classList.remove('on');$('gPw').value='';
+  await pull();save();renderAll(true);loadMembers();toast(`Hola, ${ME.name.split(' ')[0]}`)}
+
 
 /* ---------------- nota de voz (hoja modal con arrastre) ---------------- */
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -745,10 +786,17 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){renderAll
 /* ---------------- arranque ---------------- */
 renderAll(true);requestAnimationFrame(moveInd);
 (async()=>{
-  try{SRV=await api('/api/me');if(ME&&!SRV.user&&SRV.store){ME=null;LS.del('me')}if(SRV.user&&ME){ME={...ME,...SRV.user};LS.set('me',ME)}}catch{}
-  const c=new URLSearchParams(location.search).get('c');
-  if(c&&!ME){showGate();$('gCode').value=c;$('gSetup').hidden=true;$('gJoin').hidden=false;join(c)}
-  else if(!ME&&(SRV.setup||(SRV.store&&!LS.get('localOk',0))))showGate();
+  const q=new URLSearchParams(location.search);
+  try{const r=await fetch('/api/auth'+(q.get('i')?'?invite='+encodeURIComponent(q.get('i')):''),{headers:hdr()});
+    if(r.status===503){SRV.store=false}            // sin almacenamiento: la app funciona solo en este móvil
+    else{const j=await r.json();SRV.setup=j.setup;
+      if(q.get('r')){gReset=q.get('r');return showGate('reset')}
+      if(q.get('i')){gInvite=j.invite?{token:q.get('i'),name:j.invite.name}:null;
+        if(!AUTH){if(gInvite)return showGate('register');showGate('login');$('gErr').textContent='Esta invitación ya se usó o no existe.';return}}
+      if(AUTH&&!j.user){setAuth(null)}
+      if(AUTH&&j.user)setAuth({...AUTH,user:j.user});
+      if(!AUTH)return showGate(j.setup?'setup':'login')}
+  }catch{}
   renderAll();pull();
 })();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');

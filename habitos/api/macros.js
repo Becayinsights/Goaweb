@@ -12,7 +12,7 @@ export default async function handler(req, res) {
   const m = /^data:(image\/\w+);base64,(.+)$/.exec(req.body?.image || '');
   if (!m) return res.status(400).json({ error: 'Imagen no válida' });
   try {
-    const out = await claude(req, await auth(req), [
+    const out = await claude(await auth(req), [
       { type: 'image', source: { type: 'base64', media_type: m[1], data: m[2] } },
       { type: 'text', text: PROMPT },
     ], 400);

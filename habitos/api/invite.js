@@ -1,26 +1,37 @@
-// Solo admin. GET: lista de usuarios. POST {name}: crea invitación. DELETE ?code=: la revoca.
-import { auth, hasStore, users, saveUsers, newCode, removeBlob, fail } from './_lib.js';
+// Solo admin. GET: personas e invitaciones pendientes. POST {name}: crea invitación.
+// POST {reset:id}: enlace para que esa persona elija contraseña nueva.
+// DELETE ?user= o ?invite=: quita a alguien o anula una invitación.
+import { auth, users, saveUsers, invites, saveInvites, resetFor, removeBlob, newId, origin, pub, fail, bad } from './_lib.js';
 
 export default async function handler(req, res) {
   try {
-    const u = await auth(req);
-    if (!u?.admin) return res.status(403).json({ error: 'Solo el administrador puede invitar' });
-    if (!hasStore()) return res.status(503).json({ error: 'Activa el almacenamiento para invitar' });
-    let list = await users();
+    const me = await auth(req);
+    if (!me?.admin) throw bad('Solo el administrador puede hacer esto', 403);
+    const base = origin(req);
+    if (req.method === 'POST' && req.body?.reset) {
+      const u = (await users()).find(x => x.id === req.body.reset);
+      if (!u) throw bad('No existe', 404);
+      return res.status(200).json({ link: `${base}/?r=${encodeURIComponent(await resetFor(u))}`, name: u.name });
+    }
     if (req.method === 'POST') {
       const name = String(req.body?.name || '').trim().slice(0, 40);
-      if (!name) return res.status(400).json({ error: 'Pon un nombre' });
-      const nu = { code: newCode(), name, created: new Date().toISOString() };
-      list.push(nu); await saveUsers(list);
-      return res.status(200).json(nu);
+      if (!name) throw bad('Pon un nombre');
+      const inv = { token: newId(), name, created: new Date().toISOString() };
+      await saveInvites([...(await invites()), inv]);
+      return res.status(200).json({ ...inv, link: `${base}/?i=${inv.token}` });
     }
     if (req.method === 'DELETE') {
-      const code = String(req.query.code || '');
-      if (code === u.code) return res.status(400).json({ error: 'No puedes borrarte a ti' });
-      list = list.filter(x => x.code !== code); await saveUsers(list);
-      await removeBlob(`data/${code}.json`).catch(() => {});
+      if (req.query.invite) await saveInvites((await invites()).filter(i => i.token !== req.query.invite));
+      if (req.query.user) {
+        if (req.query.user === me.id) throw bad('No puedes borrarte a ti');
+        await saveUsers((await users()).filter(x => x.id !== req.query.user));
+        await removeBlob(`data/${req.query.user}.json`).catch(() => {});
+      }
       return res.status(200).json({ ok: true });
     }
-    res.status(200).json(list);
+    res.status(200).json({
+      users: (await users()).map(pub),
+      invites: (await invites()).map(i => ({ ...i, link: `${base}/?i=${i.token}` })),
+    });
   } catch (e) { fail(res, e); }
 }
