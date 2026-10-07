@@ -13,7 +13,7 @@
 <link rel="icon" href="/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&family=Funnel+Sans:wght@300..800&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300..800&family=Inter:wght@400..700&family=Geist+Mono:wght@400;500&display=swap">
 <title>Hábitos</title>
 <style>
 :root{
@@ -21,8 +21,8 @@
   --ink:#F2EFE8; --ink-2:rgba(242,239,232,.62); --ink-3:rgba(242,239,232,.34); --ink-4:rgba(242,239,232,.14);
   --rule:rgba(242,239,232,.08); --rule-2:rgba(242,239,232,.18);
   --acc:#9CC3B4; --warn:#E08A7C;
-  --sans:"Funnel Sans",ui-sans-serif,system-ui,-apple-system,sans-serif;
-  --disp:"Funnel Display",var(--sans);
+  --sans:"Inter",ui-sans-serif,system-ui,-apple-system,sans-serif;
+  --disp:"Inter Tight",var(--sans);
   --mono:"Geist Mono",ui-monospace,Menlo,monospace;
   --sb:env(safe-area-inset-bottom); --st:env(safe-area-inset-top);
   /* muelles calculados (k=190 c=20 y k=260 c=16), al estilo de UIKit */
@@ -33,7 +33,7 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 [hidden]{display:none!important}
 html,body{background:#000;color:var(--ink);min-height:100%}
-body{font:400 16px/1.45 var(--sans);-webkit-font-smoothing:antialiased;
+body{font:400 16px/1.45 var(--sans);font-feature-settings:"cv11","ss03";-webkit-font-smoothing:antialiased;
   overscroll-behavior-y:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 button,input,textarea{font:inherit;color:inherit;background:none;border:0;outline:0;border-radius:0}
 input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text}
@@ -194,6 +194,18 @@ input[type=file]{display:none}
 .inv.on{display:block;animation:rise .6s var(--out)}
 .code{font:500 26px/1 var(--mono);letter-spacing:.1em;margin:12px 0 18px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.three label .lbl{display:block;margin-top:20px}
+.seg{position:relative;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--bg-2);border-radius:14px;padding:4px;margin-top:16px}
+.seg button{position:relative;z-index:1;height:40px;font:500 14px/1 var(--sans);letter-spacing:-.01em;color:var(--ink-3);transition:color .3s}
+.seg button.on{color:var(--bg)}
+.seg i{position:absolute;top:4px;bottom:4px;left:4px;border-radius:10px;background:var(--ink);transition:transform .55s var(--spring),opacity .3s;opacity:0}
+.seg.has i{opacity:1}
+.target{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:22px;animation:rise .6s var(--out)}
+.target div{background:var(--bg-2);border-radius:16px;padding:16px}
+.target b{display:block;font:300 34px/1 var(--disp);letter-spacing:-.045em;font-variant-numeric:tabular-nums}
+.target div:first-child,.target div:nth-child(2){background:var(--bg-3)}
+.target span{display:block;margin-top:8px}
 .two label .lbl{display:block;margin-top:18px}
 
 /* barra inferior con píldora deslizante */
@@ -201,8 +213,10 @@ input[type=file]{display:none}
   background:rgba(22,26,25,.72);backdrop-filter:blur(28px) saturate(1.8);-webkit-backdrop-filter:blur(28px) saturate(1.8);
   border:1px solid var(--rule);border-radius:99px;z-index:5;box-shadow:0 20px 50px rgba(0,0,0,.5);transition:transform .55s var(--spring),opacity .3s}
 body.modal .tabs{transform:translate(-50%,140%);opacity:0}
-.tabs .ind{position:absolute;top:6px;left:0;height:48px;width:58px;border-radius:99px;background:rgba(242,239,232,.1);transition:transform .55s var(--spring);z-index:0}
-.tabs .tb{position:relative;z-index:1;width:58px;height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--ink-3);transition:color .3s}
+.tabs .ind{position:absolute;top:0;left:0;border-radius:99px;background:rgba(242,239,232,.1);box-shadow:inset 0 0 0 1px rgba(242,239,232,.06),inset 0 1px 0 rgba(255,255,255,.06);
+  transition:transform .6s var(--spring),width .6s var(--spring);z-index:0;will-change:transform}
+.tabs .ind.instant{transition:none}
+.tabs .tb{position:relative;z-index:1;width:60px;height:50px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--ink-3);transition:color .3s}
 .tabs .tb span{font:500 9px/1 var(--sans);letter-spacing:.01em}
 .tabs .tb.on{color:var(--ink)}
 .tabs .tb svg{transition:transform .5s var(--bounce)}
@@ -352,6 +366,7 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
     </div>
     <div class="sec">
       <div class="sec-h"><span class="lbl">Hoy</span><span class="lbl" id="mCount"></span></div>
+      <button class="teaser press" id="bodyHint" hidden><b>Calcula tus objetivos</b><span class="lbl">Cuerpo →</span></button>
       <div class="goal"><div class="gh"><span class="lbl">Calorías</span><b id="gK"></b></div><div class="bar"><b id="bK"></b></div></div>
       <div class="goal"><div class="gh"><span class="lbl">Proteína</span><b id="gP"></b></div><div class="bar"><b id="bP"></b></div></div>
       <div class="lbl" id="cf" style="margin-top:14px"></div>
@@ -373,11 +388,21 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
       <ul class="rows" id="members"></ul>
     </div>
 
-    <div class="sec">
-      <div class="sec-h"><h2>Objetivos</h2></div>
-      <div class="two">
-        <label><span class="lbl">Kcal / día</span><input class="field num" id="goalK" inputmode="numeric" placeholder="2200"></label>
-        <label><span class="lbl">Proteína g</span><input class="field num" id="goalP" inputmode="numeric" placeholder="140"></label>
+    <div class="sec" id="bodySec">
+      <div class="sec-h"><h2>Cuerpo</h2><span class="lbl">Hipertrofia</span></div>
+      <div class="seg" id="bSex"><button data-v="m">Hombre</button><button data-v="f">Mujer</button><i></i></div>
+      <div class="three">
+        <label><span class="lbl">Edad</span><input class="field num" id="bAge" inputmode="numeric" placeholder="30"></label>
+        <label><span class="lbl">Altura cm</span><input class="field num" id="bH" inputmode="numeric" placeholder="178"></label>
+        <label><span class="lbl">Peso kg</span><input class="field num" id="bW" inputmode="decimal" placeholder="75"></label>
+      </div>
+      <span class="lbl" style="display:block;margin-top:22px">Actividad</span>
+      <div class="seg" id="bAct"><button data-v="1.375">1–2 días</button><button data-v="1.55">3–5 días</button><button data-v="1.725">6–7 días</button><i></i></div>
+      <div class="target" id="target" hidden>
+        <div><b id="tK"></b><span class="lbl">kcal / día</span></div>
+        <div><b id="tP"></b><span class="lbl">proteína g</span></div>
+        <div><b id="tC"></b><span class="lbl">carbos g</span></div>
+        <div><b id="tF"></b><span class="lbl">grasa g</span></div>
       </div>
     </div>
 
@@ -639,6 +664,7 @@ function showRes(j){$('rName').textContent=j.name;$('rNote').textContent=j.note|
   const r=$('res');r.classList.remove('on');void r.offsetWidth;r.classList.add('on');
   setTimeout(()=>{count($('rK'),j.kcal);count($('rP'),j.protein);count($('rC'),j.carbs);count($('rF'),j.fat)},120)}
 $('again').onclick=()=>$('file').click();
+$('bodyHint').onclick=()=>{go('cue');setTimeout(()=>$('bodySec').scrollIntoView({behavior:'smooth',block:'start'}),350)};
 $('save').onclick=()=>{if(!current)return;const t=today(),d=new Date();
   (S.food[t]=S.food[t]||[]).push({n:current.name,k:current.kcal,p:current.protein,c:current.carbs,f:current.fat,t:`${pad(d.getHours())}:${pad(d.getMinutes())}`});
   save();current=null;$('res').classList.remove('on');$('shot').classList.remove('has');toast('Añadido al día');buzz(12);renderMac()};
@@ -651,7 +677,8 @@ function renderMac(){
   $('gP').innerHTML=`<span>0</span><small>${g.prot?` / ${g.prot} g`:' g'}</small>`;count($('gP').firstChild,s.p);
   $('bK').style.width=(g.kcal?Math.min(1,s.k/g.kcal):s.k?1:0)*100+'%';
   $('bP').style.width=(g.prot?Math.min(1,s.p/g.prot):s.p?1:0)*100+'%';
-  $('cf').textContent=`Carbos ${R(s.c)} g · Grasa ${R(s.f)} g`;
+  $('cf').textContent=`Carbos ${R(s.c)}${g.carb?' / '+g.carb:''} g · Grasa ${R(s.f)}${g.fat?' / '+g.fat:''} g`;
+  $('bodyHint').hidden=!!g.kcal;
   $('mCount').textContent=m.length?`${m.length} comida${m.length>1?'s':''}`:'';
   $('meals').innerHTML=m.map((x,i)=>`<li class="row sw meal" data-i="${i}"><div class="del">Quitar</div><div class="in"><span class="n">${x.t}</span><div class="tx"><div class="t">${esc(x.n)}</div>
     <div class="s">${R(x.k)} kcal · P ${R(x.p)} · C ${R(x.c)} · G ${R(x.f)}</div></div></div></li>`).join('');
@@ -665,9 +692,30 @@ function renderCuenta(){
   $('invSec').hidden=!ME?.admin;
   if(document.activeElement!==$('pName'))$('pName').value=ME?.name||S.name||'';
   $('pwBtn').hidden=$('logBtn').hidden=!AUTH;if(!AUTH)$('pwForm').hidden=true;
-  $('goalK').value=S.goals.kcal||'';$('goalP').value=S.goals.prot||'';
+  renderBody();
 }
-$('goalK').onchange=$('goalP').onchange=()=>{S.goals={kcal:+$('goalK').value||0,prot:+$('goalP').value||0};save();renderMac()};
+
+/* ---------------- cuerpo → objetivos de hipertrofia ----------------
+   Mifflin-St Jeor × actividad, +10 % de superávit (volumen limpio).
+   Proteína 2,0 g/kg (hombre) o 1,8 g/kg (mujer); grasa 0,9 / 1 g/kg; el resto, carbohidratos. */
+function targets(b){
+  if(!b||!b.sex||!(b.age>0)||!(b.h>0)||!(b.w>0))return null;
+  const bmr=10*b.w+6.25*b.h-5*b.age+(b.sex==='m'?5:-161),tdee=bmr*(b.act||1.55);
+  const kcal=Math.round(tdee*1.10/50)*50,prot=Math.round(b.w*(b.sex==='m'?2:1.8)),fat=Math.round(b.w*(b.sex==='m'?.9:1));
+  return{kcal,prot,fat,carb:Math.max(0,Math.round((kcal-prot*4-fat*9)/4))}}
+function segSet(id,v){const seg=$(id),bs=[...seg.querySelectorAll('button')],i=bs.findIndex(x=>x.dataset.v===String(v));
+  bs.forEach((x,k)=>x.classList.toggle('on',k===i));seg.classList.toggle('has',i>=0);
+  const pill=seg.querySelector('i');pill.style.width=`calc((100% - 8px) / ${bs.length})`;if(i>=0)pill.style.transform=`translateX(${i*100}%)`}
+function renderBody(){const b=S.body||{};
+  segSet('bSex',b.sex);segSet('bAct',b.act||1.55);
+  for(const[id,k]of[['bAge','age'],['bH','h'],['bW','w']])if(document.activeElement!==$(id))$(id).value=b[k]||'';
+  const t=targets({act:1.55,...b});$('target').hidden=!t;
+  if(t){count($('tK'),t.kcal);count($('tP'),t.prot);count($('tC'),t.carb);count($('tF'),t.fat)}}
+function setBody(p){S.body={act:1.55,...S.body,...p};const t=targets(S.body);
+  if(t)S.goals={kcal:t.kcal,prot:t.prot,carb:t.carb,fat:t.fat};save();renderBody();renderMac()}
+$('bSex').onclick=e=>{const x=e.target.closest('button');if(x){buzz(5);setBody({sex:x.dataset.v})}};
+$('bAct').onclick=e=>{const x=e.target.closest('button');if(x){buzz(5);setBody({act:+x.dataset.v})}};
+for(const[id,k]of[['bAge','age'],['bH','h'],['bW','w']])$(id).onchange=()=>setBody({[k]:+String($(id).value).replace(',','.')||0});
 $('pName').onchange=async()=>{const n=$('pName').value.trim();if(!n)return;
   if(!AUTH){S.name=n;save();renderHab();return toast('Guardado')}
   try{const r=await api('/api/auth',{method:'POST',body:JSON.stringify({action:'profile',name:n})});setAuth({...AUTH,user:r.user});toast('Guardado');renderHab()}catch(x){toast(x.message)}};
@@ -778,8 +826,15 @@ $('vCreate').onclick=()=>{const t=today();let h=0,k=0;
 
 /* ---------------- navegación ---------------- */
 const VIEWS=['hab','tar','mac','cue'];
-function moveInd(){const on=document.querySelector('.tb.on'),tabs=$('tabs');if(!on)return;
-  $('ind').style.transform=`translateX(${on.offsetLeft}px)`}
+// la píldora copia la caja exacta de la pestaña activa y se estira un instante al viajar, como en iOS
+let indReady=false;
+function moveInd(){const on=document.querySelector('.tb.on'),ind=$('ind');if(!on)return;
+  const x=on.offsetLeft,y=on.offsetTop,w=on.offsetWidth,h=on.offsetHeight;
+  ind.style.top=y+'px';ind.style.height=h+'px';
+  if(!indReady){ind.classList.add('instant');ind.style.width=w+'px';ind.style.transform=`translateX(${x}px)`;void ind.offsetWidth;ind.classList.remove('instant');indReady=true;return}
+  const from=parseFloat(ind.dataset.x||x),dist=Math.abs(x-from);ind.dataset.x=x;
+  if(!RM&&dist){ind.style.width=(w+Math.min(28,dist*.18))+'px';setTimeout(()=>ind.style.width=w+'px',140)}
+  ind.style.transform=`translateX(${x}px)`}
 function go(v){if(document.querySelector('.view.on')?.id==='v-'+v)return;
   document.querySelectorAll('.tb').forEach(x=>x.classList.toggle('on',x.dataset.v===v));moveInd();
   document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v));window.scrollTo(0,0);buzz(4);
