@@ -471,7 +471,7 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
       <ul class="rows" id="meals" style="margin-top:10px"></ul>
     </div>
     <!-- pasos de hoy desde Salud (vía el atajo «Habitos pasos») -->
-    <div class="steps" id="stepsCard">
+    <div class="steps" id="stepsCard" hidden>
       <div class="st-h"><span class="lbl">Pasos hoy</span><button class="chip" id="stepsBtn">Actualizar</button></div>
       <div class="st-n"><b id="stepsN">—</b><small id="stepsGoal"></small></div>
       <div class="sbar"><b id="stepsBar" style="width:0"></b></div>
@@ -529,7 +529,7 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
       </div>
       <span class="lbl" style="display:block;margin-top:22px">Actividad</span>
       <div class="seg" id="bAct"><button data-v="1.375">1–2 días</button><button data-v="1.55">3–5 días</button><button data-v="1.725">6–7 días</button><i></i></div>
-      <label><span class="lbl" style="display:block;margin-top:22px">Objetivo de pasos al día</span>
+      <label id="stepsGoalRow" hidden><span class="lbl" style="display:block;margin-top:22px">Objetivo de pasos al día</span>
         <input class="field num" id="stepsGoalIn" inputmode="numeric" placeholder="8000"></label>
       <p class="note" id="bMiss" hidden></p>
       <div class="target" id="target" hidden>
@@ -566,7 +566,7 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
     </div>
     <footer class="credit">
       <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
-      <div class="lbl">Hábitos · 2026 · v34</div>
+      <div class="lbl">Hábitos · 2026 · v35</div>
     </footer>
   </section>
 </div>
@@ -1226,10 +1226,11 @@ function renderAgenda(){const a=LS.get('agenda',null),box=$('agenda'),t=today(),
 for(const[id,k]of[['calG','g'],['calA','a']])$(id).onchange=()=>{const v=$(id).value.trim();
   if(v&&!CAL_OK.test(v)){toast(k==='g'?'Ese enlace no es de Google Calendar':'Ese enlace no es de iCloud');return}
   S.cals={...(S.cals||{}),[k]:v};save();toast(v?'Calendario conectado':'Calendario quitado');loadAgenda(true)};
-/* ---------------- pasos (Salud, vía atajo) ---------------- */
+/* ---------------- pasos (Salud, vía atajo) · apagado de momento: true para volver a mostrarlo ---------------- */
+const STEPS=false;
 const stepsGoal=()=>S.stepsGoal>0?S.stepsGoal:8000;
 const fmtN=n=>Math.round(n).toLocaleString('es-ES');
-async function loadSteps(){if(!AUTH)return;try{const r=await api('/api/steps');LS.set('steps',r);renderSteps()}catch{}}
+async function loadSteps(){if(!AUTH||!STEPS)return;try{const r=await api('/api/steps');LS.set('steps',r);renderSteps()}catch{}}
 function renderSteps(){const r=LS.get('steps',{days:{},at:0}),n=r.days?.[today()],g=stepsGoal();
   $('stepsGoal').textContent=`/ ${fmtN(g)}`;
   if(n==null){$('stepsN').textContent='—';$('stepsBar').style.width='0';if(r.at)$('stepsAt').textContent='Hoy aún no se han traído · toca Actualizar';return}
