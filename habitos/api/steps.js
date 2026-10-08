@@ -1,5 +1,6 @@
 // Pasos del día desde la app Salud, a través del atajo «Habitos pasos» (una web no puede leer Salud).
 // GET ?k=clave&n=6240&tz=Europe/Madrid  → lo llama el atajo: guarda los pasos de hoy
+// POST ?k=clave&tz=…  con cuerpo JSON { n: 6240 } (o texto) → igual; es lo más fiable desde Atajos
 // GET (con sesión)                      → { days: { 'YYYY-MM-DD': pasos }, at }
 // GET ?key=1 (con sesión)               → { key } para montar el enlace que se le pasa al atajo
 import { auth, fromToken, stepsKeyFor, readJSON, writeJSON, fail, bad } from './_lib.js';
@@ -21,14 +22,17 @@ function toSteps(v) {
 
 export default async function handler(req, res) {
   try {
-    if (req.method !== 'GET') return res.status(405).json({ error: 'GET' });
-    const q = req.query || {};
-    if (q.k) {
+    if (req.method !== 'GET' && req.method !== 'POST') return res.status(405).json({ error: 'GET o POST' });
+    const q = req.query || {}, body = req.body;
+    // los pasos pueden venir en el enlace (?n=) o en el cuerpo: { n } / { pasos } / texto suelto
+    const raw = q.n ?? (body && typeof body === 'object' ? (body.n ?? body.pasos ?? body.steps ?? Object.values(body)[0]) : body);
+    if (q.k || body?.k) {
+      q.k = q.k || body.k;
       const u = await fromToken(String(q.k), 'k');
       if (!u) throw bad('Clave no válida: vuelve a conectar los pasos desde la app', 401);
-      const n = toSteps(q.n);
+      const n = toSteps(Array.isArray(raw) ? raw.join('\n') : raw);
       // diagnóstico: el enlace tal cual llega (sin la clave)
-      console.log(`pasos ${u.id}: recibido «${String(q.n ?? '').slice(0, 80)}» → ${n} · url ${String(req.url).replace(/k=[^&]+/, 'k=…').slice(0, 300)}`);
+      console.log(`pasos ${u.id}: recibido «${String(raw ?? '').slice(0, 80)}» (${req.method}) → ${n} · url ${String(req.url).replace(/k=[^&]+/, 'k=…').slice(0, 300)}`);
       const day = localDay(validTz(q.tz) ? q.tz : 'Europe/Madrid');
       const cur = await readJSON(`steps/${u.id}.json`, { days: {} });
       const days = { ...cur.days, [day]: n };
