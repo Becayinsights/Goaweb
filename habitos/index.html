@@ -264,7 +264,11 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
 .sheet textarea{width:100%;min-height:120px;margin-top:16px;font:400 21px/1.4 var(--sans);letter-spacing:-.02em;resize:none;color:var(--ink)}
 .wave{display:flex;align-items:center;gap:4px;height:30px;margin-top:16px}
 .wave i{width:4px;height:6px;border-radius:4px;background:var(--ink-3);transition:height .15s}
-.listening .wave i{background:var(--ink);animation:w 1.1s var(--out) infinite}
+.listening .wave i{background:var(--ink)}
+.thinking .wave i{background:var(--ink-2);animation:w 1.1s var(--out) infinite}
+#vText{display:none}.typing #vText{display:block}.typing:not(.listening):not(.thinking) .wave{display:none}
+.said{margin-top:10px;font:400 15px/1.45 var(--sans);color:var(--ink-3);letter-spacing:-.01em}
+.said:empty{display:none}
 .wave i:nth-child(2){animation-delay:.12s}.wave i:nth-child(3){animation-delay:.24s}.wave i:nth-child(4){animation-delay:.36s}.wave i:nth-child(5){animation-delay:.48s}
 @keyframes w{50%{height:28px}}
 .plan .in{min-height:58px;padding:14px 0}
@@ -276,7 +280,7 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
 @keyframes wmIn{from{opacity:0;transform:scale(.85) rotate(-20deg)}to{opacity:.07}}
 @keyframes wmTurn{to{rotate:360deg}}
 .sig{position:absolute;left:0;right:0;bottom:calc(var(--sb) + 14px);display:flex;align-items:center;justify-content:center;gap:7px;
-  font:500 10px/1 var(--mono);letter-spacing:.24em;text-transform:uppercase;color:var(--ink-3);pointer-events:none}
+  font:500 11px/1 var(--mono);letter-spacing:.12em;color:var(--ink-3);pointer-events:none}
 .credit{margin-top:56px;padding-top:28px;border-top:1px solid var(--rule);display:flex;flex-direction:column;align-items:center;gap:10px}
 .credit-mark{display:flex;align-items:center;gap:8px;font:600 20px/1 var(--disp);letter-spacing:-.01em;color:var(--ink-2)}
 .credit-mark svg{color:var(--ink-2)}
@@ -310,7 +314,7 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
 <!-- ACCESO -->
 <section class="gate" id="gate">
   <svg class="wm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z"/></svg>
-  <div class="sig"><svg width="8" height="8" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>by luisalonsov</div>
+  <div class="sig"><svg width="8" height="8" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
   <div class="st" id="gBox">
     <div class="mark" style="--i:0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="m8 12.3 2.8 2.8L16.2 9" stroke-linecap="round" stroke-linejoin="round"/></svg><b>hábitos</b><span class="lbl" id="gLbl" style="margin-left:auto">Tracker personal</span></div>
     <h1 style="--i:1" id="gH"></h1>
@@ -459,7 +463,7 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
       <button class="teaser press" id="logBtn"><b>Cerrar sesión</b><span class="lbl">→</span></button>
     </div>
     <footer class="credit">
-      <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>luisalonsov</div>
+      <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
       <div class="lbl">Hábitos · 2026</div>
     </footer>
   </section>
@@ -498,15 +502,16 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
   <div class="grabzone" id="grab"><div class="grab"></div></div>
   <div id="vStep1">
     <div class="lbl" id="vHint">Nota de voz</div>
-    <h2 id="vTitle">Dime qué quieres hacer</h2>
+    <h2 id="vTitle">Te escucho…</h2>
     <div class="wave"><i></i><i></i><i></i><i></i><i></i></div>
     <textarea id="vText" placeholder="«Mañana llamar al dentista, lunes y jueves gimnasio y el sábado 10 km en bici»"></textarea>
     <div class="err" id="vErr"></div>
-    <div class="acts"><button class="btn ghost" id="vMic">Pausar</button><button class="btn" id="vGo">Organizar</button></div>
+    <div class="acts"><button class="btn ghost" id="vMic">Escribir</button><button class="btn" id="vGo">Listo</button></div>
   </div>
   <div id="vStep2" hidden>
     <div class="lbl">Revisa antes de crear</div>
     <h2>Esto es lo que he entendido</h2>
+    <p class="said" id="vSaid"></p>
     <ul class="rows plan st" id="vPlan" style="margin-top:14px"></ul>
     <div class="acts"><button class="btn ghost" id="vBack">Volver</button><button class="btn" id="vCreate">Crear</button></div>
   </div>
@@ -870,19 +875,54 @@ async function enter(r){
 
 
 /* ---------------- nota de voz (hoja modal con arrastre) ---------------- */
-const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-let rec=null,listening=false,baseText='',plan=[];
-function openVoice(){$('vStep1').hidden=false;$('vStep2').hidden=true;$('vErr').textContent='';$('vText').value='';
-  document.body.classList.add('modal');$('veil').classList.add('on');$('sheet').style.setProperty('--drag','0px');$('sheet').classList.add('on');buzz(8);
-  if(SR)startRec();else{$('vHint').textContent='Pulsa el micro del teclado para dictar';$('vMic').hidden=true;setTimeout(()=>$('vText').focus(),400)}}
+// Graba audio y lo manda a la IA, que lo escucha y lo organiza (el dictado del iPhone en web app falla mucho).
+let plan=[],media=null,recr=null,chunks=[],actx=null,raf=0,recT0=0;const MAXS=60;
+const mmss=x=>`${Math.floor(x/60)}:${String(Math.floor(x%60)).padStart(2,'0')}`;
+function openVoice(){$('vStep1').hidden=false;$('vStep2').hidden=true;$('vErr').textContent='';$('vText').value='';$('sheet').classList.remove('typing');
+  document.body.classList.add('modal');$('veil').classList.add('on');$('sheet').style.setProperty('--drag','0px');$('sheet').classList.add('on');buzz(8);startRec()}
 function closeVoice(){stopRec();document.body.classList.remove('modal');$('veil').classList.remove('on');$('sheet').classList.remove('on')}
-function startRec(){try{rec=new SR();rec.lang='es-ES';rec.continuous=true;rec.interimResults=true;baseText=$('vText').value?$('vText').value+' ':'';
-  rec.onresult=e=>{let fin='',tmp='';for(const r of e.results)(r.isFinal?(fin+=r[0].transcript):(tmp+=r[0].transcript));$('vText').value=(baseText+fin+tmp).trimStart()};
-  rec.onerror=e=>{if(e.error==='not-allowed')$('vHint').textContent='Sin permiso de micrófono · dicta con el teclado'};
-  rec.onend=()=>{listening=false;$('sheet').classList.remove('listening');$('vMic').textContent='Seguir';$('vTitle').textContent='¿Algo más?'};
-  rec.start();listening=true;$('sheet').classList.add('listening');$('vMic').textContent='Pausar';$('vTitle').textContent='Te escucho…';$('vHint').textContent='Nota de voz'}
-  catch{$('vHint').textContent='Dicta con el micro del teclado'}}
-function stopRec(){if(rec&&listening){try{rec.stop()}catch{}}}
+function typeMode(hint){stopRec();$('sheet').classList.add('typing');$('vHint').textContent=hint||'Escribe o dicta con el teclado';
+  $('vTitle').textContent='¿Qué quieres hacer?';$('vMic').textContent='Grabar';setTimeout(()=>$('vText').focus(),300)}
+async function startRec(){$('vErr').textContent='';
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder||!AC)return typeMode('Este navegador no graba · escríbelo');
+  try{actx=actx||new AC();actx.resume?.();media=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}})}
+  catch{return typeMode('Sin permiso de micrófono · escríbelo')}
+  if(!$('sheet').classList.contains('on')){media.getTracks().forEach(t=>t.stop());media=null;return}
+  chunks=[];recr=new MediaRecorder(media);recr.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};recr.start(1000);
+  const an=actx.createAnalyser();an.fftSize=512;actx.createMediaStreamSource(media).connect(an);
+  const buf=new Uint8Array(an.fftSize),bars=[...document.querySelectorAll('#sheet .wave i')],k=[.55,.85,1,.8,.5];
+  recT0=Date.now();$('sheet').classList.add('listening');$('vTitle').textContent='Te escucho…';$('vMic').textContent='Escribir';
+  const loop=()=>{an.getByteTimeDomainData(buf);let q=0;for(const v of buf)q+=((v-128)/128)**2;const lv=Math.min(1,Math.sqrt(q/buf.length)*5);
+    bars.forEach((b,i)=>b.style.height=6+lv*24*k[i]+'px');const sec=(Date.now()-recT0)/1000;
+    $('vHint').textContent=`Grabando · ${mmss(sec)}`;if(sec>=MAXS){organize();return}raf=requestAnimationFrame(loop)};loop()}
+// para la grabación y devuelve el audio (o null)
+function stopRec(){cancelAnimationFrame(raf);$('sheet').classList.remove('listening');
+  document.querySelectorAll('#sheet .wave i').forEach(b=>b.style.height='');
+  const r=recr,m=media;recr=null;media=null;
+  return new Promise(ok=>{if(!r||r.state==='inactive')return ok(null);r.onstop=()=>ok(new Blob(chunks,{type:r.mimeType||'audio/mp4'}));r.stop()})
+    .finally(()=>m?.getTracks().forEach(t=>t.stop()))}
+// a WAV mono 16 kHz: pesa poco y la IA lo entiende siempre
+async function toWav(blob){const ab=await blob.arrayBuffer(),dec=await new Promise((ok,ko)=>actx.decodeAudioData(ab,ok,ko));
+  const sr=16000,off=new OfflineAudioContext(1,Math.ceil(dec.duration*sr),sr),src=off.createBufferSource();src.buffer=dec;src.connect(off.destination);src.start();
+  const pcm=(await off.startRendering()).getChannelData(0),v=new DataView(new ArrayBuffer(44+pcm.length*2));
+  const w=(o,t)=>{for(let i=0;i<t.length;i++)v.setUint8(o+i,t.charCodeAt(i))};
+  w(0,'RIFF');v.setUint32(4,36+pcm.length*2,true);w(8,'WAVE');w(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);
+  v.setUint32(24,sr,true);v.setUint32(28,sr*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,pcm.length*2,true);
+  for(let i=0;i<pcm.length;i++){const x=Math.max(-1,Math.min(1,pcm[i]));v.setInt16(44+i*2,x<0?x*32768:x*32767,true)}
+  return new Blob([v],{type:'audio/wav'})}
+const asURL=b=>new Promise(ok=>{const f=new FileReader();f.onload=()=>ok(f.result);f.readAsDataURL(b)});
+async function organize(){const btn=$('vGo');if(btn.disabled)return;btn.disabled=true;btn.textContent='Escuchando…';$('vErr').textContent='';
+  try{const text=$('vText').value.trim(),blob=await stopRec();let audio=null;
+    if(blob&&blob.size>2000){let b=blob;try{b=await toWav(blob)}catch{}audio=await asURL(b)}
+    if(!audio&&!text)throw new Error('No he oído nada todavía');
+    $('sheet').classList.add('thinking');$('vTitle').textContent='Organizando…';$('vHint').textContent='Nota de voz';btn.textContent='Pensando…';
+    const r=await api('/api/voice',{method:'POST',body:JSON.stringify({audio,text,today:today()})});plan=r.items||[];
+    if(r.transcript&&!text){$('vText').value=r.transcript}
+    if(!plan.length)throw new Error(r.transcript?`He oído «${r.transcript}» pero no veo tareas ni hábitos`:'No he entendido nada · prueba otra vez');
+    $('vSaid').textContent=r.transcript?`«${r.transcript}»`:'';renderPlan();$('vStep1').hidden=true;$('vStep2').hidden=false;buzz([8,30,8])}
+  catch(x){$('vErr').textContent=x.message;$('sheet').classList.add('typing');$('vTitle').textContent='¿Lo intentamos otra vez?';$('vMic').textContent='Grabar'}
+  finally{$('sheet').classList.remove('thinking');btn.textContent='Listo';btn.disabled=false}}
 $('micBtn').onclick=openVoice;$('veil').onclick=()=>{closeVoice();closeRem()};
 
 /* ---------------- recordatorios: evento con aviso en el calendario de cada persona ---------------- */
@@ -910,17 +950,13 @@ $('rOff').onclick=()=>{if(remTask){delete remTask.rem;save()}closeRem();renderTa
   const up=()=>{if(y0===null)return;sh.classList.remove('dragging');const v=dy/(performance.now()-t0);
     if(dy>120||v>.6)closeVoice();else sh.style.setProperty('--drag','0px');y0=null};
   g.addEventListener('pointerup',up);g.addEventListener('pointercancel',up)})();
-$('vMic').onclick=()=>listening?stopRec():startRec();
-$('vGo').onclick=async()=>{stopRec();const text=$('vText').value.trim();if(!text){$('vErr').textContent='No he oído nada todavía';return}
-  $('vGo').textContent='Pensando…';$('vGo').disabled=true;$('vErr').textContent='';
-  try{const r=await api('/api/voice',{method:'POST',body:JSON.stringify({text,today:today()})});plan=r.items||[];
-    if(!plan.length)throw new Error('No he encontrado hábitos ni tareas');renderPlan();$('vStep1').hidden=true;$('vStep2').hidden=false;buzz([8,30,8])}
-  catch(x){$('vErr').textContent=x.message}finally{$('vGo').textContent='Organizar';$('vGo').disabled=false}};
+$('vMic').onclick=()=>recr?typeMode():startRec();
+$('vGo').onclick=organize;
 function renderPlan(){$('vPlan').innerHTML=plan.map((p,i)=>`<li class="row" style="--i:${i}"><div class="in"><span class="kind">${p.kind==='task'?'Tarea':'Hábito'}</span>
   <div class="tx"><div class="t">${esc(p.title)}</div><div class="s">${p.kind==='task'?(p.date?fmtDay(p.date):'Sin fecha'):esc(sched(p))}</div></div>
   <button class="x" style="display:grid" data-i="${i}">${XS}</button></div></li>`).join('');$('vCreate').textContent=`Crear ${plan.length}`;$('vCreate').disabled=!plan.length}
 $('vPlan').onclick=e=>{const b=e.target.closest('.x');if(!b)return;const li=b.closest('.row');collapse(li,()=>{plan.splice(+b.dataset.i,1);renderPlan()})};
-$('vBack').onclick=()=>{$('vStep2').hidden=true;$('vStep1').hidden=false};
+$('vBack').onclick=()=>{$('vStep2').hidden=true;$('vStep1').hidden=false;$('sheet').classList.add('typing');$('vTitle').textContent='¿Algo que cambiar?';$('vMic').textContent='Grabar';$('vErr').textContent=''};
 $('vCreate').onclick=()=>{const t=today();let h=0,k=0;
   for(const p of plan){if(p.kind==='task'){S.tasks.push({id:uid(),t:p.title,date:p.date,done:false});k++}
     else{S.habits.push({id:uid(),t:p.title,days:p.days,dates:p.dates,from:p.dates?p.dates.reduce((a,b)=>a<b?a:b):t});h++}}

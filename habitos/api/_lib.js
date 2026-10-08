@@ -71,7 +71,7 @@ export const newId = () => randomBytes(9).toString('base64url');
 
 // IA de la app. Usa Gemini (GEMINI_API_KEY, plan gratuito) o Claude (ANTHROPIC_API_KEY);
 // si están las dos, prueba Claude y cae a Gemini si falla. `content` va en formato de Claude
-// ([{type:'image',source:{media_type,data}}, {type:'text',text}]) y se traduce para Gemini.
+// ([{type:'image'|'audio',source:{media_type,data}}, {type:'text',text}]) y se traduce para Gemini.
 const unavailable = () => Object.assign(new Error('La IA no está disponible ahora mismo'), { status: 503 });
 const parseJSON = txt => JSON.parse(txt.slice(txt.indexOf('{'), txt.lastIndexOf('}') + 1));
 
@@ -88,7 +88,7 @@ async function viaClaude(key, content, maxTokens) {
 // Google renombra los modelos a menudo: se prueba en orden hasta que uno responda.
 const GEMINI_MODELS = ['gemini-flash-latest', 'gemini-3-flash-preview', 'gemini-3.8-flash', 'gemini-2.5-flash'];
 async function viaGemini(key, content, maxTokens) {
-  const parts = content.map(c => c.type === 'image'
+  const parts = content.map(c => c.type === 'image' || c.type === 'audio'
     ? { inline_data: { mime_type: c.source.media_type, data: c.source.data } }
     : { text: c.text });
   const models = [process.env.GEMINI_MODEL, ...GEMINI_MODELS].filter(Boolean);
@@ -114,7 +114,9 @@ async function viaGemini(key, content, maxTokens) {
 export async function claude(user, content, maxTokens = 600) {
   if (!user) throw Object.assign(new Error('Inicia sesión'), { status: 401 });
   const anthropic = process.env.ANTHROPIC_API_KEY, gemini = process.env.GEMINI_API_KEY;
-  if (anthropic) {
+  // Claude no escucha audio: las notas de voz van directas a Gemini
+  const hasAudio = content.some(c => c.type === 'audio');
+  if (anthropic && !(hasAudio && gemini)) {
     try { return await viaClaude(anthropic, content, maxTokens); }
     catch (e) { if (!gemini) throw e; }
   }
