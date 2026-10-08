@@ -97,6 +97,8 @@ export const checkPw = (u, pw) => timingSafeEqual(Buffer.from(u.hash, 'hex'), sc
 const ver = u => u.hash.slice(0, 8);
 export const sessionFor = u => sign({ u: u.id, v: ver(u), t: 's', x: Date.now() + 180 * 864e5 });
 export const resetFor = u => sign({ u: u.id, v: ver(u), t: 'r', x: Date.now() + 48 * 36e5 });
+// clave para el atajo de pasos: solo sirve para apuntar los pasos de esa persona (1 año)
+export const stepsKeyFor = u => sign({ u: u.id, v: ver(u), t: 'k', x: Date.now() + 365 * 864e5 });
 export async function fromToken(token, type) {
   const p = await verify(token);
   if (!p || p.t !== type) return null;
