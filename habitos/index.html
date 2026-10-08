@@ -473,7 +473,7 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
     </div>
     <footer class="credit">
       <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
-      <div class="lbl">Hábitos · 2026 · v19</div>
+      <div class="lbl">Hábitos · 2026 · v20</div>
     </footer>
   </section>
 </div>
@@ -617,7 +617,7 @@ function setSync(s){syncState=s;renderCuenta()}
 /* ---------------- gestos: deslizar para borrar ---------------- */
 function swipeable(list,onDelete){
   let row,inner,x0,y0,dx=0,lock=null;
-  list.addEventListener('pointerdown',e=>{row=e.target.closest('.row.sw');if(!row||e.target.closest('[contenteditable=true],input'))return row=null;
+  list.addEventListener('pointerdown',e=>{row=e.target.closest('.row.sw');if(!row||e.target.closest('[contenteditable=true],input,.x'))return row=null;
     inner=row.querySelector('.in');x0=e.clientX;y0=e.clientY;dx=0;lock=null});
   list.addEventListener('pointermove',e=>{if(!row)return;const mx=e.clientX-x0,my=e.clientY-y0;
     if(!lock&&(Math.abs(mx)>8||Math.abs(my)>8))lock=Math.abs(mx)>Math.abs(my)?'x':'y';
@@ -788,8 +788,11 @@ $('bodyHint').onclick=()=>{go('cue');setTimeout(()=>$('bodySec').scrollIntoView(
 $('save').onclick=()=>{if(!current)return;const t=today(),d=new Date();
   (S.food[t]=S.food[t]||[]).push({n:current.name,k:current.kcal,p:current.protein,c:current.carbs,f:current.fat,t:`${pad(d.getHours())}:${pad(d.getMinutes())}`});
   save();current=null;lastImg=null;lastNote='';$('mNote').value='';$('mRedo').hidden=true;$('res').classList.remove('on');$('shot').classList.remove('has');toast('Añadido al día');buzz(12);renderMac()};
-swipeable($('meals'),li=>{const m=S.food[today()],i=+li.dataset.i,x=m[i];collapse(li,()=>{m.splice(i,1);save();renderMac()});
-  toast('Comida quitada',()=>{m.splice(i,0,x);save();renderMac()})});
+// quitar una comida: deslizando o con la ✕ (por si el escaneo se equivocó), con deshacer
+const delMeal=li=>{const m=S.food[today()],i=+li.dataset.i,x=m[i];buzz(10);collapse(li,()=>{m.splice(i,1);save();renderMac()});
+  toast('Comida quitada',()=>{m.splice(i,0,x);save();renderMac()})};
+swipeable($('meals'),delMeal);
+$('meals').addEventListener('click',e=>{const b=e.target.closest('.x');if(b)delMeal(b.closest('.row'))});
 function renderMac(){
   const m=S.food[today()]||[],s=m.reduce((a,x)=>({k:a.k+x.k,p:a.p+x.p,c:a.c+x.c,f:a.f+x.f}),{k:0,p:0,c:0,f:0});
   const g=S.goals,R=Math.round;
@@ -799,7 +802,7 @@ function renderMac(){
   $('bodyHint').hidden=!!g.kcal;
   $('mCount').textContent=m.length?`${m.length} comida${m.length>1?'s':''}`:'';
   $('meals').innerHTML=m.map((x,i)=>`<li class="row sw meal" data-i="${i}"><div class="del">Quitar</div><div class="in"><span class="n">${esc(x.t)}</span><div class="tx"><div class="t">${esc(x.n)}</div>
-    <div class="s">${R(x.k)} kcal · P ${R(x.p)} · C ${R(x.c)} · G ${R(x.f)}</div></div></div></li>`).join('');
+    <div class="s">${R(x.k)} kcal · P ${R(x.p)} · C ${R(x.c)} · G ${R(x.f)}</div></div><button class="x" style="display:grid" aria-label="Quitar">${XS}</button></div></li>`).join('');
 }
 
 /* ---------------- cuenta + personas ---------------- */
