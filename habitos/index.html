@@ -313,6 +313,7 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
 .toast.on{transform:translate(-50%,0) scale(1);opacity:1;visibility:visible;pointer-events:auto}
 .toast{transition:transform .6s var(--spring),opacity .3s,visibility 0s .6s}.toast.on{transition:transform .6s var(--spring),opacity .2s,visibility 0s}
 .toast button{font:600 13.5px/1 var(--sans);color:#1d6b55}
+.toast.long{white-space:normal;max-width:calc(100vw - 32px);width:max-content;border-radius:20px;line-height:1.35;text-align:center}
 
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
@@ -472,7 +473,7 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
     </div>
     <footer class="credit">
       <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
-      <div class="lbl">Hábitos · 2026 · v17</div>
+      <div class="lbl">Hábitos · 2026 · v18</div>
     </footer>
   </section>
 </div>
@@ -557,8 +558,8 @@ function count(el,to,fmt=v=>Math.round(v)){const from=+(el.dataset.v||0);el.data
   tweens.set(el,requestAnimationFrame(step))}
 
 let toastUndo=null;
-function toast(t,undo){const e=$('toast');$('toastTx').textContent=t;toastUndo=undo||null;$('toastBtn').hidden=!undo;
-  e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),undo?4000:1600)}
+function toast(t,undo,ms){const e=$('toast');$('toastTx').textContent=t;e.classList.toggle('long',t.length>42);toastUndo=undo||null;$('toastBtn').hidden=!undo;
+  e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),ms||(undo?4000:1600))}
 $('toastBtn').onclick=()=>{toastUndo&&toastUndo();$('toast').classList.remove('on')};
 
 /* ---------------- estado + sincronización ---------------- */
@@ -873,15 +874,23 @@ async function loadMembers(){if(!ME?.admin)return;
     if($('v-cue').classList.contains('on')){LS.set('peopleSeen',Date.now());document.querySelector('.tb[data-v=cue]').classList.remove('fresh')}}
   catch(e){$('members').innerHTML=`<li class="empty">${esc(e.message)}</li>`}}
 async function share(text,url){
-  try{if(navigator.share){await navigator.share({title:'Hábitos',text,url});return}}catch{return}
-  try{await navigator.clipboard.writeText(text+'\n'+url);toast('Enlace copiado')}catch{prompt('Copia el enlace',url)}}
-const inviteText=n=>`${n}, te regalo mi app de hábitos. Crea tu cuenta aquí:`;
+  try{if(navigator.share){await navigator.share(url?{title:'Hábitos',text,url}:{text});return}}catch{return}
+  const all=url?text+'\n'+url:text;try{await navigator.clipboard.writeText(all);toast('Mensaje copiado')}catch{prompt('Copia el mensaje',all)}}
+// la cuenta se crea en Safari ANTES de añadir el icono: la app de inicio abre siempre «/» y perdería la invitación
+const inviteMsg=(n,link)=>`${n}, ${ME?.name?.split(' ')[0]||'Alguien'} te ha invitado a Hábitos ✨
+
+${link}
+
+1. Abre el enlace en Safari (si se abre dentro de WhatsApp: botón de arriba a la derecha → Abrir en Safari)
+2. Crea tu cuenta
+3. Toca Compartir ⬆️ → «Añadir a pantalla de inicio» → Añadir
+4. Abre el icono y entra con tu email`;
 $('invForm').onsubmit=async e=>{e.preventDefault();const n=$('invIn').value.trim();if(!n)return;
   try{const v=await api('/api/invite',{method:'POST',body:JSON.stringify({name:n})});$('invIn').value='';buzz([10,30,10]);
-    await loadMembers();share(inviteText(v.name),v.link)}catch(x){toast(x.message)}};
+    await loadMembers();share(inviteMsg(v.name,v.link))}catch(x){toast(x.message)}};
 $('members').onclick=async e=>{const b=e.target.closest('[data-a]');if(!b)return;const li=b.closest('.row'),n=li.dataset.name,a=b.dataset.a;
   try{
-    if(a==='send')return share(inviteText(n),li.dataset.link);
+    if(a==='send')return share(inviteMsg(n,li.dataset.link));
     if(a==='reset'){const r=await api('/api/invite',{method:'POST',body:JSON.stringify({reset:li.dataset.id})});return share(`${n}, entra aquí para elegir una contraseña nueva:`,r.link)}
     if(a==='cancel'){await api('/api/invite?invite='+encodeURIComponent(li.dataset.inv),{method:'DELETE'});return collapse(li,loadMembers)}
     if(a==='del'&&confirm(`¿Quitar a ${n}? Se borrarán sus datos.`)){await api('/api/invite?user='+encodeURIComponent(li.dataset.id),{method:'DELETE'});collapse(li,loadMembers)}
@@ -920,7 +929,10 @@ async function enter(r){
   // si cambia de cuenta, empieza limpio; si venía de usar la app sin cuenta, conserva lo que tenía
   const prev=LS.get('owner',null),other=prev&&prev!==r.user.id;if(other){LS.del('state');LS.del('base');S=fresh()}
   setAuth({token:r.token,user:r.user});history.replaceState(null,'','/');$('gate').classList.remove('on');$('gPw').value='';
-  pulled=false;await pull();renderAll(true);loadMembers();toast(`Hola, ${ME.name.split(' ')[0]}`)}
+  pulled=false;await pull();renderAll(true);loadMembers();
+  // recién entrado desde Safari: recordar el paso de añadir el icono
+  const web=!navigator.standalone&&!matchMedia('(display-mode: standalone)').matches&&/iPhone|iPad/.test(navigator.userAgent);
+  toast(web?`Hola, ${ME.name.split(' ')[0]} · Ahora: Compartir ⬆️ → Añadir a pantalla de inicio`:`Hola, ${ME.name.split(' ')[0]}`,null,web?7000:0)}
 
 
 /* ---------------- nota de voz (hoja modal con arrastre) ---------------- */
