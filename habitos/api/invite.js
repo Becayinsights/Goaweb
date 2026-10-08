@@ -1,6 +1,7 @@
 // Solo admin. GET: personas (alta y última actividad) e invitaciones pendientes. POST {name}: crea invitación.
 // POST {reset:id}: enlace para que esa persona elija contraseña nueva.
 // DELETE ?user= o ?invite=: quita a alguien o anula una invitación.
+import { randomBytes } from 'node:crypto';
 import { auth, readJSON, users, getUser, deleteUser, invites, saveInvite, deleteInvite, resetFor, removeBlob, newId, origin, pub, fail, bad } from './_lib.js';
 
 export default async function handler(req, res) {
@@ -16,7 +17,8 @@ export default async function handler(req, res) {
     if (req.method === 'POST') {
       const name = String(req.body?.name || '').trim().slice(0, 40);
       if (!name) throw bad('Pon un nombre');
-      const inv = { token: newId(), name, created: new Date().toISOString() };
+      // solo letras y números: algunos chats cortan los enlaces en «-» o «_»
+      const inv = { token: randomBytes(10).toString('hex'), name, created: new Date().toISOString() };
       await saveInvite(inv);
       return res.status(200).json({ ...inv, link: `${base}/?i=${inv.token}` });
     }

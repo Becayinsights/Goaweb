@@ -485,7 +485,7 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
     </div>
     <footer class="credit">
       <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
-      <div class="lbl">Hábitos · 2026 · v23</div>
+      <div class="lbl">Hábitos · 2026 · v24</div>
     </footer>
   </section>
 </div>
@@ -1101,13 +1101,17 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden){renderAll
 {const t=targets(S.body),g=t&&{kcal:t.kcal,prot:t.prot,carb:t.carb,fat:t.fat};if(g&&JSON.stringify(g)!==JSON.stringify(S.goals)){S.goals=g;LS.set('state',S)}}
 renderAll(true);requestAnimationFrame(moveInd);
 (async()=>{
-  const q=new URLSearchParams(location.search);
-  try{const r=await fetch('/api/auth'+(q.get('i')?'?invite='+encodeURIComponent(q.get('i')):''),{headers:hdr()});
+  const q=new URLSearchParams(location.search),inv=(q.get('i')||'').replace(/[^\w-]/g,'');  // por si el chat pegó un signo al final
+  const ask=()=>fetch('/api/auth'+(inv?'?invite='+encodeURIComponent(inv):''),{headers:hdr()});
+  try{let r=await ask();
     if(r.status===503){SRV.store=false}            // sin almacenamiento: la app funciona solo en este móvil
-    else{const j=await r.json();SRV.setup=j.setup;
+    else{let j=await r.json();
+      // una invitación recién creada puede tardar un instante en estar disponible: se reintenta una vez
+      if(inv&&!j.invite&&!AUTH){await new Promise(ok=>setTimeout(ok,1500));j=await (await ask()).json()}
+      SRV.setup=j.setup;
       if(q.get('r')){gReset=q.get('r');return showGate('reset')}
-      if(q.get('i')){gInvite=j.invite?{token:q.get('i'),name:j.invite.name}:null;
-        if(!AUTH){if(gInvite)return showGate('register');showGate('login');$('gErr').textContent='Esta invitación ya se usó o no existe.';return}}
+      if(inv){gInvite=j.invite?{token:inv,name:j.invite.name}:null;
+        if(!AUTH){if(gInvite)return showGate('register');showGate('login');$('gErr').textContent='Esta invitación ya se usó o no existe. Si aún no tienes cuenta, pide un enlace nuevo a quien te invitó.';return}}
       if(AUTH&&!j.user){setAuth(null)}
       if(AUTH&&j.user)setAuth({...AUTH,user:j.user});
       if(!AUTH)return showGate(j.setup?'setup':'login')}
