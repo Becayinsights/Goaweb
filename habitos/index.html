@@ -158,7 +158,12 @@ h2{font:600 20px/1.2 var(--disp);letter-spacing:-.01em}
 .rsetup b{color:var(--ink);font-weight:500}
 .rsetup ol{margin:10px 0 16px;padding-left:20px;display:grid;gap:7px}
 .rsetup p{color:var(--ink-2)}
-.rmanual{margin:4px 0 14px;font-size:13.5px}.rmanual summary{color:var(--ink-3);cursor:pointer;padding:6px 0}
+.rmanual{margin:4px 0 14px;font-size:13.5px}
+.calhelp{margin-top:16px;color:var(--ink-2);line-height:1.5}.calhelp p{margin-top:10px}.calhelp b{color:var(--ink);font-weight:500}
+/* eventos del calendario en Tareas */
+.row.ev .n{width:auto;min-width:40px;color:var(--ink-2)}
+.row.ev .t{color:var(--ink-2)}
+.src{width:7px;height:7px;border-radius:50%;flex:none;background:var(--ink-3)}.src.g{background:var(--acc)}.rmanual summary{color:var(--ink-3);cursor:pointer;padding:6px 0}
 .rhelp{background:none;border:0;color:var(--ink-3);margin-top:6px;text-transform:none;letter-spacing:0;font-family:var(--sans);font-size:13px}
 .cal{display:flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;flex:none!important;height:54px;width:100%}
 .rem-row label{min-width:0;overflow:hidden}
@@ -407,6 +412,7 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
         <label class="chip" id="wPick">Fecha…<input type="date" id="taskDate"></label>
       </div>
     </form>
+    <div id="agenda"></div>
     <div id="taskList"></div>
   </section>
 
@@ -487,6 +493,19 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
       </div>
     </div>
 
+    <div class="sec" id="calSec">
+      <div class="sec-h"><h2>Calendarios</h2><span class="lbl">Solo lectura</span></div>
+      <label><span class="lbl" style="display:block;margin-top:18px">Google · dirección secreta iCal</span>
+        <input class="field" id="calG" placeholder="Pega aquí el enlace" autocomplete="off" inputmode="url" autocapitalize="off" spellcheck="false"></label>
+      <label><span class="lbl" style="display:block;margin-top:18px">Apple · calendario público</span>
+        <input class="field" id="calA" placeholder="Pega aquí el enlace" autocomplete="off" inputmode="url" autocapitalize="off" spellcheck="false"></label>
+      <p class="note" id="calMsg" hidden></p>
+      <details class="rmanual calhelp"><summary>¿Dónde encuentro los enlaces?</summary>
+        <p><b>Google</b> (desde el ordenador o Safari en «versión de escritorio»): calendar.google.com → ⚙︎ Configuración → a la izquierda, tu calendario → «Integrar el calendario» → copia la <b>Dirección secreta en formato iCal</b>.</p>
+        <p><b>Apple</b>: app Calendario → <b>Calendarios</b> (abajo) → ⓘ junto a tu calendario → activa <b>Calendario público</b> → <b>Compartir enlace</b> → Copiar. Ojo: quien tenga ese enlace puede ver ese calendario.</p>
+      </details>
+    </div>
+
     <div class="sec">
       <div class="sec-h"><h2>Perfil</h2></div>
       <label><span class="lbl" style="display:block;margin-top:18px">Nombre</span><input class="field" id="pName" autocomplete="off"></label>
@@ -500,7 +519,7 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
     </div>
     <footer class="credit">
       <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
-      <div class="lbl">Hábitos · 2026 · v28</div>
+      <div class="lbl">Hábitos · 2026 · v29</div>
     </footer>
   </section>
 </div>
@@ -1136,11 +1155,33 @@ function moveInd(){const on=document.querySelector('.tb.on'),ind=$('ind');if(!on
 function go(v){if(document.querySelector('.view.on')?.id==='v-'+v)return;
   document.querySelectorAll('.tb').forEach(x=>x.classList.toggle('on',x.dataset.v===v));moveInd();
   document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v));window.scrollTo(0,0);buzz(4);
-  if(v==='hab')renderHab(true);if(v==='tar')renderTasks();if(v==='mac')renderMac();if(v==='cue')loadMembers()}
+  if(v==='hab')renderHab(true);if(v==='tar'){renderTasks();loadAgenda()}if(v==='mac')renderMac();if(v==='cue')loadMembers()}
 document.querySelectorAll('.tb').forEach(b=>b.onclick=()=>go(b.dataset.v));
 addEventListener('resize',moveInd);
-function renderAll(anim){renderHab(anim);renderTasks();renderMac();renderCuenta()}
-document.addEventListener('visibilitychange',()=>{if(!document.hidden){renderAll();pull();checkPeople()}});
+/* ---------------- calendarios de Google / Apple (solo lectura) ---------------- */
+const CAL_OK=/^(?:https?|webcal):\/\/(?:calendar\.google\.com|[\w-]+\.icloud\.com)\//i;
+let agendaAt=0,agendaBusy=false;
+const calUrls=()=>{const c=S.cals||{};return[c.g,c.a].filter(Boolean)};
+async function loadAgenda(force){
+  if(!AUTH||!calUrls().length){LS.del('agenda');renderAgenda();return}
+  if(agendaBusy||(!force&&Date.now()-agendaAt<5*6e4))return;agendaBusy=true;
+  try{const r=await api('/api/cal',{method:'POST',body:J({urls:calUrls(),tz:Intl.DateTimeFormat().resolvedOptions().timeZone,from:today(),days:2})});
+    agendaAt=Date.now();LS.set('agenda',{from:today(),ev:r.events||[],err:r.errors||[]});renderAgenda()}
+  catch{}finally{agendaBusy=false}}
+function renderAgenda(){const a=LS.get('agenda',null),box=$('agenda'),t=today(),m=addDays(t,1);
+  const errs=(a?.err||[]).map(e=>`${e.src==='g'?'Google':'Apple'}: no se ha podido leer el enlace (${e.error}).`);
+  $('calMsg').hidden=!errs.length;$('calMsg').textContent=errs.join(' ');
+  if(!a||!calUrls().length){box.innerHTML='';return}
+  const ev=(a.ev||[]).filter(e=>e.d===t||e.d===m);
+  const day=(d,n)=>{const l=ev.filter(e=>e.d===d);return l.length?`<div class="grp"><span class="lbl"><span>${n}</span><span>${l.length}</span></span><ul class="rows">${
+    l.map(e=>`<li class="row ev"><div class="in"><span class="n">${e.h||'Día'}</span><div class="tx"><div class="t">${esc(e.t)}</div></div><i class="src ${e.src==='g'?'g':''}" title="${e.src==='g'?'Google':'Apple'}"></i></div></li>`).join('')}</ul></div>`:''};
+  box.innerHTML=day(t,'Calendario · hoy')+day(m,'Calendario · mañana')}
+for(const[id,k]of[['calG','g'],['calA','a']])$(id).onchange=()=>{const v=$(id).value.trim();
+  if(v&&!CAL_OK.test(v)){toast(k==='g'?'Ese enlace no es de Google Calendar':'Ese enlace no es de iCloud');return}
+  S.cals={...(S.cals||{}),[k]:v};save();toast(v?'Calendario conectado':'Calendario quitado');loadAgenda(true)};
+function renderAll(anim){renderHab(anim);renderTasks();renderMac();renderCuenta();
+  for(const[id,k]of[['calG','g'],['calA','a']])if(document.activeElement!==$(id))$(id).value=(S.cals||{})[k]||'';renderAgenda()}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){renderAll();Promise.resolve(pull()).then(()=>loadAgenda());checkPeople()}});
 
 /* ---------------- arranque ---------------- */
 // objetivos siempre al día con el método actual, aunque se guardaran con una versión anterior
@@ -1162,7 +1203,7 @@ renderAll(true);requestAnimationFrame(moveInd);
       if(AUTH&&j.user)setAuth({...AUTH,user:j.user});
       if(!AUTH)return showGate(j.setup?'setup':'login')}
   }catch{}
-  renderAll();pull();checkPeople();
+  renderAll();Promise.resolve(pull()).then(()=>loadAgenda());checkPeople();
 })();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');
 </script>
