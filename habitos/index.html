@@ -404,13 +404,17 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
       <div class="lbl st-at" id="stepsAt">Toca Actualizar para traerlos de Salud</div>
       <div class="rsetup" id="stepsSetup" hidden>
         <b>Conéctalo una vez</b>
+        <a class="btn ghost w cal" href="https://www.icloud.com/shortcuts/1c6836ab999740f88afb833ca4d89a1a" target="_blank" rel="noopener" style="margin:12px 0 10px">1 · Instalar atajo</a>
+        <p class="st-warn" style="margin:0 0 12px">Al instalar, dale permiso a Salud para leer <b>Pasos</b>.</p>
+        <details class="rmanual"><summary>O créalo a mano</summary>
         <ol>
           <li>En <b>Atajos</b> → <b>+</b> → nombre <b>Habitos pasos</b>.</li>
           <li>Añade <b>Buscar muestras médicas</b>: Tipo <b>Pasos</b>; <b>Añadir filtro</b> → Fecha de inicio <b>es hoy</b>; <b>Agrupar por</b> → <b>Día</b>.</li>
           <li>Añade <b>Obtener contenido de URL</b>: en la URL pon <b>Entrada del atajo</b>.</li>
           <li>Toca <b>›</b> en esa acción: <b>Método POST</b>, <b>Cuerpo JSON</b> → <b>Añadir campo</b> → Texto, clave <b>n</b>, valor <b>Muestras médicas</b> (Valor).</li>
         </ol>
-        <button class="btn w" id="stepsOk">Ya lo tengo · Actualizar</button>
+        </details>
+        <button class="btn w" id="stepsOk">2 · Ya lo tengo · Actualizar</button>
       </div>
       <details class="rmanual stauto"><summary>Que se actualice solo</summary>
         <ol>
@@ -419,6 +423,7 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
           <li>Elige <b>Nueva automatización en blanco</b> → añade <b>Ejecutar atajo</b> → <b>Habitos pasos</b>.</li>
           <li>Toca la flechita de esa acción → <b>Entrada</b> → pega el enlace (mantén pulsado → Pegar).</li>
           <li>Repite para otras horas (p. ej. 18:00 y 22:00).</li>
+          <li>Truco: crea otra con <b>Cargador</b> → <b>Está conectado</b>: se actualiza cada vez que lo enchufas.</li>
         </ol>
         <button class="btn ghost w" id="stepsCopy">Copiar enlace</button>
         <p class="st-warn">Es personal: no lo compartas (sirve para apuntar pasos en tu cuenta).</p>
@@ -561,7 +566,7 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
     </div>
     <footer class="credit">
       <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
-      <div class="lbl">Hábitos · 2026 · v32</div>
+      <div class="lbl">Hábitos · 2026 · v33</div>
     </footer>
   </section>
 </div>
