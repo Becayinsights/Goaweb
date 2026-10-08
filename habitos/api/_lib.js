@@ -5,13 +5,14 @@ import { scryptSync, randomBytes, createHmac, timingSafeEqual } from 'node:crypt
 // Vercel conecta el Blob con un token clásico o, en proyectos nuevos, por OIDC (BLOB_STORE_ID + token de la ejecución)
 export const hasStore = () => !!(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
 
+// Solo «no existe» devuelve el valor por defecto. Un fallo de red o del almacenamiento se propaga:
+// si no, un corte puntual se tomaría por «no hay usuarios / no hay secreto» y se sobrescribirían.
 export async function readJSON(path, fallback) {
   if (!hasStore()) return fallback;
-  try {
-    const r = await get(path, { access: 'private', useCache: false });
-    if (r?.statusCode !== 200) return fallback;
-    return JSON.parse(await new Response(r.stream).text());
-  } catch { return fallback; }
+  const r = await get(path, { access: 'private', useCache: false });
+  if (!r) return fallback;
+  if (r.statusCode !== 200) throw new Error(`Lectura de ${path}: ${r.statusCode}`);
+  return JSON.parse(await new Response(r.stream).text());
 }
 export const writeJSON = (path, obj) =>
   put(path, JSON.stringify(obj), { access: 'private', addRandomSuffix: false, allowOverwrite: true, contentType: 'application/json' });

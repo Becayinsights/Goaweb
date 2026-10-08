@@ -1,7 +1,7 @@
-// Solo admin. GET: personas e invitaciones pendientes. POST {name}: crea invitación.
+// Solo admin. GET: personas (alta y última actividad) e invitaciones pendientes. POST {name}: crea invitación.
 // POST {reset:id}: enlace para que esa persona elija contraseña nueva.
 // DELETE ?user= o ?invite=: quita a alguien o anula una invitación.
-import { auth, users, saveUsers, invites, saveInvites, resetFor, removeBlob, newId, origin, pub, fail, bad } from './_lib.js';
+import { auth, readJSON, users, saveUsers, invites, saveInvites, resetFor, removeBlob, newId, origin, pub, fail, bad } from './_lib.js';
 
 export default async function handler(req, res) {
   try {
@@ -29,8 +29,11 @@ export default async function handler(req, res) {
       }
       return res.status(200).json({ ok: true });
     }
+    // cuándo se unió cada persona y cuándo usó la app por última vez
+    const list = await users();
+    const seen = await Promise.all(list.map(u => readJSON(`data/${u.id}.json`, {}).then(d => d._at || null)));
     res.status(200).json({
-      users: (await users()).map(pub),
+      users: list.map((u, i) => ({ ...pub(u), created: u.created || null, seen: seen[i] })),
       invites: (await invites()).map(i => ({ ...i, link: `${base}/?i=${i.token}` })),
     });
   } catch (e) { fail(res, e); }

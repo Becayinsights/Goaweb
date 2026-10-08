@@ -245,6 +245,9 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
 .tabs .tb{position:relative;z-index:1;width:60px;height:50px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--ink-3);transition:color .3s}
 .tabs .tb span{font:500 9px/1 var(--sans);letter-spacing:.01em}
 .tabs .tb.on{color:var(--ink)}
+.tabs .tb.fresh::after{content:'';position:absolute;top:8px;left:calc(50% + 8px);width:7px;height:7px;border-radius:50%;background:var(--acc);
+  box-shadow:0 0 0 2px var(--bg-2);animation:pop .6s var(--bounce)}
+.new{font:500 9.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--acc);margin-left:8px;vertical-align:2px}
 .tabs .tb svg{transition:transform .5s var(--bounce)}
 .tabs .tb:active svg{transform:scale(.8)}
 .mic{position:relative;z-index:1;width:56px;height:56px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;margin:0 6px;transition:transform .5s var(--bounce)}
@@ -273,6 +276,8 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
 .wave i:nth-child(2){animation-delay:.12s}.wave i:nth-child(3){animation-delay:.24s}.wave i:nth-child(4){animation-delay:.36s}.wave i:nth-child(5){animation-delay:.48s}
 @keyframes w{50%{height:28px}}
 .plan{border-top:1px solid var(--rule)}
+.row.born>.in{animation:born 2.2s var(--out) .35s both}
+@keyframes born{0%,25%{background:color-mix(in srgb,var(--acc) 13%,var(--bg))}100%{background:var(--bg)}}
 .plan .in{min-height:58px;padding:14px 0;background:transparent}
 .plan .x{margin-right:-6px}
 .kind{color:var(--acc)}
@@ -467,7 +472,7 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
     </div>
     <footer class="credit">
       <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
-      <div class="lbl">Hábitos · 2026 · v16</div>
+      <div class="lbl">Hábitos · 2026 · v17</div>
     </footer>
   </section>
 </div>
@@ -569,16 +574,43 @@ let ME=AUTH?.user||null;
 let SRV={store:true,setup:false};
 const hdr=()=>{const h={'Content-Type':'application/json'};if(AUTH?.token)h.Authorization='Bearer '+AUTH.token;return h};
 async function api(path,opt={}){const r=await fetch(path,{...opt,headers:hdr()});let j={};try{j=await r.json()}catch{}
-  if(r.status===401&&AUTH&&!path.includes('auth')){logout();throw new Error('Tu sesión ha caducado')}
+  if(r.status===401&&AUTH&&!path.includes('auth')){expire();throw new Error('Tu sesión ha caducado')}
   if(!r.ok)throw Object.assign(new Error(j.error||'Sin conexión'),{status:r.status});return j}
 
-let pushT=null,syncState='local';
-function save(){S.updated=Date.now();LS.set('state',S);if(AUTH){clearTimeout(pushT);pushT=setTimeout(push,700)}}
-async function push(){try{await api('/api/data',{method:'PUT',body:JSON.stringify(S)});setSync('ok')}catch{setSync('off')}}
-async function pull(){if(!AUTH)return;
-  try{const r=await api('/api/data');
-    if(r&&r.updated>S.updated){S=r;S.goals=S.goals||{kcal:0,prot:0};S.tasks=S.tasks||[];LS.set('state',S);renderAll()}
-    else if(S.updated>(r?.updated||0))await push();setSync('ok')}catch{setSync('off')}}
+// Sincronización: «base» es la última versión que este móvil y el servidor tenían en común.
+// Si los dos han cambiado desde entonces, se fusionan elemento a elemento en vez de pisarse.
+// No se sube nada hasta haber leído el servidor al menos una vez (pulled).
+const born=new Set();   // lo recién creado por voz se ilumina un momento en su lista
+let pushT=null,syncState='local',pulled=false,syncing=null;
+const J=JSON.stringify,clean=o=>{const c={};for(const k in o)if(k[0]!=='_')c[k]=o[k];return c};
+function save(){S.updated=Date.now();LS.set('state',S);if(AUTH){clearTimeout(pushT);pushT=setTimeout(()=>pulled?push():pull(),700)}}
+function byId(b,l,s){const bm=new Map(b.map(x=>[x.id,x])),lm=new Map(l.map(x=>[x.id,x])),sm=new Set(s.map(x=>x.id)),out=[];
+  for(const x of s){const bx=bm.get(x.id),lx=lm.get(x.id);if(!lx){if(!bx)out.push(x);continue}out.push(J(lx)!==J(bx)?lx:x)}
+  for(const x of l)if(!bm.has(x.id)&&!sm.has(x.id))out.push(x);return out}
+function merge(b,l,s){const out={...s};
+  for(const k of new Set([...Object.keys(l),...Object.keys(s)])){if(k==='updated'||k[0]==='_')continue;
+    const bv=b?.[k],lv=l[k],sv=s[k];if(J(lv)===J(bv)){out[k]=sv;continue}if(J(sv)===J(bv)||sv===undefined){out[k]=lv;continue}
+    if(Array.isArray(lv)&&Array.isArray(sv)&&[...lv,...sv].every(x=>x&&x.id))out[k]=byId(bv||[],lv,sv);
+    else if(Array.isArray(lv)&&Array.isArray(sv)&&k.length===10&&[...lv,...sv].every(x=>typeof x==='string')){const bb=bv||[];  // día del registro: ids de hábitos hechos
+      out[k]=[...new Set([...sv,...lv.filter(x=>!bb.includes(x))])].filter(x=>!(bb.includes(x)&&!lv.includes(x)))}
+    else if(lv&&sv&&typeof lv==='object'&&!Array.isArray(lv))out[k]=merge(bv||{},lv,sv);
+    else out[k]=lv}
+  return out}
+function adopt(doc){S=doc;S.goals=S.goals||{kcal:0,prot:0};S.tasks=S.tasks||[];S.log=S.log||{};S.food=S.food||{};S.habits=S.habits||[];LS.set('state',S)}
+async function push(){if(!AUTH||!pulled)return;const base=LS.get('base',null),snap=clean(S);
+  try{await api('/api/data',{method:'PUT',body:J({...snap,_base:base?base.updated:null})});LS.set('base',snap);setSync('ok')}
+  catch(e){if(e.status===409){pulled=false;return pull()}setSync('off')}}
+async function pull(){if(!AUTH)return;if(syncing)return syncing;
+  return syncing=(async()=>{try{const r=clean(await api('/api/data')),base=LS.get('base',null),loc=clean(S);pulled=true;
+    // cuenta sin datos en el servidor: se sube lo de este móvil para que todos partan de lo mismo
+    if(!r.updated){if(!S.updated)S.updated=Date.now(),LS.set('state',S);await push();return setSync('ok')}
+    if(J(r)===J(loc)){LS.set('base',r);return setSync('ok')}
+    // sin base (primera vez en este móvil o versión anterior): si este móvil no tiene cambios propios, manda el servidor; si tiene, se fusiona
+    const mineChanged=base?J(loc)!==J(base):!!S.updated,theirsChanged=base?r.updated!==base.updated:true;
+    if(!mineChanged){adopt(r);LS.set('base',r);renderAll()}
+    else if(!theirsChanged)await push();
+    else{const m=merge(base,loc,r);adopt({...m,updated:Date.now()});LS.set('base',r);renderAll();await push()}
+    setSync('ok')}catch{setSync('off')}finally{syncing=null}})()}
 function setSync(s){syncState=s;renderCuenta()}
 
 /* ---------------- gestos: deslizar para borrar ---------------- */
@@ -622,7 +654,7 @@ function renderHab(anim){
   const list=editing?S.habits:past?S.habits.filter(x=>activeOn({...x,from:null},t)):todays(t),done=S.log[t]||[];
   $('habits').classList.toggle('st',!!anim);
   $('habits').innerHTML=list.length?list.map((x,i)=>`
-    <li class="row ${!editing&&done.includes(x.id)?'done':''}" data-id="${x.id}" style="--i:${i}"><div class="in">
+    <li class="row ${!editing&&done.includes(x.id)?'done':''} ${born.has(x.id)?'born':''}" data-id="${x.id}" style="--i:${i}"><div class="in">
       <span class="n">${pad(i+1)}</span>
       <div class="tx"><div class="t">${esc(x.t)}</div>
         ${editing?`<div class="s">${esc(sched(x))}</div>${x.dates?'':`<div class="days">${[1,2,3,4,5,6,0].map(d=>`<button data-d="${d}" class="${x.days?.includes(d)?'on':''}">${DOW[d]}</button>`).join('')}</div>`}`
@@ -706,7 +738,7 @@ function renderTasks(fresh){
   const dn=S.tasks.filter(x=>x.done&&x.doneAt===t);if(dn.length)G.push(['Hechas hoy',dn]);
   const d=new Date();$('tDate').textContent=`${open.filter(x=>x.date&&x.date<=t).length} para hoy · ${d.getDate()} ${MON[d.getMonth()]}`;
   $('taskList').innerHTML=G.map(([n,l])=>`<div class="grp"><span class="lbl"><span>${n}</span><span>${l.length||''}</span></span><ul class="rows">${
-    l.length?l.map(x=>`<li class="row sw ${x.done?'done':''} ${x.id===fresh?'st':''}" data-id="${x.id}"><div class="del">Borrar</div><div class="in" ${x.id===fresh?'style="animation:rise .6s var(--out) both"':''}>
+    l.length?l.map(x=>`<li class="row sw ${x.done?'done':''} ${x.id===fresh?'st':''} ${born.has(x.id)?'born':''}" data-id="${x.id}"><div class="del">Borrar</div><div class="in" ${x.id===fresh?'style="animation:rise .6s var(--out) both"':''}>
       <span class="ck">${CHECK}</span><div class="tx"><div class="t">${esc(x.t)}</div></div>
       ${x.done?'':`<button class="bell ${x.rem?'on':''}" data-a="rem" aria-label="Recordatorio"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>${x.rem?`<span>${x.rem.h}</span>`:''}</button><button class="pill ${x.date&&x.date<t?'late':''}" data-a="when">${x.date?fmtDay(x.date):'Sin fecha'}</button>`}
     </div></li>`).join(''):`<li class="empty">Nada para hoy. Escribe arriba y pulsa Intro.</li>`}</ul></div>`).join('');
@@ -714,7 +746,7 @@ function renderTasks(fresh){
 $('taskList').onclick=e=>{const li=e.target.closest('.row');if(!li||li._swiped)return;const x=S.tasks.find(y=>y.id===li.dataset.id);if(!x)return;
   // la fecha rota con un toque: hoy → mañana → sin fecha
   if(e.target.closest('[data-a=rem]'))return openRem(x);
-  if(e.target.closest('[data-a=when]')){const t=today();x.date=x.date===t?addDays(t,1):t;save();buzz(5);
+  if(e.target.closest('[data-a=when]')){const t=today();x.date=x.date===t?addDays(t,1):x.date===addDays(t,1)?null:t;save();buzz(5);
     e.target.closest('.pill').textContent=x.date?fmtDay(x.date):'Sin fecha';clearTimeout(li._t);li._t=setTimeout(()=>{renderTasks();renderProg()},900);return}
   // tocar el texto lo edita en el sitio
   const tt=e.target.closest('.t');if(tt&&!x.done){tt.contentEditable='true';tt.focus();
@@ -765,7 +797,7 @@ function renderMac(){
     $('b'+id).style.width=(goal?Math.min(1,v/goal):v?1:0)*100+'%'}
   $('bodyHint').hidden=!!g.kcal;
   $('mCount').textContent=m.length?`${m.length} comida${m.length>1?'s':''}`:'';
-  $('meals').innerHTML=m.map((x,i)=>`<li class="row sw meal" data-i="${i}"><div class="del">Quitar</div><div class="in"><span class="n">${x.t}</span><div class="tx"><div class="t">${esc(x.n)}</div>
+  $('meals').innerHTML=m.map((x,i)=>`<li class="row sw meal" data-i="${i}"><div class="del">Quitar</div><div class="in"><span class="n">${esc(x.t)}</span><div class="tx"><div class="t">${esc(x.n)}</div>
     <div class="s">${R(x.k)} kcal · P ${R(x.p)} · C ${R(x.c)} · G ${R(x.f)}</div></div></div></li>`).join('');
 }
 
@@ -816,15 +848,29 @@ $('pwForm').onsubmit=async e=>{e.preventDefault();
   try{const r=await api('/api/auth',{method:'POST',body:JSON.stringify({action:'password',current:$('pwOld').value,password:$('pwNew').value})});
     setAuth(r);$('pwForm').reset();$('pwForm').hidden=true;toast('Contraseña cambiada')}catch(x){toast(x.message)}};
 $('logBtn').onclick=()=>{if(confirm('¿Cerrar sesión?'))logout()};
-function setAuth(a){AUTH=a;ME=a?.user||null;a?LS.set('auth',a):LS.del('auth');renderCuenta()}
-function logout(){setAuth(null);LS.del('state');S=fresh();renderAll();showGate('login')}
+function setAuth(a){AUTH=a;ME=a?.user||null;if(a){LS.set('auth',a);LS.set('owner',a.user.id)}else LS.del('auth');renderCuenta()}
+function logout(){setAuth(null);LS.del('state');LS.del('base');LS.del('owner');pulled=false;S=fresh();renderAll();showGate('login')}
+// sesión caducada (p. ej. cambió la contraseña en otro móvil): se pide entrar otra vez sin borrar lo de este móvil
+function expire(){setAuth(null);pulled=false;showGate('login')}
 
+// «hace 5 min», «ayer», «hace 3 días»…
+function ago(t){if(!t)return'';const m=(Date.now()-new Date(t))/6e4;if(m<2)return'ahora';if(m<60)return`hace ${Math.round(m)} min`;
+  if(m<1440)return`hace ${Math.round(m/60)} h`;const d=Math.round(m/1440);return d===1?'ayer':d<30?`hace ${d} días`:new Date(t).toLocaleDateString('es-ES',{day:'numeric',month:'short'})}
+// Personas nuevas desde la última vez que el admin miró Cuenta: punto en la pestaña y aviso una sola vez
+const isNew=u=>!u.admin&&u.created&&Date.parse(u.created)>LS.get('peopleSeen',0);
+async function checkPeople(){if(!ME?.admin||!AUTH)return;
+  try{const {users:us}=await api('/api/invite'),fresh=us.filter(isNew),told=LS.get('peopleTold',[]);
+    document.querySelector('.tb[data-v=cue]').classList.toggle('fresh',!!fresh.length&&!$('v-cue').classList.contains('on'));
+    const nu=fresh.filter(u=>!told.includes(u.id));
+    if(nu.length){LS.set('peopleTold',[...told,...nu.map(u=>u.id)]);toast(`${nu.map(u=>u.name.split(' ')[0]).join(' y ')} ${nu.length>1?'se han unido':'se ha unido'}`)}}catch{}}
 async function loadMembers(){if(!ME?.admin)return;
   try{const {users:us,invites:iv}=await api('/api/invite');$('memCount').textContent=`${us.length}`;
-    $('members').innerHTML=us.map((u,i)=>`<li class="row" data-id="${u.id}" data-name="${esc(u.name)}" style="--i:${i}"><div class="in"><div class="tx"><div class="t">${esc(u.name)}</div>
-      <div class="s">${esc(u.email)}${u.admin?' · admin':''}</div></div>${u.admin?'':`<button class="chip" data-a="reset">Contraseña</button><button class="x" style="display:grid" data-a="del">${XS}</button>`}</div></li>`).join('')
+    $('members').innerHTML=us.map((u,i)=>`<li class="row" data-id="${u.id}" data-name="${esc(u.name)}" style="--i:${i}"><div class="in"><div class="tx"><div class="t">${esc(u.name)}</div>${isNew(u)?'<span class="new">Nuevo</span>':''}
+      <div class="s">${u.admin?esc(u.email)+' · admin':`Se unió ${ago(u.created)||'—'} · ${u.seen?'activo '+ago(u.seen):'aún sin usarla'}`}</div></div>${u.admin?'':`<button class="chip" data-a="reset">Contraseña</button><button class="x" style="display:grid" data-a="del">${XS}</button>`}</div></li>`).join('')
     +iv.map(v=>`<li class="row" data-inv="${v.token}" data-name="${esc(v.name)}" data-link="${v.link}"><div class="in"><div class="tx"><div class="t" style="color:var(--ink-2)">${esc(v.name)}</div>
-      <div class="s">Invitación pendiente</div></div><button class="chip" data-a="send">Enviar</button><button class="x" style="display:grid" data-a="cancel">${XS}</button></div></li>`).join('')}
+      <div class="s">Invitación pendiente${v.created?' · '+ago(v.created):''}</div></div><button class="chip" data-a="send">Enviar</button><button class="x" style="display:grid" data-a="cancel">${XS}</button></div></li>`).join('');
+    // solo cuenta como «visto» si Cuenta está abierta
+    if($('v-cue').classList.contains('on')){LS.set('peopleSeen',Date.now());document.querySelector('.tb[data-v=cue]').classList.remove('fresh')}}
   catch(e){$('members').innerHTML=`<li class="empty">${esc(e.message)}</li>`}}
 async function share(text,url){
   try{if(navigator.share){await navigator.share({title:'Hábitos',text,url});return}}catch{return}
@@ -872,9 +918,9 @@ $('gForm').onsubmit=async e=>{e.preventDefault();const go=$('gGo');if(go.disable
   catch(x){$('gErr').style.color='';$('gErr').textContent=x.message;buzz([20,40,20])}finally{go.disabled=false}};
 async function enter(r){
   // si cambia de cuenta, empieza limpio; si venía de usar la app sin cuenta, conserva lo que tenía
-  const other=AUTH&&AUTH.user?.id!==r.user.id;if(other){LS.del('state');S=fresh()}
+  const prev=LS.get('owner',null),other=prev&&prev!==r.user.id;if(other){LS.del('state');LS.del('base');S=fresh()}
   setAuth({token:r.token,user:r.user});history.replaceState(null,'','/');$('gate').classList.remove('on');$('gPw').value='';
-  await pull();save();renderAll(true);loadMembers();toast(`Hola, ${ME.name.split(' ')[0]}`)}
+  pulled=false;await pull();renderAll(true);loadMembers();toast(`Hola, ${ME.name.split(' ')[0]}`)}
 
 
 /* ---------------- nota de voz (hoja modal con arrastre) ---------------- */
@@ -961,10 +1007,11 @@ function closeRem(){if(!$('rSheet').classList.contains('on'))return;$('rSheet').
 $('rDate').onchange=$('rTime').onchange=$('rTime').oninput=remLinks;
 $('rBefore').onclick=e=>{const b=e.target.closest('button');if(!b)return;remBefore=+b.dataset.v;segSet('rBefore',remBefore);remLinks();buzz(4)};
 // al abrir el calendario, la tarea queda marcada con su hora (y su fecha pasa a ese día)
-for(const id of['rApple','rGoogle'])$(id).addEventListener('click',()=>{const x=remTask;if(!x)return;
+const remCur=()=>remTask&&(S.tasks.find(t=>t.id===remTask.id)||remTask);
+for(const id of['rApple','rGoogle'])$(id).addEventListener('click',()=>{const x=remCur();if(!x)return;
   x.rem={d:$('rDate').value||today(),h:$('rTime').value||'09:00',a:remBefore};x.date=x.rem.d;save();
   setTimeout(()=>{closeRem();renderTasks();renderProg();toast('Recordatorio listo')},300)});
-$('rOff').onclick=()=>{if(remTask){delete remTask.rem;save()}closeRem();renderTasks();toast('Recordatorio quitado · bórralo también del calendario')};
+$('rOff').onclick=()=>{const x=remCur();if(x){delete x.rem;save()}closeRem();renderTasks();toast('Recordatorio quitado · bórralo también del calendario')};
 // arrastrar la hoja hacia abajo para cerrarla
 (()=>{const g=$('grab'),sh=$('sheet');let y0=null,dy=0,t0=0;
   g.addEventListener('pointerdown',e=>{y0=e.clientY;t0=performance.now();dy=0;sh.classList.add('dragging');g.setPointerCapture(e.pointerId)});
@@ -981,8 +1028,9 @@ function renderPlan(){$('vPlan').innerHTML=plan.map((p,i)=>`<li class="row" styl
 $('vPlan').onclick=e=>{const b=e.target.closest('.x');if(!b)return;const li=b.closest('.row');collapse(li,()=>{plan.splice(+b.dataset.i,1);renderPlan()})};
 $('vBack').onclick=()=>{$('vStep2').hidden=true;$('vStep1').hidden=false;$('sheet').classList.add('typing');$('vTitle').textContent='¿Algo que cambiar?';$('vMic').textContent='Grabar';$('vErr').textContent=''};
 $('vCreate').onclick=()=>{const t=today();let h=0,k=0;
-  for(const p of plan){if(p.kind==='task'){S.tasks.push({id:uid(),t:p.title,date:p.date,done:false});k++}
-    else{S.habits.push({id:uid(),t:p.title,days:p.days,dates:p.dates,from:p.dates?p.dates.reduce((a,b)=>a<b?a:b):t});h++}}
+  for(const p of plan){const id=uid();born.add(id);if(p.kind==='task'){S.tasks.push({id,t:p.title,date:p.date,done:false});k++}
+    else{S.habits.push({id,t:p.title,days:p.days,dates:p.dates,from:p.dates?p.dates.reduce((a,b)=>a<b?a:b):t});h++}}
+  setTimeout(()=>born.clear(),3000);
   save();closeVoice();renderAll(true);buzz([10,40,10]);
   toast([h&&`${h} hábito${h>1?'s':''}`,k&&`${k} tarea${k>1?'s':''}`].filter(Boolean).join(' y ')+' creados')};
 
@@ -1004,11 +1052,11 @@ function go(v){if(document.querySelector('.view.on')?.id==='v-'+v)return;
 document.querySelectorAll('.tb').forEach(b=>b.onclick=()=>go(b.dataset.v));
 addEventListener('resize',moveInd);
 function renderAll(anim){renderHab(anim);renderTasks();renderMac();renderCuenta()}
-document.addEventListener('visibilitychange',()=>{if(!document.hidden){renderAll();pull()}});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){renderAll();pull();checkPeople()}});
 
 /* ---------------- arranque ---------------- */
 // objetivos siempre al día con el método actual, aunque se guardaran con una versión anterior
-{const t=targets(S.body),g=t&&{kcal:t.kcal,prot:t.prot,carb:t.carb,fat:t.fat};if(g&&JSON.stringify(g)!==JSON.stringify(S.goals)){S.goals=g;save()}}
+{const t=targets(S.body),g=t&&{kcal:t.kcal,prot:t.prot,carb:t.carb,fat:t.fat};if(g&&JSON.stringify(g)!==JSON.stringify(S.goals)){S.goals=g;LS.set('state',S)}}
 renderAll(true);requestAnimationFrame(moveInd);
 (async()=>{
   const q=new URLSearchParams(location.search);
@@ -1022,7 +1070,7 @@ renderAll(true);requestAnimationFrame(moveInd);
       if(AUTH&&j.user)setAuth({...AUTH,user:j.user});
       if(!AUTH)return showGate(j.setup?'setup':'login')}
   }catch{}
-  renderAll();pull();
+  renderAll();pull();checkPeople();
 })();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');
 </script>
