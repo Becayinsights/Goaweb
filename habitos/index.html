@@ -271,8 +271,17 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
 .kind{font:500 10px/1 var(--mono);letter-spacing:.06em;color:var(--acc);text-transform:uppercase;width:52px;flex:none}
 
 /* acceso */
+.wm{position:absolute;top:calc(var(--st) - 40px);right:-90px;width:340px;height:340px;fill:none;stroke:var(--ink);stroke-width:.25;opacity:.07;pointer-events:none;
+  animation:wmIn 1.6s var(--out) both,wmTurn 60s linear infinite}
+@keyframes wmIn{from{opacity:0;transform:scale(.85) rotate(-20deg)}to{opacity:.07}}
+@keyframes wmTurn{to{rotate:360deg}}
+.sig{position:absolute;left:0;right:0;bottom:calc(var(--sb) + 14px);display:flex;align-items:center;justify-content:center;gap:7px;
+  font:500 10px/1 var(--mono);letter-spacing:.24em;text-transform:uppercase;color:var(--ink-3);pointer-events:none}
+.credit{margin-top:56px;padding-top:28px;border-top:1px solid var(--rule);display:flex;flex-direction:column;align-items:center;gap:10px}
+.credit-mark{display:flex;align-items:center;gap:8px;font:600 20px/1 var(--disp);letter-spacing:-.01em;color:var(--ink-2)}
+.credit-mark svg{color:var(--ink-2)}
 .gate{position:fixed;inset:0;background:var(--bg);z-index:20;display:none;flex-direction:column;justify-content:flex-end;
-  padding:calc(var(--st) + 40px) 24px calc(var(--sb) + 36px);max-width:540px;margin:0 auto}
+  padding:calc(var(--st) + 40px) 24px calc(var(--sb) + 64px);max-width:540px;margin:0 auto;overflow:hidden}
 .gate.on{display:flex}
 .gate h1{font:600 54px/1 var(--disp);letter-spacing:-.025em;margin:18px 0 24px}
 .mark{display:flex;align-items:center;gap:10px}
@@ -300,6 +309,8 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
 
 <!-- ACCESO -->
 <section class="gate" id="gate">
+  <svg class="wm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z"/></svg>
+  <div class="sig"><svg width="8" height="8" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>by luisalonsov</div>
   <div class="st" id="gBox">
     <div class="mark" style="--i:0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="m8 12.3 2.8 2.8L16.2 9" stroke-linecap="round" stroke-linejoin="round"/></svg><b>hábitos</b><span class="lbl" id="gLbl" style="margin-left:auto">Tracker personal</span></div>
     <h1 style="--i:1" id="gH"></h1>
@@ -447,6 +458,10 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
       </form>
       <button class="teaser press" id="logBtn"><b>Cerrar sesión</b><span class="lbl">→</span></button>
     </div>
+    <footer class="credit">
+      <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>luisalonsov</div>
+      <div class="lbl">Hábitos · 2026</div>
+    </footer>
   </section>
 </div>
 
