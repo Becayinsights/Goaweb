@@ -1,7 +1,7 @@
 // Solo admin. GET: personas (alta y última actividad) e invitaciones pendientes. POST {name}: crea invitación.
 // POST {reset:id}: enlace para que esa persona elija contraseña nueva.
 // DELETE ?user= o ?invite=: quita a alguien o anula una invitación.
-import { auth, readJSON, users, saveUsers, invites, saveInvites, resetFor, removeBlob, newId, origin, pub, fail, bad } from './_lib.js';
+import { auth, readJSON, users, getUser, deleteUser, invites, saveInvite, deleteInvite, resetFor, removeBlob, newId, origin, pub, fail, bad } from './_lib.js';
 
 export default async function handler(req, res) {
   try {
@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     if (!me?.admin) throw bad('Solo el administrador puede hacer esto', 403);
     const base = origin(req);
     if (req.method === 'POST' && req.body?.reset) {
-      const u = (await users()).find(x => x.id === req.body.reset);
+      const u = await getUser(req.body.reset);
       if (!u) throw bad('No existe', 404);
       return res.status(200).json({ link: `${base}/?r=${encodeURIComponent(await resetFor(u))}`, name: u.name });
     }
@@ -17,15 +17,15 @@ export default async function handler(req, res) {
       const name = String(req.body?.name || '').trim().slice(0, 40);
       if (!name) throw bad('Pon un nombre');
       const inv = { token: newId(), name, created: new Date().toISOString() };
-      await saveInvites([...(await invites()), inv]);
+      await saveInvite(inv);
       return res.status(200).json({ ...inv, link: `${base}/?i=${inv.token}` });
     }
     if (req.method === 'DELETE') {
-      if (req.query.invite) await saveInvites((await invites()).filter(i => i.token !== req.query.invite));
+      if (req.query.invite) await deleteInvite(req.query.invite);
       if (req.query.user) {
         if (req.query.user === me.id) throw bad('No puedes borrarte a ti');
-        await saveUsers((await users()).filter(x => x.id !== req.query.user));
-        await removeBlob(`data/${req.query.user}.json`).catch(() => {});
+        const u = await getUser(req.query.user);
+        if (u) { await deleteUser(u); await removeBlob(`data/${u.id}.json`).catch(() => {}); }
       }
       return res.status(200).json({ ok: true });
     }

@@ -1,6 +1,6 @@
 // Utilidades comunes de la API. Vercel no publica como función lo que empieza por "_".
-import { get, put, del } from '@vercel/blob';
-import { scryptSync, randomBytes, createHmac, timingSafeEqual } from 'node:crypto';
+import { get, put, del, list } from '@vercel/blob';
+import { scryptSync, randomBytes, createHmac, timingSafeEqual, createHash } from 'node:crypto';
 
 // Vercel conecta el Blob con un token clásico o, en proyectos nuevos, por OIDC (BLOB_STORE_ID + token de la ejecución)
 export const hasStore = () => !!(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
@@ -18,10 +18,51 @@ export const writeJSON = (path, obj) =>
   put(path, JSON.stringify(obj), { access: 'private', addRandomSuffix: false, allowOverwrite: true, contentType: 'application/json' });
 export const removeBlob = path => del(path);
 
-export const users = () => readJSON('users.json', []);
-export const saveUsers = list => writeJSON('users.json', list);
-export const invites = () => readJSON('invites.json', []);
-export const saveInvites = list => writeJSON('invites.json', list);
+// Cada cuenta y cada invitación va en su propio archivo: así dos cambios a la vez (dos invitaciones
+// seguidas, dos personas registrándose) no se pisan, como pasaba con una sola lista.
+//   users/{id}.json · emails/{hash del email}.json → {id} · invites/{token}.json
+const safe = x => /^[\w-]{4,64}$/.test(String(x || ''));
+const emailKey = e => createHash('sha256').update(normEmail(e)).digest('hex').slice(0, 32);
+async function readAll(prefix) {
+  if (!hasStore()) return [];
+  const out = []; let cursor;
+  do {
+    const r = await list({ prefix, cursor, limit: 1000 });
+    out.push(...await Promise.all(r.blobs.map(b => readJSON(b.pathname, null))));
+    cursor = r.hasMore ? r.cursor : undefined;
+  } while (cursor);
+  return out.filter(Boolean);
+}
+// las versiones anteriores lo guardaban todo en users.json / invites.json: se reparte una vez
+let migrated = false;
+async function migrate() {
+  if (migrated || !hasStore()) return;
+  const oldUsers = await readJSON('users.json', null), oldInv = await readJSON('invites.json', null);
+  for (const u of oldUsers || []) await saveUser(u);
+  for (const i of oldInv || []) await saveInvite(i);
+  if (oldUsers) await del('users.json');
+  if (oldInv) await del('invites.json');
+  migrated = true;
+}
+export async function users() { await migrate(); return (await readAll('users/')).sort((a, b) => String(a.created).localeCompare(String(b.created))); }
+export async function hasUsers() { await migrate(); return hasStore() && (await list({ prefix: 'users/', limit: 1 })).blobs.length > 0; }
+export async function getUser(id) { await migrate(); return safe(id) ? readJSON(`users/${id}.json`, null) : null; }
+export async function userByEmail(email) {
+  await migrate();
+  const m = await readJSON(`emails/${emailKey(email)}.json`, null);
+  return m ? getUser(m.id) : null;
+}
+export async function saveUser(u) {
+  await writeJSON(`users/${u.id}.json`, u);
+  await writeJSON(`emails/${emailKey(u.email)}.json`, { id: u.id });
+}
+export async function deleteUser(u) {
+  await del([`users/${u.id}.json`, `emails/${emailKey(u.email)}.json`]);
+}
+export async function invites() { await migrate(); return (await readAll('invites/')).sort((a, b) => String(a.created).localeCompare(String(b.created))); }
+export async function getInvite(token) { await migrate(); return safe(token) ? readJSON(`invites/${token}.json`, null) : null; }
+export const saveInvite = inv => writeJSON(`invites/${inv.token}.json`, inv);
+export const deleteInvite = token => safe(token) ? del(`invites/${token}.json`) : null;
 
 // Secreto para firmar sesiones: se crea solo la primera vez y vive en el almacenamiento.
 let secret;
@@ -59,7 +100,7 @@ export const resetFor = u => sign({ u: u.id, v: ver(u), t: 'r', x: Date.now() + 
 export async function fromToken(token, type) {
   const p = await verify(token);
   if (!p || p.t !== type) return null;
-  const u = (await users()).find(x => x.id === p.u);
+  const u = await getUser(p.u);
   return u && ver(u) === p.v ? u : null;
 }
 export async function auth(req) {
