@@ -202,6 +202,17 @@ input[type=file]{display:none}
 .trio div{background:var(--bg-2);border-radius:16px;padding:14px}
 .trio b{display:block;font:450 32px/1 var(--disp);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .trio span{display:block;margin-top:8px}
+/* cómo encaja el plato en el objetivo del día */
+.fit{margin-top:22px;display:grid;gap:14px}
+.fit .fh{display:flex;justify-content:space-between;align-items:baseline}
+.fit .fv{font:500 12px/1 var(--mono);color:var(--ink-2);font-variant-numeric:tabular-nums}
+.fit .fv.over{color:#e0a46a}
+.fit .fb{position:relative;height:6px;border-radius:6px;background:var(--bg-2);margin-top:8px;overflow:hidden;display:flex}
+.fit .fb i{display:block;height:100%;background:var(--ink-3);transform-origin:left;animation:fitgrow .9s var(--out) .25s both}
+.fit .fb i.add{background:var(--acc);animation-delay:.55s}
+@keyframes fitgrow{from{transform:scaleX(0)}}
+.fit .sum{font:400 15px/1.45 var(--sans);color:var(--ink-2);letter-spacing:-.01em}
+.fit .sum b{color:var(--ink);font-weight:500}
 .acts{display:flex;gap:10px;margin-top:22px}.acts .btn{flex:1}
 .goal{margin-top:18px}
 .goal .gh{display:flex;justify-content:space-between;align-items:baseline}
@@ -414,7 +425,8 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
         <div><b id="rC">0</b><span class="lbl">Carbos</span></div>
         <div><b id="rF">0</b><span class="lbl">Grasa</span></div>
       </div>
-      <div class="acts" style="--i:4"><button class="btn ghost" id="again">Repetir</button><button class="btn" id="save">Añadir al día</button></div>
+      <div class="fit" id="rFit" style="--i:4"></div>
+      <div class="acts" style="--i:5"><button class="btn ghost" id="again">Repetir</button><button class="btn" id="save">Añadir al día</button></div>
     </div>
     <div class="sec">
       <div class="sec-h"><span class="lbl">Hoy</span><span class="lbl" id="mCount"></span></div>
@@ -473,7 +485,7 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
     </div>
     <footer class="credit">
       <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
-      <div class="lbl">Hábitos · 2026 · v20</div>
+      <div class="lbl">Hábitos · 2026 · v21</div>
     </footer>
   </section>
 </div>
@@ -766,7 +778,7 @@ let current=null;
 let lastImg=null,lastNote='';
 $('file').onchange=async e=>{
   const f=e.target.files[0];if(!f)return;e.target.value='';
-  lastImg=await shrink(f,1024);$('img').src=lastImg;analyze()};
+  lastImg=await shrink(f,768);$('img').src=lastImg;analyze()};
 // la nota (p. ej. «3 huevos») viaja con la foto y manda sobre lo que se ve
 async function analyze(){if(!lastImg)return;const note=$('mNote').value.trim();lastNote=note;$('mRedo').hidden=true;
   $('mErr').textContent='';$('res').classList.remove('on');$('shot').classList.add('has','busy');
@@ -779,7 +791,19 @@ function shrink(file,max){return new Promise((ok,ko)=>{const u=URL.createObjectU
   i.onload=()=>{const s=Math.min(1,max/Math.max(i.width,i.height)),c=document.createElement('canvas');
     c.width=Math.round(i.width*s);c.height=Math.round(i.height*s);c.getContext('2d').drawImage(i,0,0,c.width,c.height);
     URL.revokeObjectURL(u);ok(c.toDataURL('image/jpeg',.82))};i.onerror=ko;i.src=u})}
-function showRes(j){$('rName').textContent=j.name;$('rNote').textContent=j.note||'';
+// lo que llevas hoy (gris) + este plato (color) frente a tu objetivo, y lo que te quedaría
+function fitHTML(j){const g=S.goals||{},R=Math.round,f=n=>R(n).toLocaleString('es-ES');
+  if(!g.kcal)return`<div class="sum">Rellena tu cuerpo en <b>Cuenta</b> y verás cómo encaja cada plato en tu objetivo.</div>`;
+  const m=S.food[today()]||[],s=m.reduce((a,x)=>({k:a.k+x.k,p:a.p+x.p,c:a.c+x.c,f:a.f+x.f}),{k:0,p:0,c:0,f:0});
+  const rows=[['Kcal',s.k,j.kcal,g.kcal,''],['Proteína',s.p,j.protein,g.prot,' g'],['Carbos',s.c,j.carbs,g.carb,' g'],['Grasa',s.f,j.fat,g.fat,' g']].filter(r=>r[3]);
+  const bars=rows.map(([n,had,add,goal,u])=>{const a=Math.min(had/goal,1)*100,b=Math.max(0,Math.min((had+add)/goal,1)*100-a);
+    return`<div><div class="fh"><span class="lbl">${n}</span><span class="fv${had+add>goal*1.05?' over':''}">${f(had+add)} / ${f(goal)}${u}</span></div>
+      <div class="fb"><i style="width:${a}%"></i><i class="add" style="width:${b}%"></i></div></div>`}).join('');
+  const lk=g.kcal-(s.k+j.kcal),lp=(g.prot||0)-(s.p+j.protein);
+  const sum=lk>=0?`Con este plato te quedarían <b>${f(lk)} kcal</b>${g.prot?(lp>0?` y <b>${f(lp)} g de proteína</b>`:' y ya cubres la proteína ✓'):''}.`
+    :`Con este plato te pasarías <b>${f(-lk)} kcal</b> de tu objetivo de hoy.`;
+  return bars+`<div class="sum">${sum}</div>`}
+function showRes(j){$('rName').textContent=j.name;$('rNote').textContent=j.note||'';$('rFit').innerHTML=fitHTML(j);
   for(const[id,v]of[['rK',j.kcal],['rP',j.protein],['rC',j.carbs],['rF',j.fat]]){$(id).dataset.v=0;$(id).textContent='0'}
   const r=$('res');r.classList.remove('on');void r.offsetWidth;r.classList.add('on');
   setTimeout(()=>{count($('rK'),j.kcal);count($('rP'),j.protein);count($('rC'),j.carbs);count($('rF'),j.fat)},120)}

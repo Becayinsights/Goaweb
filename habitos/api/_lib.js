@@ -86,35 +86,51 @@ async function viaClaude(key, content, maxTokens) {
   return parseJSON((await r.json()).content.map(c => c.text || '').join(''));
 }
 
-// Google renombra los modelos a menudo: se prueba en orden hasta que uno responda.
-const GEMINI_MODELS = ['gemini-flash-latest', 'gemini-3-flash-preview', 'gemini-3.8-flash', 'gemini-2.5-flash'];
+// Google renombra los modelos a menudo: se prueba en orden hasta que uno responda, y se recuerda
+// el último que funcionó para ir directo a él (un modelo saturado tarda varios segundos en decir que no).
+const GEMINI_MODELS = ['gemini-3-flash-preview', 'gemini-flash-latest', 'gemini-2.5-flash', 'gemini-flash-lite-latest'];
+let lastGood = null;
+// razonamiento mínimo: para estimar macros o separar tareas no hace falta y es lo que más tarda
+const thinking = m => /gemini-3/.test(m) ? { thinkingLevel: 'low' } : /2\.5-flash/.test(m) ? { thinkingBudget: 0 } : null;
+async function geminiCall(key, model, parts, maxTokens, think) {
+  const generationConfig = { responseMimeType: 'application/json', temperature: 0.2, maxOutputTokens: Math.max(maxTokens * 8, 8192) };
+  if (think) generationConfig.thinkingConfig = think;
+  return fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+    method: 'POST',
+    headers: { 'x-goog-api-key': key, 'content-type': 'application/json' },
+    body: JSON.stringify({ contents: [{ role: 'user', parts }], generationConfig }),
+    signal: AbortSignal.timeout(25000),
+  });
+}
 async function viaGemini(key, content, maxTokens) {
   const parts = content.map(c => c.type === 'image' || c.type === 'audio'
     ? { inline_data: { mime_type: c.source.media_type, data: c.source.data } }
     : { text: c.text });
-  const models = [process.env.GEMINI_MODEL, ...GEMINI_MODELS].filter(Boolean);
+  const models = [...new Set([process.env.GEMINI_MODEL, lastGood, ...GEMINI_MODELS].filter(Boolean))];
   let last = '';
   for (const model of models) {
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-      method: 'POST',
-      headers: { 'x-goog-api-key': key, 'content-type': 'application/json' },
-      // margen amplio: en los modelos que «piensan», el razonamiento gasta parte de estos tokens
-      body: JSON.stringify({
-        contents: [{ role: 'user', parts }],
-        generationConfig: { responseMimeType: 'application/json', temperature: 0.2, maxOutputTokens: Math.max(maxTokens * 8, 8192) },
-      }),
-    });
+    const t0 = Date.now();
+    let r;
+    try {
+      r = await geminiCall(key, model, parts, maxTokens, thinking(model));
+      // si el modelo no acepta el ajuste de razonamiento, se repite sin él
+      if (r.status === 400 && thinking(model)) r = await geminiCall(key, model, parts, maxTokens, null);
+    } catch (e) { console.error(`gemini ${model} sin respuesta (${e.name}) ${Date.now() - t0}ms`); last = 'tiempo'; continue; }
     if (!r.ok) {
       // se registra el motivo (nunca la clave) y se prueba el siguiente modelo
-      const msg = (await r.text().catch(() => '')).slice(0, 300).replace(/\s+/g, ' ');
-      console.error(`gemini ${model} ${r.status} ${msg}`);
+      const msg = (await r.text().catch(() => '')).slice(0, 200).replace(/\s+/g, ' ');
+      console.error(`gemini ${model} ${r.status} ${Date.now() - t0}ms ${msg}`);
+      if (lastGood === model) lastGood = null;
       last = String(r.status);
       continue;
     }
     const j = await r.json();
     const cand = j.candidates?.[0];
     const txt = (cand?.content?.parts || []).filter(p => !p.thought).map(p => p.text || '').join('');
-    if (txt) { try { return parseJSON(txt); } catch { console.error(`gemini ${model} JSON roto: ${txt.slice(0, 200)}`); last = 'json'; continue; } }
+    if (txt) {
+      try { const out = parseJSON(txt); lastGood = model; console.log(`gemini ok ${model} ${Date.now() - t0}ms`); return out; }
+      catch { console.error(`gemini ${model} JSON roto: ${txt.slice(0, 200)}`); last = 'json'; continue; }
+    }
     console.error(`gemini ${model} sin texto: ${cand?.finishReason || j.promptFeedback?.blockReason || 'desconocido'}`);
     last = cand?.finishReason || 'vacío';
   }
