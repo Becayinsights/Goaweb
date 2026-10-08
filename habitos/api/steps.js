@@ -7,8 +7,17 @@ import { auth, fromToken, stepsKeyFor, readJSON, writeJSON, fail, bad } from './
 const validTz = tz => { try { new Intl.DateTimeFormat('en', { timeZone: tz }); return true; } catch { return false; } };
 const localDay = tz => new Intl.DateTimeFormat('en-CA', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
 // «6.240», «6240,5», «6240 pasos» → 6240
-// sin pasos todavía hoy (p. ej. recién pasada la medianoche) la suma llega vacía: cuenta como 0
-const toSteps = v => { const s = String(v ?? '').replace(/[.,]\d{1,2}(?!\d)/, '').replace(/\D/g, ''); return s ? Math.min(+s, 200000) : 0; };
+// Lo que llega del atajo puede ser «58», «6.240», «58 recuento», «6240,5» o una lista de valores
+// (uno por línea si no se agrupó por día): se leen todos los números y se suman. Vacío = 0.
+function toSteps(v) {
+  const nums = String(v ?? '').match(/\d+(?:[.,]\d+)*/g) || [];
+  const total = nums.reduce((sum, t) => {
+    // 6.240 / 12,345 → miles; 6240,5 / 58.0 → decimales
+    const n = /^\d{1,3}(?:[.,]\d{3})+$/.test(t) ? +t.replace(/[.,]/g, '') : parseFloat(t.replace(',', '.'));
+    return sum + (Number.isFinite(n) ? n : 0);
+  }, 0);
+  return Math.min(Math.round(total), 200000);
+}
 
 export default async function handler(req, res) {
   try {
