@@ -27,7 +27,8 @@ export default async function handler(req, res) {
       const u = await fromToken(String(q.k), 'k');
       if (!u) throw bad('Clave no válida: vuelve a conectar los pasos desde la app', 401);
       const n = toSteps(q.n);
-      console.log(`pasos ${u.id}: recibido «${String(q.n ?? '').slice(0, 40)}» → ${n}`);
+      // diagnóstico: el enlace tal cual llega (sin la clave)
+      console.log(`pasos ${u.id}: recibido «${String(q.n ?? '').slice(0, 80)}» → ${n} · url ${String(req.url).replace(/k=[^&]+/, 'k=…').slice(0, 300)}`);
       const day = localDay(validTz(q.tz) ? q.tz : 'Europe/Madrid');
       const cur = await readJSON(`steps/${u.id}.json`, { days: {} });
       const days = { ...cur.days, [day]: n };
