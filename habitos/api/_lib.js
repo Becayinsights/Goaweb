@@ -69,18 +69,57 @@ export async function auth(req) {
 export const pub = u => ({ id: u.id, name: u.name, email: u.email, admin: !!u.admin });
 export const newId = () => randomBytes(9).toString('base64url');
 
-export async function claude(user, content, maxTokens = 600) {
-  const key = process.env.ANTHROPIC_API_KEY;
-  if (!user || !key) { const e = new Error(user ? 'La IA no está disponible ahora mismo' : 'Inicia sesión'); e.status = user ? 503 : 401; throw e; }
+// IA de la app. Usa Gemini (GEMINI_API_KEY, plan gratuito) o Claude (ANTHROPIC_API_KEY);
+// si están las dos, prueba Claude y cae a Gemini si falla. `content` va en formato de Claude
+// ([{type:'image',source:{media_type,data}}, {type:'text',text}]) y se traduce para Gemini.
+const unavailable = () => Object.assign(new Error('La IA no está disponible ahora mismo'), { status: 503 });
+const parseJSON = txt => JSON.parse(txt.slice(txt.indexOf('{'), txt.lastIndexOf('}') + 1));
+
+async function viaClaude(key, content, maxTokens) {
   const r = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
     body: JSON.stringify({ model: 'claude-sonnet-5-5', max_tokens: maxTokens, messages: [{ role: 'user', content }] }),
   });
-  const j = await r.json();
-  if (!r.ok) { const e = new Error('La IA no está disponible ahora mismo'); e.status = 502; throw e; }
-  const txt = j.content.map(c => c.text || '').join('');
-  return JSON.parse(txt.slice(txt.indexOf('{'), txt.lastIndexOf('}') + 1));
+  if (!r.ok) throw unavailable();
+  return parseJSON((await r.json()).content.map(c => c.text || '').join(''));
+}
+
+// Google renombra los modelos a menudo: se prueba en orden hasta que uno responda.
+const GEMINI_MODELS = ['gemini-flash-latest', 'gemini-3-flash-preview', 'gemini-3.8-flash', 'gemini-2.5-flash'];
+async function viaGemini(key, content, maxTokens) {
+  const parts = content.map(c => c.type === 'image'
+    ? { inline_data: { mime_type: c.source.media_type, data: c.source.data } }
+    : { text: c.text });
+  const models = [process.env.GEMINI_MODEL, ...GEMINI_MODELS].filter(Boolean);
+  for (const model of models) {
+    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+      method: 'POST',
+      headers: { 'x-goog-api-key': key, 'content-type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ role: 'user', parts }],
+        generationConfig: { responseMimeType: 'application/json', temperature: 0.2, maxOutputTokens: Math.max(maxTokens, 1024) },
+      }),
+    });
+    // modelo inexistente o sin cuota gratuita: siguiente de la lista
+    if (r.status === 404 || r.status === 400 || r.status === 429) continue;
+    if (!r.ok) throw unavailable();
+    const j = await r.json();
+    const txt = (j.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('');
+    if (txt) return parseJSON(txt);
+  }
+  throw unavailable();
+}
+
+export async function claude(user, content, maxTokens = 600) {
+  if (!user) throw Object.assign(new Error('Inicia sesión'), { status: 401 });
+  const anthropic = process.env.ANTHROPIC_API_KEY, gemini = process.env.GEMINI_API_KEY;
+  if (anthropic) {
+    try { return await viaClaude(anthropic, content, maxTokens); }
+    catch (e) { if (!gemini) throw e; }
+  }
+  if (gemini) return viaGemini(gemini, content, maxTokens);
+  throw unavailable();
 }
 
 // Email opcional con Resend (RESEND_API_KEY y, si hay dominio propio, MAIL_FROM).
