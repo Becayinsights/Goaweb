@@ -7,7 +7,8 @@ import { auth, fromToken, stepsKeyFor, readJSON, writeJSON, fail, bad } from './
 const validTz = tz => { try { new Intl.DateTimeFormat('en', { timeZone: tz }); return true; } catch { return false; } };
 const localDay = tz => new Intl.DateTimeFormat('en-CA', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
 // «6.240», «6240,5», «6240 pasos» → 6240
-const toSteps = v => { const s = String(v || '').replace(/[.,]\d{1,2}(?!\d)/, '').replace(/\D/g, ''); return s ? Math.min(+s, 200000) : NaN; };
+// sin pasos todavía hoy (p. ej. recién pasada la medianoche) la suma llega vacía: cuenta como 0
+const toSteps = v => { const s = String(v ?? '').replace(/[.,]\d{1,2}(?!\d)/, '').replace(/\D/g, ''); return s ? Math.min(+s, 200000) : 0; };
 
 export default async function handler(req, res) {
   try {
@@ -17,7 +18,7 @@ export default async function handler(req, res) {
       const u = await fromToken(String(q.k), 'k');
       if (!u) throw bad('Clave no válida: vuelve a conectar los pasos desde la app', 401);
       const n = toSteps(q.n);
-      if (!Number.isFinite(n)) throw bad('No han llegado pasos');
+      console.log(`pasos ${u.id}: recibido «${String(q.n ?? '').slice(0, 40)}» → ${n}`);
       const day = localDay(validTz(q.tz) ? q.tz : 'Europe/Madrid');
       const cur = await readJSON(`steps/${u.id}.json`, { days: {} });
       const days = { ...cur.days, [day]: n };
