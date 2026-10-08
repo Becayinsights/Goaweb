@@ -180,6 +180,10 @@ h2{font:600 20px/1.2 var(--disp);letter-spacing:-.01em}
 /* macros */
 .shot{display:block;position:relative;aspect-ratio:4/3;margin-top:26px;background:var(--bg-2);border-radius:22px;overflow:hidden;cursor:pointer;transition:transform .5s var(--spring)}
 .shot:active{transform:scale(.98)}
+.shotwrap{position:relative}
+.pick{position:absolute;left:50%;translate:-50% 0;bottom:14px;z-index:2;display:flex;align-items:center;gap:7px;padding:9px 13px;border-radius:99px;cursor:pointer;
+  background:rgba(6,8,7,.62);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);color:var(--ink);font:500 13px/1 var(--sans);transition:transform .4s var(--spring)}
+.pick:active{transform:scale(.92)}
 .shot img{width:100%;height:100%;object-fit:cover;display:none;animation:viewIn .7s var(--out)}
 .shot.has img{display:block}
 .shot .ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
@@ -403,6 +407,7 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
   <!-- MACROS -->
   <section class="view" id="v-mac">
     <div class="lbl">Escáner</div><h1>Macros</h1>
+    <div class="shotwrap">
     <label class="shot" id="shot">
       <img id="img" alt="">
       <div class="ph">
@@ -413,7 +418,11 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
       <div class="scan"></div>
       <input type="file" id="file" accept="image/*" capture="environment">
     </label>
-    <div class="note-in"><input id="mNote" placeholder="Sin foto: escribe qué has comido · o detalla la foto" autocomplete="off" enterkeyhint="send">
+    <!-- foto ya hecha: carrete o archivos (sin «capture», el iPhone ofrece Fototeca y Archivos) -->
+    <label class="pick" for="file2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-4.5-4.5L6 21"/></svg>Galería</label>
+    <input type="file" id="file2" accept="image/*" hidden>
+    </div>
+    <div class="note-in"><input id="mNote" placeholder="Sin foto: escribe qué has comido" autocomplete="off" enterkeyhint="send">
       <button class="chip" id="mRedo" hidden>Recalcular</button></div>
     <div class="err" id="mErr"></div>
     <div class="res st" id="res">
@@ -485,7 +494,7 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
     </div>
     <footer class="credit">
       <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
-      <div class="lbl">Hábitos · 2026 · v24</div>
+      <div class="lbl">Hábitos · 2026 · v25</div>
     </footer>
   </section>
 </div>
@@ -776,9 +785,10 @@ swipeable($('taskList'),li=>{const x=S.tasks.find(y=>y.id===li.dataset.id);if(!x
 /* ---------------- macros ---------------- */
 let current=null;
 let lastImg=null,lastNote='';
-$('file').onchange=async e=>{
+$('file').onchange=$('file2').onchange=async e=>{
   const f=e.target.files[0];if(!f)return;e.target.value='';
-  lastImg=await shrink(f,768);$('img').src=lastImg;analyze()};
+  try{lastImg=await shrink(f,768)}catch{$('mErr').textContent='No he podido abrir esa imagen';return}
+  $('img').src=lastImg;analyze()};
 // la nota (p. ej. «3 huevos») viaja con la foto y manda sobre lo que se ve
 // con foto (y nota opcional) o solo con texto, por si se olvidó la foto
 async function analyze(){const note=$('mNote').value.trim();if(!lastImg&&!note)return;lastNote=note;$('mRedo').hidden=false;$('mRedo').disabled=true;$('mRedo').textContent='Calculando…';
