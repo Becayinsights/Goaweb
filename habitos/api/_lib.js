@@ -92,23 +92,32 @@ async function viaGemini(key, content, maxTokens) {
     ? { inline_data: { mime_type: c.source.media_type, data: c.source.data } }
     : { text: c.text });
   const models = [process.env.GEMINI_MODEL, ...GEMINI_MODELS].filter(Boolean);
+  let last = '';
   for (const model of models) {
     const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
       method: 'POST',
       headers: { 'x-goog-api-key': key, 'content-type': 'application/json' },
+      // margen amplio: en los modelos que «piensan», el razonamiento gasta parte de estos tokens
       body: JSON.stringify({
         contents: [{ role: 'user', parts }],
-        generationConfig: { responseMimeType: 'application/json', temperature: 0.2, maxOutputTokens: Math.max(maxTokens, 1024) },
+        generationConfig: { responseMimeType: 'application/json', temperature: 0.2, maxOutputTokens: Math.max(maxTokens * 8, 8192) },
       }),
     });
-    // modelo inexistente o sin cuota gratuita: siguiente de la lista
-    if (r.status === 404 || r.status === 400 || r.status === 429) continue;
-    if (!r.ok) throw unavailable();
+    if (!r.ok) {
+      // se registra el motivo (nunca la clave) y se prueba el siguiente modelo
+      const msg = (await r.text().catch(() => '')).slice(0, 300).replace(/\s+/g, ' ');
+      console.error(`gemini ${model} ${r.status} ${msg}`);
+      last = String(r.status);
+      continue;
+    }
     const j = await r.json();
-    const txt = (j.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('');
-    if (txt) return parseJSON(txt);
+    const cand = j.candidates?.[0];
+    const txt = (cand?.content?.parts || []).filter(p => !p.thought).map(p => p.text || '').join('');
+    if (txt) { try { return parseJSON(txt); } catch { console.error(`gemini ${model} JSON roto: ${txt.slice(0, 200)}`); last = 'json'; continue; } }
+    console.error(`gemini ${model} sin texto: ${cand?.finishReason || j.promptFeedback?.blockReason || 'desconocido'}`);
+    last = cand?.finishReason || 'vacío';
   }
-  throw unavailable();
+  throw Object.assign(new Error(`La IA no está disponible ahora mismo (${last || 'sin modelos'})`), { status: 503 });
 }
 
 export async function claude(user, content, maxTokens = 600) {
