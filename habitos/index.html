@@ -169,6 +169,8 @@ h2{font:600 20px/1.2 var(--disp);letter-spacing:-.01em}
 .sbar b{display:block;height:100%;border-radius:6px;background:var(--acc);transition:width 1s var(--out)}
 .st-at{margin-top:10px;text-transform:none;letter-spacing:0;font-family:var(--sans);font-size:12.5px}
 .steps .rsetup{margin-top:16px;background:var(--bg)}
+.stauto{margin:14px 0 0;color:var(--ink-2);line-height:1.5}.stauto ol{margin:10px 0 14px;padding-left:20px;display:grid;gap:7px}.stauto b{color:var(--ink);font-weight:500}
+.st-warn{margin-top:10px;font-size:12.5px;color:var(--ink-3)}
 .calhelp{margin-top:16px;color:var(--ink-2);line-height:1.5}.calhelp p{margin-top:10px}.calhelp b{color:var(--ink);font-weight:500}
 /* eventos del calendario en Tareas */
 .row.ev .n{width:auto;min-width:40px;color:var(--ink-2)}
@@ -410,6 +412,17 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
         </ol>
         <button class="btn w" id="stepsOk">Ya lo tengo · Actualizar</button>
       </div>
+      <details class="rmanual stauto"><summary>Que se actualice solo</summary>
+        <ol>
+          <li>Toca <b>Copiar enlace</b> (abajo).</li>
+          <li>Atajos → <b>Automatización</b> → <b>+</b> → <b>Hora del día</b> (p. ej. 13:00) → <b>Ejecutar inmediatamente</b> → Siguiente.</li>
+          <li>Elige <b>Nueva automatización en blanco</b> → añade <b>Ejecutar atajo</b> → <b>Habitos pasos</b>.</li>
+          <li>Toca la flechita de esa acción → <b>Entrada</b> → pega el enlace (mantén pulsado → Pegar).</li>
+          <li>Repite para otras horas (p. ej. 18:00 y 22:00).</li>
+        </ol>
+        <button class="btn ghost w" id="stepsCopy">Copiar enlace</button>
+        <p class="st-warn">Es personal: no lo compartas (sirve para apuntar pasos en tu cuenta).</p>
+      </details>
     </div>
     </div></div>
     <div id="habWrap">
@@ -548,7 +561,7 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
     </div>
     <footer class="credit">
       <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
-      <div class="lbl">Hábitos · 2026 · v31</div>
+      <div class="lbl">Hábitos · 2026 · v32</div>
     </footer>
   </section>
 </div>
@@ -1219,9 +1232,12 @@ function renderSteps(){const r=LS.get('steps',{days:{},at:0}),n=r.days?.[today()
   $('stepsBar').style.width=Math.min(1,n/g)*100+'%';
   const m=Math.round((Date.now()-r.at)/6e4);
   $('stepsAt').textContent=(n>=g?'Objetivo cumplido ✓ · ':`Te faltan ${fmtN(g-n)} · `)+(m<2?'actualizado ahora':m<60?`hace ${m} min`:`hace ${Math.round(m/60)} h`)}
+async function stepsUrl(){let key=LS.get('stepsKey',null);if(!key){key=(await api('/api/steps?key=1')).key;LS.set('stepsKey',key)}
+  return`${location.origin}/api/steps?k=${encodeURIComponent(key)}&tz=${encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZone)}`}
+// enlace para la automatización de Atajos (se ejecuta sola a las horas que elijas)
+$('stepsCopy').onclick=async()=>{try{const u=await stepsUrl();try{await navigator.clipboard.writeText(u);toast('Enlace copiado')}catch{prompt('Copia el enlace',u)}}catch(x){toast(x.message)}};
 async function runSteps(){
-  try{let key=LS.get('stepsKey',null);if(!key){key=(await api('/api/steps?key=1')).key;LS.set('stepsKey',key)}
-    const url=`${location.origin}/api/steps?k=${encodeURIComponent(key)}&tz=${encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZone)}`;
+  try{const url=await stepsUrl();
     location.href=`shortcuts://run-shortcut?name=${encodeURIComponent('Habitos pasos')}&input=text&text=${encodeURIComponent(url)}`;
     // al volver de Atajos se recogen; por si acaso, también a los pocos segundos
     for(const ms of[3000,7000,15000])setTimeout(loadSteps,ms)}
