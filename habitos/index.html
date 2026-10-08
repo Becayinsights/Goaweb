@@ -272,8 +272,10 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
 .said:empty{display:none}
 .wave i:nth-child(2){animation-delay:.12s}.wave i:nth-child(3){animation-delay:.24s}.wave i:nth-child(4){animation-delay:.36s}.wave i:nth-child(5){animation-delay:.48s}
 @keyframes w{50%{height:28px}}
-.plan .in{min-height:58px;padding:14px 0}
-.kind{font:500 10px/1 var(--mono);letter-spacing:.06em;color:var(--acc);text-transform:uppercase;width:52px;flex:none}
+.plan{border-top:1px solid var(--rule)}
+.plan .in{min-height:58px;padding:14px 0;background:transparent}
+.plan .x{margin-right:-6px}
+.kind{color:var(--acc)}
 
 /* acceso */
 .wm{position:absolute;top:calc(var(--st) - 40px);right:-90px;width:340px;height:340px;fill:none;stroke:var(--ink);stroke-width:.25;opacity:.07;pointer-events:none;
@@ -465,7 +467,7 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
     </div>
     <footer class="credit">
       <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
-      <div class="lbl">Hábitos · 2026 · v15</div>
+      <div class="lbl">Hábitos · 2026 · v16</div>
     </footer>
   </section>
 </div>
@@ -973,8 +975,8 @@ $('rOff').onclick=()=>{if(remTask){delete remTask.rem;save()}closeRem();renderTa
 $('vMic').onclick=()=>{if(rec&&live){stopLive().then(()=>{$('vMic').textContent='Seguir';$('vTitle').textContent='¿Algo más?'})}
   else if(recr)typeMode();else if(SR&&!srBroken)startLive();else startRec()};
 $('vGo').onclick=organize;
-function renderPlan(){$('vPlan').innerHTML=plan.map((p,i)=>`<li class="row" style="--i:${i}"><div class="in"><span class="kind">${p.kind==='task'?'Tarea':'Hábito'}</span>
-  <div class="tx"><div class="t">${esc(p.title)}</div><div class="s">${p.kind==='task'?(p.date?fmtDay(p.date):'Sin fecha'):esc(sched(p))}</div></div>
+function renderPlan(){$('vPlan').innerHTML=plan.map((p,i)=>`<li class="row" style="--i:${i}"><div class="in">
+  <div class="tx"><div class="t">${esc(p.title)}</div><div class="s"><span class="kind">${p.kind==='task'?'Tarea':'Hábito'}</span> · ${p.kind==='task'?(p.date?fmtDay(p.date):'Sin fecha'):esc(sched(p))}</div></div>
   <button class="x" style="display:grid" data-i="${i}">${XS}</button></div></li>`).join('');$('vCreate').textContent=`Crear ${plan.length}`;$('vCreate').disabled=!plan.length}
 $('vPlan').onclick=e=>{const b=e.target.closest('.x');if(!b)return;const li=b.closest('.row');collapse(li,()=>{plan.splice(+b.dataset.i,1);renderPlan()})};
 $('vBack').onclick=()=>{$('vStep2').hidden=true;$('vStep1').hidden=false;$('sheet').classList.add('typing');$('vTitle').textContent='¿Algo que cambiar?';$('vMic').textContent='Grabar';$('vErr').textContent=''};
