@@ -21,7 +21,8 @@ export default function handler(req, res) {
     'END:VEVENT', 'END:VCALENDAR', '',
   ].join('\r\n');
   res.setHeader('Content-Type', 'text/calendar; charset=utf-8');
-  res.setHeader('Content-Disposition', `inline; filename="tarea.ics"`);
+  // desde la app de pantalla de inicio se descarga: el iPhone lo abre en Calendario en vez de quedarse en blanco
+  res.setHeader('Content-Disposition', `${req.query.dl ? 'attachment' : 'inline'}; filename="tarea.ics"`);
   res.setHeader('Cache-Control', 'no-store');
   res.status(200).send(ics);
 }
