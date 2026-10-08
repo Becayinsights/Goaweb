@@ -413,7 +413,7 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
       <div class="scan"></div>
       <input type="file" id="file" accept="image/*" capture="environment">
     </label>
-    <div class="note-in"><input id="mNote" placeholder="Detalles: 3 huevos, 150 g de arroz…" autocomplete="off" enterkeyhint="done">
+    <div class="note-in"><input id="mNote" placeholder="Sin foto: escribe qué has comido · o detalla la foto" autocomplete="off" enterkeyhint="send">
       <button class="chip" id="mRedo" hidden>Recalcular</button></div>
     <div class="err" id="mErr"></div>
     <div class="res st" id="res">
@@ -485,7 +485,7 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
     </div>
     <footer class="credit">
       <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
-      <div class="lbl">Hábitos · 2026 · v21</div>
+      <div class="lbl">Hábitos · 2026 · v22</div>
     </footer>
   </section>
 </div>
@@ -780,12 +780,15 @@ $('file').onchange=async e=>{
   const f=e.target.files[0];if(!f)return;e.target.value='';
   lastImg=await shrink(f,768);$('img').src=lastImg;analyze()};
 // la nota (p. ej. «3 huevos») viaja con la foto y manda sobre lo que se ve
-async function analyze(){if(!lastImg)return;const note=$('mNote').value.trim();lastNote=note;$('mRedo').hidden=true;
-  $('mErr').textContent='';$('res').classList.remove('on');$('shot').classList.add('has','busy');
-  try{const j=await api('/api/macros',{method:'POST',body:JSON.stringify({image:lastImg,note})});current=j;showRes(j);buzz([10,40,10])}
-  catch(x){$('mErr').textContent=x.message}finally{$('shot').classList.remove('busy')}}
-$('mNote').oninput=()=>{$('mRedo').hidden=!lastImg||$('mNote').value.trim()===lastNote};
-$('mNote').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('mNote').blur();if(lastImg&&$('mNote').value.trim()!==lastNote)analyze()}};
+// con foto (y nota opcional) o solo con texto, por si se olvidó la foto
+async function analyze(){const note=$('mNote').value.trim();if(!lastImg&&!note)return;lastNote=note;$('mRedo').hidden=false;$('mRedo').disabled=true;$('mRedo').textContent='Calculando…';
+  $('mErr').textContent='';$('res').classList.remove('on');if(lastImg)$('shot').classList.add('has');$('shot').classList.add('busy');
+  try{const j=await api('/api/macros',{method:'POST',body:JSON.stringify(lastImg?{image:lastImg,note}:{note})});current=j;showRes(j);buzz([10,40,10])}
+  catch(x){$('mErr').textContent=x.message}finally{$('shot').classList.remove('busy');$('mRedo').disabled=false;noteBtn()}}
+// el botón dice «Calcular» sin foto y «Recalcular» si cambias la nota de una foto ya analizada
+function noteBtn(){const v=$('mNote').value.trim();$('mRedo').textContent=lastImg?'Recalcular':'Calcular';$('mRedo').hidden=!v&&!lastImg||v===lastNote}
+$('mNote').oninput=noteBtn;
+$('mNote').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('mNote').blur();if($('mNote').value.trim()&&$('mNote').value.trim()!==lastNote||lastImg&&$('mNote').value.trim()!==lastNote)analyze()}};
 $('mRedo').onclick=analyze;
 function shrink(file,max){return new Promise((ok,ko)=>{const u=URL.createObjectURL(file),i=new Image();
   i.onload=()=>{const s=Math.min(1,max/Math.max(i.width,i.height)),c=document.createElement('canvas');
