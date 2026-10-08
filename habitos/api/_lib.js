@@ -2,7 +2,8 @@
 import { get, put, del } from '@vercel/blob';
 import { scryptSync, randomBytes, createHmac, timingSafeEqual } from 'node:crypto';
 
-export const hasStore = () => !!process.env.BLOB_READ_WRITE_TOKEN;
+// Vercel conecta el Blob con un token clásico o, en proyectos nuevos, por OIDC (BLOB_STORE_ID + token de la ejecución)
+export const hasStore = () => !!(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
 
 export async function readJSON(path, fallback) {
   if (!hasStore()) return fallback;
