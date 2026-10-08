@@ -157,6 +157,8 @@ h2{font:600 20px/1.2 var(--disp);letter-spacing:-.01em}
 .rsetup{background:var(--bg);border-radius:18px;padding:18px 18px 16px;font:400 14.5px/1.5 var(--sans);color:var(--ink-2)}
 .rsetup b{color:var(--ink);font-weight:500}
 .rsetup ol{margin:10px 0 16px;padding-left:20px;display:grid;gap:7px}
+.rsetup p{color:var(--ink-2)}
+.rmanual{margin:4px 0 14px;font-size:13.5px}.rmanual summary{color:var(--ink-3);cursor:pointer;padding:6px 0}
 .rhelp{background:none;border:0;color:var(--ink-3);margin-top:6px;text-transform:none;letter-spacing:0;font-family:var(--sans);font-size:13px}
 .cal{display:flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;flex:none!important;height:54px;width:100%}
 .rem-row label{min-width:0;overflow:hidden}
@@ -498,7 +500,7 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
     </div>
     <footer class="credit">
       <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
-      <div class="lbl">Hábitos · 2026 · v27</div>
+      <div class="lbl">Hábitos · 2026 · v28</div>
     </footer>
   </section>
 </div>
@@ -526,15 +528,18 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
   <div class="acts" style="flex-direction:column;gap:10px">
     <!-- Recordatorios del iPhone: a través del atajo «Habitos» (se crea una vez) -->
     <div class="rsetup" id="rSetup" hidden>
-      <b>Configúralo una vez (2 min)</b>
+      <b>Conéctalo una vez</b>
+      <p style="margin:6px 0 14px">Instala el atajo <b>Habitos</b> (en Atajos toca <b>Añadir atajo</b>) y vuelve aquí.</p>
+      <a class="btn ghost w cal" id="rInstall" href="https://www.icloud.com/shortcuts/a28519ae883a4cc58ee929288ac8ccc1" target="_blank" rel="noopener" style="margin-bottom:10px">1 · Instalar atajo</a>
+      <details class="rmanual"><summary>Prefiero crearlo a mano</summary>
       <ol>
         <li>Abre la app <b>Atajos</b> → <b>+</b> → ponle de nombre <b>Habitos</b> (sin tilde).</li>
-        <li>Añade <b>Dividir texto</b>: toca «Texto» y elige <b>Entrada del atajo</b> (separador: Saltos de línea).</li>
-        <li>Añade <b>Obtener elemento de la lista</b> → <b>Primer elemento</b>.</li>
-        <li>Añade otra vez <b>Obtener elemento de la lista</b> → <b>Último elemento</b>, y toca la lista para elegir <b>Texto dividido</b>.</li>
-        <li>Añade <b>Añadir recordatorio nuevo</b>: en el título pon el <b>primer elemento</b>; activa <b>Avisarme</b> y en la fecha pon el <b>último elemento</b>.</li>
-      </ol>
-      <button class="btn w" id="rSetupOk">Ya lo tengo · Añadir</button>
+        <li>Añade <b>Dividir texto</b>: toca «Texto» y elige <b>Entrada del atajo</b> (separador: Nuevas líneas).</li>
+        <li>Añade <b>Obtener ítem de la lista</b> → <b>Último ítem</b> de <b>Dividir texto</b>.</li>
+        <li>Añade otra <b>Obtener ítem de la lista</b> → <b>Primer ítem</b> de <b>Dividir texto</b>.</li>
+        <li>Añade <b>Añadir recordatorio nuevo</b>: título = el <b>Primer ítem</b>; aviso <b>A las</b> = el <b>Último ítem</b>.</li>
+      </ol></details>
+      <button class="btn w" id="rSetupOk">2 · Ya lo tengo · Añadir</button>
     </div>
     <button class="btn w cal" id="rRem"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="m3 6 1.5 1.5L7 5M3 12l1.5 1.5L7 11M3 18l1.5 1.5L7 17"/></svg>Añadir a Recordatorios</button>
     <a class="btn ghost w cal" id="rApple" target="_blank" rel="noopener"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Añadir a Calendario (iPhone)</a>
