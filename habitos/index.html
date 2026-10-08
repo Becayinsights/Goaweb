@@ -473,7 +473,7 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
     </div>
     <footer class="credit">
       <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
-      <div class="lbl">Hábitos · 2026 · v18</div>
+      <div class="lbl">Hábitos · 2026 · v19</div>
     </footer>
   </section>
 </div>
@@ -883,7 +883,7 @@ ${link}
 
 1. Abre el enlace en Safari (si se abre dentro de WhatsApp: botón de arriba a la derecha → Abrir en Safari)
 2. Crea tu cuenta
-3. Toca Compartir ⬆️ → «Añadir a pantalla de inicio» → Añadir
+3. Toca el icono Compartir, arriba a la derecha ⬆️ → baja hasta: «Añadir a pantalla de inicio» → Añadir
 4. Abre el icono y entra con tu email`;
 $('invForm').onsubmit=async e=>{e.preventDefault();const n=$('invIn').value.trim();if(!n)return;
   try{const v=await api('/api/invite',{method:'POST',body:JSON.stringify({name:n})});$('invIn').value='';buzz([10,30,10]);
@@ -932,7 +932,7 @@ async function enter(r){
   pulled=false;await pull();renderAll(true);loadMembers();
   // recién entrado desde Safari: recordar el paso de añadir el icono
   const web=!navigator.standalone&&!matchMedia('(display-mode: standalone)').matches&&/iPhone|iPad/.test(navigator.userAgent);
-  toast(web?`Hola, ${ME.name.split(' ')[0]} · Ahora: Compartir ⬆️ → Añadir a pantalla de inicio`:`Hola, ${ME.name.split(' ')[0]}`,null,web?7000:0)}
+  toast(web?`Hola, ${ME.name.split(' ')[0]} · Ahora: Compartir ⬆️ (arriba a la derecha) → Añadir a pantalla de inicio`:`Hola, ${ME.name.split(' ')[0]}`,null,web?7000:0)}
 
 
 /* ---------------- nota de voz (hoja modal con arrastre) ---------------- */
