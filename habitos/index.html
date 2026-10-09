@@ -529,10 +529,6 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
       </div>
       <span class="lbl" style="display:block;margin-top:22px">Actividad</span>
       <div class="seg" id="bAct"><button data-v="1.375">1–2 días</button><button data-v="1.55">3–5 días</button><button data-v="1.725">6–7 días</button><i></i></div>
-      <span class="lbl" style="display:block;margin-top:22px">Reparto</span>
-      <div class="seg" id="bDiet"><button data-v="n">Normal</button><button data-v="low">Bajo HC</button><button data-v="keto">Keto</button><button data-v="c">A mano</button><i></i></div>
-      <label id="bPctRow" hidden><span class="lbl" style="display:block;margin-top:14px">% de calorías en hidratos</span>
-        <input class="field num" id="bPct" inputmode="numeric" placeholder="40"></label>
       <label id="stepsGoalRow" hidden><span class="lbl" style="display:block;margin-top:22px">Objetivo de pasos al día</span>
         <input class="field num" id="stepsGoalIn" inputmode="numeric" placeholder="8000"></label>
       <p class="note" id="bMiss" hidden></p>
@@ -542,7 +538,6 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
         <div><b id="tC"></b><span class="lbl">carbos g</span></div>
         <div><b id="tF"></b><span class="lbl">grasa g</span></div>
       </div>
-      <p class="note" id="tMix" hidden></p>
     </div>
 
     <div class="sec" id="calSec">
@@ -571,7 +566,7 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
     </div>
     <footer class="credit">
       <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
-      <div class="lbl">Hábitos · 2026 · v36</div>
+      <div class="lbl">Hábitos · 2026 · v35</div>
     </footer>
   </section>
 </div>
@@ -955,34 +950,23 @@ function targets(b){
   // la edad pesa poco (≈5 kcal/año): si falta, se calcula con 30 y se avisa
   if(!b||!(b.h>0)||!(b.w>0))return null;
   const age=b.age>0?b.age:30,m=b.sex!=='f',bmr=10*b.w+6.25*b.h-5*age+(m?5:-161),tdee=bmr*(b.act||1.55);
-  const kcal=Math.round(tdee*.90/50)*50,prot=Math.round(b.w*(m?2.2:2));
-  // Normal: grasa fija por kilo y los hidratos son lo que sobra.
-  // Bajo HC / Keto / A mano: se fija el % de hidratos y la grasa es lo que sobra (mínimo 0,5 g/kg)
-  const pct={low:25,keto:5,c:Math.min(70,Math.max(5,b.pct||40))}[b.diet];
-  let fat,carb;
-  if(pct==null){fat=Math.round(b.w*(m?.8:.9));carb=Math.max(0,Math.round((kcal-prot*4-fat*9)/4))}
-  else{carb=Math.round(kcal*pct/400);fat=Math.round((kcal-prot*4-carb*4)/9);
-    const minF=Math.round(b.w*.5);if(fat<minF){fat=minF;carb=Math.max(0,Math.round((kcal-prot*4-fat*9)/4))}}
-  return{kcal,prot,fat,carb}}
+  const kcal=Math.round(tdee*.90/50)*50,prot=Math.round(b.w*(m?2.2:2)),fat=Math.round(b.w*(m?.8:.9));
+  return{kcal,prot,fat,carb:Math.max(0,Math.round((kcal-prot*4-fat*9)/4))}}
 function segSet(id,v){const seg=$(id),bs=[...seg.querySelectorAll('button')],i=bs.findIndex(x=>x.dataset.v===String(v));
   bs.forEach((x,k)=>x.classList.toggle('on',k===i));seg.classList.toggle('has',i>=0);
   const pill=seg.querySelector('i');pill.style.width=`calc((100% - 8px) / ${bs.length})`;if(i>=0)pill.style.transform=`translateX(${i*100}%)`}
 function renderBody(){const b=S.body||{};
-  segSet('bSex',b.sex||'m');segSet('bAct',b.act||1.55);segSet('bDiet',b.diet||'n');
-  $('bPctRow').hidden=b.diet!=='c';if(document.activeElement!==$('bPct'))$('bPct').value=b.pct||'';
+  segSet('bSex',b.sex||'m');segSet('bAct',b.act||1.55);
   for(const[id,k]of[['bAge','age'],['bH','h'],['bW','w']])if(document.activeElement!==$(id))$(id).value=b[k]||'';
   const t=targets({act:1.55,...b});$('target').hidden=!t;
   const miss=[['altura','h'],['peso','w']].filter(([,k])=>!(b[k]>0)).map(([n])=>n);
   const noAge=t&&!(b.age>0);$('bMiss').hidden=!(noAge||(!t&&miss.length&&miss.length<2||!t&&b.age>0));
   $('bMiss').textContent=noAge?'Calculado con 30 años: pon tu edad para afinarlo.':miss.length?`Falta ${miss.join(' y ')} para calcular tus objetivos.`:'';
-  if(t){count($('tK'),t.kcal);count($('tP'),t.prot);count($('tC'),t.carb);count($('tF'),t.fat)}
-  $('tMix').hidden=!t;if(t){const q=g=>Math.round(g/t.kcal*100);$('tMix').textContent=`Proteína ${q(t.prot*4)} % · hidratos ${q(t.carb*4)} % · grasa ${q(t.fat*9)} % de las calorías`}}
+  if(t){count($('tK'),t.kcal);count($('tP'),t.prot);count($('tC'),t.carb);count($('tF'),t.fat)}}
 function setBody(p){S.body={act:1.55,sex:'m',...S.body,...p};const t=targets(S.body);
   if(t)S.goals={kcal:t.kcal,prot:t.prot,carb:t.carb,fat:t.fat};save();renderBody();renderMac()}
 $('bSex').onclick=e=>{const x=e.target.closest('button');if(x){buzz(5);setBody({sex:x.dataset.v})}};
 $('bAct').onclick=e=>{const x=e.target.closest('button');if(x){buzz(5);setBody({act:+x.dataset.v})}};
-$('bDiet').onclick=e=>{const x=e.target.closest('button');if(x){buzz(5);setBody({diet:x.dataset.v})}};
-$('bPct').onchange=()=>{const v=parseInt($('bPct').value,10);setBody({pct:v>0?Math.min(70,Math.max(5,v)):null})};
 // recalcula mientras escribes, sin esperar a salir del campo
 // un solo temporizador que lee los tres campos juntos: si saltas rápido de uno a otro no se pisa nada
 let bodyT;const numIn=id=>{const m=String($(id).value).replace(',','.').match(/\d+(\.\d+)?/);return m?+m[0]:0};
