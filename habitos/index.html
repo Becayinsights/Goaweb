@@ -595,7 +595,7 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
         <li><b>0 datos compartidos</b><span>No se venden ni se comparten con nadie. Nadie más de la app ve lo tuyo.</span></li>
         <li><b>Cifrado TLS</b><span>Todo viaja cifrado entre tu móvil y el servidor. Tu contraseña se guarda con hash scrypt: ni el admin puede verla.</span></li>
         <li><b>Local-first</b><span>Tus datos viven en este móvil y funcionan sin conexión. Se guarda una copia privada en tu cuenta para tenerlos en tus otros dispositivos.</span></li>
-        <li><b>IA sin memoria</b><span>Las fotos, notas de voz y textos se envían a la IA (Google Gemini) solo para analizarlos en ese momento. La app no los guarda.</span></li>
+        <li><b>IA sin memoria</b><span>Las fotos, notas de voz y textos se envían a un motor de IA externo solo para analizarlos en ese momento. La app no los guarda.</span></li>
       </ul>
     </div>
 
@@ -613,7 +613,7 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
     </div>
     <footer class="credit">
       <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
-      <div class="lbl">Hábitos · 2026 · v39</div>
+      <div class="lbl">Hábitos · 2026 · v40</div>
     </footer>
   </section>
 </div>
@@ -1406,7 +1406,7 @@ function renderAll(anim){renderHab(anim);renderTasks();renderMac();renderCuenta(
   if(document.activeElement!==$('stepsGoalIn'))$('stepsGoalIn').value=S.stepsGoal||'';renderSteps()}
 // Aviso de versión nueva: version.json dice desde qué versión hay que actualizar («aviso»).
 // Solo se sube «aviso» en cambios importantes; el resto llega solo al abrir la app.
-const APP_V=39;let verAt=0;
+const APP_V=40;let verAt=0;
 async function checkVersion(){if(Date.now()-verAt<5*6e4)return;verAt=Date.now();
   try{const j=await(await fetch('/version.json',{cache:'no-store'})).json();if(j.aviso>APP_V&&$('upd').hidden){$('upd').hidden=false;buzz([10,40,10])}}catch{}}
 $('updGo').onclick=async()=>{$('updGo').textContent='Actualizando…';flush();try{await(await navigator.serviceWorker?.getRegistration())?.update()}catch{}
