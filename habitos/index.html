@@ -308,6 +308,11 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
 .listening .wave i{background:var(--ink)}
 .live .wave i{animation:w 1.1s var(--out) infinite}
 .thinking .wave i{background:var(--ink-2);animation:w 1.1s var(--out) infinite}
+.vg{margin-top:14px;padding:12px 14px;border-radius:14px;background:var(--bg-3);font:500 11.5px/1.5 var(--mono);color:var(--ink-3);transition:opacity .3s}
+.vg-r{display:flex;align-items:center;gap:8px;letter-spacing:.02em}
+.vg-r span{color:var(--acc)}.vg-r b{font-weight:500;color:var(--ink);background:rgba(242,239,232,.07);border-radius:6px;padding:2px 7px}.vg-r i{font-style:normal}
+.vg-ex{margin-top:8px;font:400 13px/1.45 var(--sans);color:var(--ink-2)}
+.sheet.said .vg,.sheet.thinking .vg{display:none}
 #vText{display:none}.typing #vText{display:block}.typing:not(.listening):not(.thinking) .wave{display:none}
 .said{margin-top:10px;font:400 15px/1.45 var(--sans);color:var(--ink-3);letter-spacing:-.01em}
 .said:empty{display:none}
@@ -340,6 +345,12 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
 .gate .field{font-size:18px;letter-spacing:-.01em;padding:16px 0}
 .pw{position:relative}.pw .field{padding-right:70px}
 .eye{position:absolute;right:0;top:50%;transform:translateY(-50%);font:500 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);padding:10px 0 10px 10px}
+.priv{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:26px;font:500 10.5px/1 var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3)}
+.priv svg{color:var(--acc);flex:none}
+.privl{list-style:none}
+.privl li{padding:16px 0;border-bottom:1px solid var(--rule)}
+.privl b{display:block;font:500 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--acc)}
+.privl span{display:block;margin-top:8px;font-size:14.5px;line-height:1.45;color:var(--ink-2)}
 .glinks{display:flex;justify-content:space-between;margin-top:18px}
 .lnk{font-size:14px;color:var(--ink-2);padding:6px 0}
 .dayhead{display:flex;align-items:center;gap:10px}
@@ -402,6 +413,8 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
     </form>
     <div class="err" id="gErr"></div>
     <div class="glinks" style="--i:3"><button class="lnk" id="gForgot">¿Has olvidado tu contraseña?</button><button class="lnk" id="gBack" hidden>Volver</button></div>
+    <div class="priv" style="--i:4"><svg width="11" height="12" viewBox="0 0 22 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="10" width="18" height="12" rx="3"/><path d="M6 10V7a5 5 0 0 1 10 0v3"/></svg>
+      <span>Privado · cifrado · 0 datos compartidos</span></div>
   </div>
 </section>
 
@@ -577,6 +590,16 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
     </div>
 
     <div class="sec">
+      <div class="sec-h"><h2>Privacidad</h2><span class="lbl">Tus datos</span></div>
+      <ul class="privl">
+        <li><b>0 datos compartidos</b><span>No se venden ni se comparten con nadie. Nadie más de la app ve lo tuyo.</span></li>
+        <li><b>Cifrado TLS</b><span>Todo viaja cifrado entre tu móvil y el servidor. Tu contraseña se guarda con hash scrypt: ni el admin puede verla.</span></li>
+        <li><b>Local-first</b><span>Tus datos viven en este móvil y funcionan sin conexión. Se guarda una copia privada en tu cuenta para tenerlos en tus otros dispositivos.</span></li>
+        <li><b>IA sin memoria</b><span>Las fotos, notas de voz y textos se envían a la IA (Google Gemini) solo para analizarlos en ese momento. La app no los guarda.</span></li>
+      </ul>
+    </div>
+
+    <div class="sec">
       <div class="sec-h"><h2>Perfil</h2></div>
       <label><span class="lbl" style="display:block;margin-top:18px">Nombre</span><input class="field" id="pName" autocomplete="off"></label>
       <button class="teaser press" id="pwBtn"><b>Cambiar contraseña</b><span class="lbl">→</span></button>
@@ -590,7 +613,7 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
     </div>
     <footer class="credit">
       <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
-      <div class="lbl">Hábitos · 2026 · v38</div>
+      <div class="lbl">Hábitos · 2026 · v39</div>
     </footer>
   </section>
 </div>
@@ -678,6 +701,11 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
   <div id="vStep1">
     <div class="lbl" id="vHint">Nota de voz</div>
     <h2 id="vTitle">Te escucho…</h2>
+    <!-- qué decir: tareas + cuándo, para que la IA pueda organizarlas -->
+    <div class="vg" id="vGuide">
+      <div class="vg-r"><span>// input</span><b>tarea</b><i>→</i><b>deadline</b></div>
+      <div class="vg-ex">«Enviar el presupuesto el jueves, llamar al dentista mañana y gimnasio lunes y miércoles»</div>
+    </div>
     <div class="wave"><i></i><i></i><i></i><i></i><i></i></div>
     <textarea id="vText" placeholder="Escribe aquí…"></textarea>
     <div class="err" id="vErr"></div>
@@ -1159,7 +1187,7 @@ function showGate(m){gMode=m;const c=GM[m];$('gate').classList.add('on');
   const box=$('gBox');box.classList.remove('st');void box.offsetWidth;box.classList.add('st');
   $('gLbl').textContent=c.lbl;$('gH').innerHTML=m==='register'?`Hola${gInvite?.name?', <span style="color:var(--ink-3)">'+esc(gInvite.name)+'</span>':''}.`:c.h;
   $('gName').hidden=!c.name;$('gEmail').hidden=!c.email;$('gPwWrap').hidden=!c.pw;$('gGo').textContent=c.go;
-  $('gPw').autocomplete=m==='login'?'current-password':'new-password';$('gPw').placeholder=m==='login'?'Contraseña':'Contraseña (mínimo 6)';
+  $('gPw').autocomplete=m==='login'?'current-password':'new-password';$('gPw').placeholder=m==='login'?'Contraseña':'Contraseña (mínimo 8)';
   $('gForgot').hidden=!c.forgot;$('gBack').hidden=!c.back;$('gErr').textContent='';
   if(c.name&&gInvite?.name&&!$('gName').value)$('gName').value=gInvite.name}
 $('gEye').onclick=()=>{const p=$('gPw');p.type=p.type==='password'?'text':'password';$('gEye').textContent=p.type==='password'?'Ver':'Ocultar'};
@@ -1191,7 +1219,10 @@ async function enter(r){
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 let rec=null,live=false,liveBase='',plan=[],media=null,recr=null,chunks=[],actx=null,raf=0,recT0=0;const MAXS=60;
 const mmss=x=>`${Math.floor(x/60)}:${String(Math.floor(x%60)).padStart(2,'0')}`;
-function openVoice(){$('vStep1').hidden=false;$('vStep2').hidden=true;$('vErr').textContent='';$('vText').value='';$('sheet').classList.remove('typing');
+// la guía se aparta en cuanto hay texto
+const vgUpd=()=>$('sheet').classList.toggle('said',!!$('vText').value.trim());
+$('vText').addEventListener('input',vgUpd);
+function openVoice(){$('vStep1').hidden=false;$('vStep2').hidden=true;$('vErr').textContent='';$('vText').value='';vgUpd();$('sheet').classList.remove('typing');
   document.body.classList.add('modal');$('veil').classList.add('on');$('sheet').style.setProperty('--drag','0px');$('sheet').classList.add('on');buzz(8);SR&&!srBroken?startLive():startRec()}
 function closeVoice(){stopLive();stopRec();document.body.classList.remove('modal');$('veil').classList.remove('on');$('sheet').classList.remove('on')}
 function typeMode(hint){stopLive();stopRec();$('sheet').classList.add('typing');$('vHint').textContent=hint||'Escribe o dicta con el teclado';
@@ -1230,7 +1261,7 @@ let srBroken=false;
 function startLive(){$('vErr').textContent='';const sh=$('sheet');
   let r;try{r=new SR();r.lang='es-ES';r.continuous=true;r.interimResults=true}catch{srBroken=true;return startRec()}
   rec=r;let heard=false;liveBase=$('vText').value.trim()?$('vText').value.trim()+' ':'';
-  r.onresult=e=>{heard=true;let t='';for(const x of e.results)t+=x[0].transcript;$('vText').value=(liveBase+t).trimStart()};
+  r.onresult=e=>{heard=true;let t='';for(const x of e.results)t+=x[0].transcript;$('vText').value=(liveBase+t).trimStart();vgUpd()};
   r.onerror=e=>{if(r!==rec||e.error==='no-speech'||e.error==='aborted')return;
     if(!heard){srBroken=true;live=false;rec=null;try{r.abort()}catch{}sh.classList.remove('live');setTimeout(startRec,300)}};
   r.onend=()=>{if(r!==rec)return;live=false;rec=null;sh.classList.remove('listening','live');$('vMic').textContent='Seguir';$('vTitle').textContent='¿Algo más?'};
@@ -1375,7 +1406,7 @@ function renderAll(anim){renderHab(anim);renderTasks();renderMac();renderCuenta(
   if(document.activeElement!==$('stepsGoalIn'))$('stepsGoalIn').value=S.stepsGoal||'';renderSteps()}
 // Aviso de versión nueva: version.json dice desde qué versión hay que actualizar («aviso»).
 // Solo se sube «aviso» en cambios importantes; el resto llega solo al abrir la app.
-const APP_V=38;let verAt=0;
+const APP_V=39;let verAt=0;
 async function checkVersion(){if(Date.now()-verAt<5*6e4)return;verAt=Date.now();
   try{const j=await(await fetch('/version.json',{cache:'no-store'})).json();if(j.aviso>APP_V&&$('upd').hidden){$('upd').hidden=false;buzz([10,40,10])}}catch{}}
 $('updGo').onclick=async()=>{$('updGo').textContent='Actualizando…';flush();try{await(await navigator.serviceWorker?.getRegistration())?.update()}catch{}
