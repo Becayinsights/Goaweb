@@ -613,7 +613,7 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
     </div>
     <footer class="credit">
       <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
-      <div class="lbl">Hábitos · 2026 · v40</div>
+      <div class="lbl">Hábitos · 2026 · v41</div>
     </footer>
   </section>
 </div>
@@ -1087,7 +1087,9 @@ function markFresh(us){const n=us.filter(isNew).length;
   document.querySelector('.tb[data-v=cue]').classList.toggle('fresh',!!n&&!$('v-cue').classList.contains('on'));
   $('admBtn').classList.toggle('fresh',!!n);$('admCnt').textContent=n?`${n} nueva${n>1?'s':''} →`:`${us.length} →`}
 // Personas nuevas desde la última vez que el admin abrió el panel: punto en Cuenta y aviso una sola vez
-async function checkPeople(){if(!ME?.admin||!AUTH)return;
+// cada consulta lista cuentas e invitaciones (operaciones caras del almacenamiento): como mucho cada 20 min
+let peopleAt=0;
+async function checkPeople(){if(!ME?.admin||!AUTH||Date.now()-peopleAt<20*6e4)return;peopleAt=Date.now();
   try{ADM=await api('/api/invite');const us=ADM.users,told=LS.get('peopleTold',[]);markFresh(us);
     const nu=us.filter(isNew).filter(u=>!told.includes(u.id));
     if(nu.length){LS.set('peopleTold',[...told,...nu.map(u=>u.id)]);toast(`${nu.map(u=>u.name.split(' ')[0]).join(' y ')} ${nu.length>1?'se han unido':'se ha unido'}`)}
@@ -1406,7 +1408,7 @@ function renderAll(anim){renderHab(anim);renderTasks();renderMac();renderCuenta(
   if(document.activeElement!==$('stepsGoalIn'))$('stepsGoalIn').value=S.stepsGoal||'';renderSteps()}
 // Aviso de versión nueva: version.json dice desde qué versión hay que actualizar («aviso»).
 // Solo se sube «aviso» en cambios importantes; el resto llega solo al abrir la app.
-const APP_V=40;let verAt=0;
+const APP_V=41;let verAt=0;
 async function checkVersion(){if(Date.now()-verAt<5*6e4)return;verAt=Date.now();
   try{const j=await(await fetch('/version.json',{cache:'no-store'})).json();if(j.aviso>APP_V&&$('upd').hidden){$('upd').hidden=false;buzz([10,40,10])}}catch{}}
 $('updGo').onclick=async()=>{$('updGo').textContent='Actualizando…';flush();try{await(await navigator.serviceWorker?.getRegistration())?.update()}catch{}

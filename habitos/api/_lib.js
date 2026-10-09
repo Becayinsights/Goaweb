@@ -45,7 +45,13 @@ async function migrate() {
   migrated = true;
 }
 export async function users() { await migrate(); return (await readAll('users/')).sort((a, b) => String(a.created).localeCompare(String(b.created))); }
-export async function hasUsers() { await migrate(); return hasStore() && (await list({ prefix: 'users/', limit: 1 })).blobs.length > 0; }
+// list() es una operación «avanzada» (el plan gratuito trae pocas al mes): una vez hay cuentas, ya no se vuelve a mirar
+let anyUser = false;
+export async function hasUsers() {
+  if (anyUser) return true;
+  await migrate();
+  return (anyUser = hasStore() && (await list({ prefix: 'users/', limit: 1 })).blobs.length > 0);
+}
 export async function getUser(id) { await migrate(); return safe(id) ? readJSON(`users/${id}.json`, null) : null; }
 export async function userByEmail(email) {
   await migrate();

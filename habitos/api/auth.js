@@ -15,12 +15,13 @@ export default async function handler(req, res) {
     const b = req.body || {};
 
     if (req.method === 'GET') {           // estado: ¿hay que crear la primera cuenta? ¿invitación válida?
-      const out = { setup: !(await hasUsers()) };
+      // con sesión válida no hace falta comprobar si existe alguna cuenta (ahorra una operación en cada arranque)
+      const u = await auth(req);
+      const out = { setup: u ? false : !(await hasUsers()) };
       if (req.query.invite) {
         const inv = await getInvite(req.query.invite);
         out.invite = inv ? { name: inv.name } : null;
       }
-      const u = await auth(req);
       if (u) out.user = pub(u);
       return res.status(200).json(out);
     }
