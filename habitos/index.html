@@ -348,6 +348,11 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
 .priv{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:26px;font:500 10.5px/1 var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3)}
 .priv svg{color:var(--acc);flex:none}
 .privl{list-style:none}
+.four{grid-template-columns:repeat(4,1fr)}
+.manf{margin-top:6px}
+.fbf textarea{width:100%;min-height:110px;margin-top:14px;padding:14px;border-radius:16px;background:var(--bg-2);font:400 16px/1.45 var(--sans);resize:none}
+.fb .s{white-space:pre-wrap;text-transform:none;letter-spacing:0;font:400 15px/1.45 var(--sans);color:var(--ink)}
+.fb .who{margin:0 0 6px}
 .privl li{padding:16px 0;border-bottom:1px solid var(--rule)}
 .privl b{display:block;font:500 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--acc)}
 .privl span{display:block;margin-top:8px;font-size:14.5px;line-height:1.45;color:var(--ink-2)}
@@ -556,7 +561,7 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
     </div>
 
     <div class="sec" id="bodySec">
-      <div class="sec-h"><h2>Cuerpo</h2><span class="lbl">Recomposición</span></div>
+      <div class="sec-h"><h2>Cuerpo</h2><span class="lbl" id="bMode">Recomposición</span></div>
       <div class="seg" id="bSex"><button data-v="m">Hombre</button><button data-v="f">Mujer</button><i></i></div>
       <div class="three">
         <label><span class="lbl">Edad</span><input class="field num" id="bAge" inputmode="numeric" placeholder="años"></label>
@@ -574,6 +579,18 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
         <div><b id="tC"></b><span class="lbl">carbos g</span></div>
         <div><b id="tF"></b><span class="lbl">grasa g</span></div>
       </div>
+      <!-- objetivos a mano: sustituyen al cálculo mientras estén puestos -->
+      <button class="teaser press" id="manBtn"><b>Ajustar objetivos a mano</b><span class="lbl">→</span></button>
+      <form id="manForm" class="manf" hidden>
+        <div class="three four">
+          <label><span class="lbl">Kcal</span><input class="field num" id="mK" inputmode="numeric"></label>
+          <label><span class="lbl">Proteína g</span><input class="field num" id="mP" inputmode="numeric"></label>
+          <label><span class="lbl">Carbos g</span><input class="field num" id="mC" inputmode="numeric"></label>
+          <label><span class="lbl">Grasa g</span><input class="field num" id="mF" inputmode="numeric"></label>
+        </div>
+        <p class="note" id="mHint"></p>
+        <div class="acts"><button type="button" class="btn ghost" id="manAuto">Volver al cálculo</button><button class="btn">Guardar</button></div>
+      </form>
     </div>
 
     <div class="sec" id="calSec">
@@ -587,6 +604,14 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
         <p><b>Google</b> (desde el ordenador o Safari en «versión de escritorio»): calendar.google.com → ⚙︎ Configuración → a la izquierda, tu calendario → «Integrar el calendario» → copia la <b>Dirección secreta en formato iCal</b>.</p>
         <p><b>Apple</b>: app Calendario → <b>Calendarios</b> (abajo) → ⓘ junto a tu calendario → activa <b>Calendario público</b> → <b>Compartir enlace</b> → Copiar. Ojo: quien tenga ese enlace puede ver ese calendario.</p>
       </details>
+    </div>
+
+    <div class="sec">
+      <div class="sec-h"><h2>Feedback</h2><span class="lbl">Ayuda a mejorarla</span></div>
+      <form class="fbf" id="fbForm">
+        <textarea id="fbIn" placeholder="¿Qué mejorarías? ¿Algo no funciona? ¿Qué echas en falta?" maxlength="2000"></textarea>
+        <button class="btn w" style="margin-top:12px" id="fbGo">Enviar</button>
+      </form>
     </div>
 
     <div class="sec">
@@ -613,7 +638,7 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
     </div>
     <footer class="credit">
       <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
-      <div class="lbl">Hábitos · 2026 · v41</div>
+      <div class="lbl">Hábitos · 2026 · v42</div>
     </footer>
   </section>
 </div>
@@ -634,6 +659,10 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
       <button class="chip">Invitar</button>
     </form>
     <ul class="rows" id="invList"></ul>
+  </div>
+  <div class="sec">
+    <div class="sec-h"><h2>Feedback</h2><span class="lbl" id="fbCount"></span></div>
+    <ul class="rows" id="fbList"></ul>
   </div>
   <div class="sec">
     <div class="sec-h"><h2>Cuentas</h2><span class="lbl" id="memCount"></span></div>
@@ -1028,7 +1057,7 @@ function renderCuenta(){
   $('invSec').hidden=!ME?.admin;$('allBtn').hidden=!AUTH;
   if(document.activeElement!==$('pName'))$('pName').value=ME?.name||S.name||'';
   $('pwBtn').hidden=$('logBtn').hidden=!AUTH;if(!AUTH)$('pwForm').hidden=true;
-  renderBody();
+  renderBody();$('fbForm').closest('.sec').hidden=!AUTH;
 }
 
 /* ---------------- cuerpo → objetivos: recomposición ----------------
@@ -1036,6 +1065,9 @@ function renderCuenta(){
    proteína alta para conservar y ganar músculo (2,2 g/kg hombre · 2,0 mujer), grasa contenida (0,8 · 0,9 g/kg)
    y el resto en carbohidratos, que quedan moderados-bajos. */
 function targets(b){
+  if(b?.man)return{...b.man};   // puestos a mano: mandan sobre el cálculo
+  return autoTargets(b)}
+function autoTargets(b){
   // la edad pesa poco (≈5 kcal/año): si falta, se calcula con 30 y se avisa
   if(!b||!(b.h>0)||!(b.w>0))return null;
   const age=b.age>0?b.age:30,m=b.sex!=='f',bmr=10*b.w+6.25*b.h-5*age+(m?5:-161),tdee=bmr*(b.act||1.55);
@@ -1049,11 +1081,23 @@ function renderBody(){const b=S.body||{};
   for(const[id,k]of[['bAge','age'],['bH','h'],['bW','w']])if(document.activeElement!==$(id))$(id).value=b[k]||'';
   const t=targets({act:1.55,...b});$('target').hidden=!t;
   const miss=[['altura','h'],['peso','w']].filter(([,k])=>!(b[k]>0)).map(([n])=>n);
-  const noAge=t&&!(b.age>0);$('bMiss').hidden=!(noAge||(!t&&miss.length&&miss.length<2||!t&&b.age>0));
+  const man=!!b.man;$('bMode').textContent=man?'Objetivos a mano':'Recomposición';$('manBtn').querySelector('b').textContent=man?'Editar objetivos a mano':'Ajustar objetivos a mano';
+  const noAge=!man&&t&&!(b.age>0);$('bMiss').hidden=man||!(noAge||(!t&&miss.length&&miss.length<2||!t&&b.age>0));
   $('bMiss').textContent=noAge?'Calculado con 30 años: pon tu edad para afinarlo.':miss.length?`Falta ${miss.join(' y ')} para calcular tus objetivos.`:'';
   if(t){count($('tK'),t.kcal);count($('tP'),t.prot);count($('tC'),t.carb);count($('tF'),t.fat)}}
 function setBody(p){S.body={act:1.55,sex:'m',...S.body,...p};const t=targets(S.body);
   if(t)S.goals={kcal:t.kcal,prot:t.prot,carb:t.carb,fat:t.fat};save();renderBody();renderMac()}
+// objetivos a mano: se rellenan con lo actual y las kcal se recalculan solas si cambias un macro
+const mIn=['mK','mP','mC','mF'],mNum=id=>parseInt($(id).value.replace(/\D/g,''),10)||0;
+function mHint(){const k=mNum('mK'),sum=mNum('mP')*4+mNum('mC')*4+mNum('mF')*9;
+  $('mHint').textContent=sum?`Tus macros suman ${sum} kcal${k&&Math.abs(sum-k)>50?` · has puesto ${k}`:''}`:''}
+$('manBtn').onclick=()=>{const f=$('manForm');f.hidden=!f.hidden;buzz(5);if(f.hidden)return;
+  const t=targets(S.body)||{};[t.kcal,t.prot,t.carb,t.fat].forEach((v,i)=>$(mIn[i]).value=v||'');mHint();setTimeout(()=>$('mK').focus(),200)};
+for(const id of mIn)$(id).oninput=()=>{if(id!=='mK'){const s=mNum('mP')*4+mNum('mC')*4+mNum('mF')*9;if(s)$('mK').value=s}mHint()};
+$('manForm').onsubmit=e=>{e.preventDefault();const man={kcal:mNum('mK'),prot:mNum('mP'),carb:mNum('mC'),fat:mNum('mF')};
+  if(!man.kcal)return toast('Pon al menos las calorías');$('manForm').hidden=true;setBody({man});toast('Objetivos guardados')};
+$('manAuto').onclick=()=>{$('manForm').hidden=true;const b={...S.body};delete b.man;S.body=b;
+  const t=targets(S.body);S.goals=t?{kcal:t.kcal,prot:t.prot,carb:t.carb,fat:t.fat}:{kcal:0,prot:0};save();renderBody();renderMac();toast('Vuelves al cálculo automático')};
 $('bSex').onclick=e=>{const x=e.target.closest('button');if(x){buzz(5);setBody({sex:x.dataset.v})}};
 $('bAct').onclick=e=>{const x=e.target.closest('button');if(x){buzz(5);setBody({act:+x.dataset.v})}};
 // recalcula mientras escribes, sin esperar a salir del campo
@@ -1097,7 +1141,16 @@ async function checkPeople(){if(!ME?.admin||!AUTH||Date.now()-peopleAt<20*6e4)re
 async function loadMembers(){if(!ME?.admin)return;
   try{ADM=await api('/api/invite');markFresh(ADM.users);if(admOn())renderAdm()}
   catch(e){if(admOn())$('members').innerHTML=`<li class="empty">${esc(e.message)}</li>`}}
-function openAdm(){$('adm').classList.add('on');$('adm').setAttribute('aria-hidden','false');document.body.classList.add('adm');$('adm').scrollTo(0,0);buzz(6);
+async function loadFeedback(){try{const {items}=await api('/api/feedback');$('fbCount').textContent=items.length||'';
+  $('fbList').innerHTML=items.length?items.map(f=>`<li class="row fb" data-id="${f.id}"><div class="in"><div class="tx"><div class="lbl who">${esc(f.user?.name||'')} · ${ago(f.at)}</div><div class="s">${esc(f.text)}</div></div>
+    <button class="chip" data-a="done">Hecho</button></div></li>`).join(''):'<li class="empty">Aún no hay mensajes</li>'}
+  catch(e){$('fbList').innerHTML=`<li class="empty">${esc(e.message)}</li>`}}
+$('fbList').onclick=async e=>{const b=e.target.closest('[data-a=done]');if(!b)return;const li=b.closest('.row');
+  try{await api('/api/feedback?id='+encodeURIComponent(li.dataset.id),{method:'DELETE'});collapse(li,loadFeedback)}catch(x){toast(x.message)}};
+$('fbForm').onsubmit=async e=>{e.preventDefault();const t=$('fbIn').value.trim();if(t.length<3)return toast('Escribe un poco más');
+  $('fbGo').textContent='Enviando…';try{await api('/api/feedback',{method:'POST',body:J({text:t,v:APP_V})});$('fbIn').value='';buzz([10,30,10]);toast('¡Gracias! Lo leeré pronto')}
+  catch(x){toast(x.message)}finally{$('fbGo').textContent='Enviar'}};
+function openAdm(){loadFeedback();$('adm').classList.add('on');$('adm').setAttribute('aria-hidden','false');document.body.classList.add('adm');$('adm').scrollTo(0,0);buzz(6);
   if(ADM)renderAdm();loadMembers()}
 function closeAdm(){$('adm').classList.remove('on');$('adm').setAttribute('aria-hidden','true');document.body.classList.remove('adm');
   // lo nuevo deja de ser «nuevo» al salir del panel (dentro sigue marcado para que lo veas)
@@ -1408,7 +1461,7 @@ function renderAll(anim){renderHab(anim);renderTasks();renderMac();renderCuenta(
   if(document.activeElement!==$('stepsGoalIn'))$('stepsGoalIn').value=S.stepsGoal||'';renderSteps()}
 // Aviso de versión nueva: version.json dice desde qué versión hay que actualizar («aviso»).
 // Solo se sube «aviso» en cambios importantes; el resto llega solo al abrir la app.
-const APP_V=41;let verAt=0;
+const APP_V=42;let verAt=0;
 async function checkVersion(){if(Date.now()-verAt<5*6e4)return;verAt=Date.now();
   try{const j=await(await fetch('/version.json',{cache:'no-store'})).json();if(j.aviso>APP_V&&$('upd').hidden){$('upd').hidden=false;buzz([10,40,10])}}catch{}}
 $('updGo').onclick=async()=>{$('updGo').textContent='Actualizando…';flush();try{await(await navigator.serviceWorker?.getRegistration())?.update()}catch{}

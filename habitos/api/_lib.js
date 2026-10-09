@@ -1,42 +1,119 @@
 // Utilidades comunes de la API. Vercel no publica como función lo que empieza por "_".
-import { get, put, del, list } from '@vercel/blob';
+import { get, put, del as blobDel, list as blobList } from '@vercel/blob';
 import { scryptSync, randomBytes, createHmac, timingSafeEqual, createHash } from 'node:crypto';
 
+/* ---------------- almacenamiento ----------------
+   Dos motores con la misma forma (ruta → JSON):
+   · Redis (Upstash, desde el Marketplace de Vercel): si existen sus variables se usa este. Su plan gratuito
+     da cientos de miles de operaciones al mes.
+   · Vercel Blob: el de siempre. El plan gratuito solo trae ~2.000 escrituras al mes.
+   La primera vez que aparece Redis se copia todo lo del Blob (una sola vez, con candado) y el Blob queda de copia. */
+const KV_URL = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+const KV_TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+const hasKV = () => !!(KV_URL && KV_TOKEN);
 // Vercel conecta el Blob con un token clásico o, en proyectos nuevos, por OIDC (BLOB_STORE_ID + token de la ejecución)
-export const hasStore = () => !!(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
+const hasBlob = () => !!(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
+export const hasStore = () => hasKV() || hasBlob();
+
+async function kv(...cmds) {   // varios comandos en una sola petición (pipeline)
+  const r = await fetch(`${KV_URL}/pipeline`, {
+    method: 'POST', headers: { Authorization: `Bearer ${KV_TOKEN}`, 'content-type': 'application/json' },
+    body: JSON.stringify(cmds), signal: AbortSignal.timeout(10000),
+  });
+  if (!r.ok) throw new Error(`Redis ${r.status}`);
+  const out = await r.json();
+  const bad = out.find(x => x.error);
+  if (bad) throw new Error(`Redis: ${bad.error}`);
+  return out.map(x => x.result);
+}
+const kv1 = async (...cmd) => (await kv(cmd))[0];
+
+let migrated2kv = false;
+async function toKV() {
+  if (migrated2kv || !hasBlob()) return;
+  if (await kv1('GET', 'meta:migrated')) return (migrated2kv = true);
+  // solo una instancia copia; las demás esperan a que termine
+  if (await kv1('SET', 'meta:migrating', '1', 'NX', 'EX', 120)) {
+    let cursor, n = 0;
+    do {
+      const r = await blobList({ cursor, limit: 1000 });
+      for (const b of r.blobs) {
+        const g = await get(b.pathname, { access: 'private', useCache: false });
+        if (!g || g.statusCode !== 200) continue;
+        const txt = await new Response(g.stream).text();
+        const cmds = [['SET', b.pathname, txt, 'NX']];   // NX: nunca pisa algo ya escrito en Redis
+        if (b.pathname.startsWith('data/')) cmds.push(['HSET', 'meta:seen', b.pathname.slice(5, -5), String(new Date(b.uploadedAt).getTime())]);
+        await kv(...cmds); n++;
+      }
+      cursor = r.hasMore ? r.cursor : undefined;
+    } while (cursor);
+    await kv(['SET', 'meta:migrated', new Date().toISOString()], ['DEL', 'meta:migrating']);
+    console.log(`migración Blob → Redis: ${n} archivos`);
+    return (migrated2kv = true);
+  }
+  for (let i = 0; i < 40; i++) { await new Promise(ok => setTimeout(ok, 500)); if (await kv1('GET', 'meta:migrated')) return (migrated2kv = true); }
+  throw new Error('Migración en curso, prueba en unos segundos');
+}
 
 // Solo «no existe» devuelve el valor por defecto. Un fallo de red o del almacenamiento se propaga:
 // si no, un corte puntual se tomaría por «no hay usuarios / no hay secreto» y se sobrescribirían.
 export async function readJSON(path, fallback) {
-  if (!hasStore()) return fallback;
+  if (hasKV()) { await toKV(); const v = await kv1('GET', path); return v == null ? fallback : JSON.parse(v); }
+  if (!hasBlob()) return fallback;
   const r = await get(path, { access: 'private', useCache: false });
   if (!r) return fallback;
   if (r.statusCode !== 200) throw new Error(`Lectura de ${path}: ${r.statusCode}`);
   return JSON.parse(await new Response(r.stream).text());
 }
-export const writeJSON = (path, obj) =>
-  put(path, JSON.stringify(obj), { access: 'private', addRandomSuffix: false, allowOverwrite: true, contentType: 'application/json' });
+export async function writeJSON(path, obj) {
+  if (hasKV()) {
+    await toKV();
+    const cmds = [['SET', path, JSON.stringify(obj)]];
+    // última actividad de cada persona (para el panel), sin tener que listar nada
+    if (path.startsWith('data/')) cmds.push(['HSET', 'meta:seen', path.slice(5, -5), String(Date.now())]);
+    return kv(...cmds);
+  }
+  return put(path, JSON.stringify(obj), { access: 'private', addRandomSuffix: false, allowOverwrite: true, contentType: 'application/json' });
+}
+async function del(paths) {
+  paths = [].concat(paths);
+  if (hasKV()) { await toKV(); return kv1('DEL', ...paths); }
+  return blobDel(paths);
+}
 export const removeBlob = path => del(path);
+// rutas que empiezan por prefix
+async function keys(prefix, limit = Infinity) {
+  const out = [];
+  if (hasKV()) {
+    await toKV();
+    let cur = '0';
+    do { const [c, ks] = await kv1('SCAN', cur, 'MATCH', prefix + '*', 'COUNT', 500); cur = c; out.push(...ks); } while (cur !== '0' && out.length < limit);
+    return out.sort();
+  }
+  let cursor;
+  do {
+    const r = await blobList({ prefix, cursor, limit: Math.min(1000, limit) });
+    out.push(...r.blobs.map(b => b.pathname));
+    cursor = r.hasMore && out.length < limit ? r.cursor : undefined;
+  } while (cursor);
+  return out;
+}
 
 // Cada cuenta y cada invitación va en su propio archivo: así dos cambios a la vez (dos invitaciones
 // seguidas, dos personas registrándose) no se pisan, como pasaba con una sola lista.
 //   users/{id}.json · emails/{hash del email}.json → {id} · invites/{token}.json
 const safe = x => /^[\w-]{4,64}$/.test(String(x || ''));
 const emailKey = e => createHash('sha256').update(normEmail(e)).digest('hex').slice(0, 32);
-async function readAll(prefix) {
+export async function readAll(prefix) {
   if (!hasStore()) return [];
-  const out = []; let cursor;
-  do {
-    const r = await list({ prefix, cursor, limit: 1000 });
-    out.push(...await Promise.all(r.blobs.map(b => readJSON(b.pathname, null))));
-    cursor = r.hasMore ? r.cursor : undefined;
-  } while (cursor);
-  return out.filter(Boolean);
+  const ks = await keys(prefix);
+  if (hasKV() && ks.length) return (await kv1('MGET', ...ks)).filter(Boolean).map(v => JSON.parse(v));
+  return (await Promise.all(ks.map(k => readJSON(k, null)))).filter(Boolean);
 }
 // las versiones anteriores lo guardaban todo en users.json / invites.json: se reparte una vez
 let migrated = false;
 async function migrate() {
-  if (migrated || !hasStore()) return;
+  if (migrated || !hasStore() || hasKV()) return;
   const oldUsers = await readJSON('users.json', null), oldInv = await readJSON('invites.json', null);
   for (const u of oldUsers || []) await saveUser(u);
   for (const i of oldInv || []) await saveInvite(i);
@@ -50,7 +127,7 @@ let anyUser = false;
 export async function hasUsers() {
   if (anyUser) return true;
   await migrate();
-  return (anyUser = hasStore() && (await list({ prefix: 'users/', limit: 1 })).blobs.length > 0);
+  return (anyUser = hasStore() && (await keys('users/', 1)).length > 0);
 }
 export async function getUser(id) { await migrate(); return safe(id) ? readJSON(`users/${id}.json`, null) : null; }
 export async function userByEmail(email) {
@@ -129,8 +206,14 @@ export const pub = u => ({ id: u.id, name: u.name, email: u.email, admin: !!u.ad
 // Un solo list() en vez de leer el archivo de cada persona.
 export async function lastSeen() {
   const out = {}; if (!hasStore()) return out; let cursor;
+  if (hasKV()) {
+    await toKV();
+    const h = await kv1('HGETALL', 'meta:seen') || [];
+    for (let i = 0; i < h.length; i += 2) out[h[i]] = +h[i + 1];
+    return out;
+  }
   do {
-    const r = await list({ prefix: 'data/', cursor, limit: 1000 });
+    const r = await blobList({ prefix: 'data/', cursor, limit: 1000 });
     for (const b of r.blobs) out[b.pathname.slice(5, -5)] = new Date(b.uploadedAt).getTime();
     cursor = r.hasMore ? r.cursor : undefined;
   } while (cursor);
