@@ -60,7 +60,14 @@ export async function deleteUser(u) {
   await del([`users/${u.id}.json`, `emails/${emailKey(u.email)}.json`]);
 }
 export async function invites() { await migrate(); return (await readAll('invites/')).sort((a, b) => String(a.created).localeCompare(String(b.created))); }
-export async function getInvite(token) { await migrate(); return safe(token) ? readJSON(`invites/${token}.json`, null) : null; }
+// las invitaciones caducan a los 14 días: un enlace olvidado en un chat no sirve para siempre
+export const INVITE_DAYS = 14;
+export const inviteExpired = inv => !!inv.created && Date.now() - Date.parse(inv.created) > INVITE_DAYS * 864e5;
+export async function getInvite(token) {
+  await migrate();
+  const inv = safe(token) ? await readJSON(`invites/${token}.json`, null) : null;
+  return inv && !inviteExpired(inv) ? inv : null;
+}
 export const saveInvite = inv => writeJSON(`invites/${inv.token}.json`, inv);
 export const deleteInvite = token => safe(token) ? del(`invites/${token}.json`) : null;
 
@@ -93,8 +100,9 @@ export function hashPw(pw) {
   return { salt, hash: scryptSync(String(pw), salt, 32).toString('hex') };
 }
 export const checkPw = (u, pw) => timingSafeEqual(Buffer.from(u.hash, 'hex'), scryptSync(String(pw), u.salt, 32));
-// v cambia al cambiar la contraseña: invalida sesiones y enlaces de restablecimiento antiguos
-const ver = u => u.hash.slice(0, 8);
+// v cambia al cambiar la contraseña o al «cerrar sesión en todos los dispositivos» (sv): invalida sesiones y enlaces antiguos.
+// Sin sv queda igual que antes, así nadie pierde la sesión al publicar esto.
+const ver = u => u.hash.slice(0, 8) + (u.sv ? '.' + u.sv : '');
 export const sessionFor = u => sign({ u: u.id, v: ver(u), t: 's', x: Date.now() + 180 * 864e5 });
 export const resetFor = u => sign({ u: u.id, v: ver(u), t: 'r', x: Date.now() + 48 * 36e5 });
 // clave para el atajo de pasos: solo sirve para apuntar los pasos de esa persona (1 año)
@@ -103,7 +111,7 @@ export async function fromToken(token, type) {
   const p = await verify(token);
   if (!p || p.t !== type) return null;
   const u = await getUser(p.u);
-  return u && ver(u) === p.v ? u : null;
+  return u && !u.disabled && ver(u) === p.v ? u : null;
 }
 export async function auth(req) {
   if (!hasStore()) return null;
@@ -111,6 +119,17 @@ export async function auth(req) {
   return h.startsWith('Bearer ') ? fromToken(h.slice(7), 's') : null;
 }
 export const pub = u => ({ id: u.id, name: u.name, email: u.email, admin: !!u.admin });
+// fecha de la última escritura de cada archivo de datos = última vez que esa persona usó la app.
+// Un solo list() en vez de leer el archivo de cada persona.
+export async function lastSeen() {
+  const out = {}; if (!hasStore()) return out; let cursor;
+  do {
+    const r = await list({ prefix: 'data/', cursor, limit: 1000 });
+    for (const b of r.blobs) out[b.pathname.slice(5, -5)] = new Date(b.uploadedAt).getTime();
+    cursor = r.hasMore ? r.cursor : undefined;
+  } while (cursor);
+  return out;
+}
 export const newId = () => randomBytes(9).toString('base64url');
 
 // IA de la app. Usa Gemini (GEMINI_API_KEY, plan gratuito) o Claude (ANTHROPIC_API_KEY);
@@ -142,7 +161,7 @@ async function geminiCall(key, model, parts, maxTokens, think) {
     method: 'POST',
     headers: { 'x-goog-api-key': key, 'content-type': 'application/json' },
     body: JSON.stringify({ contents: [{ role: 'user', parts }], generationConfig }),
-    signal: AbortSignal.timeout(25000),
+    signal: AbortSignal.timeout(15000),
   });
 }
 async function viaGemini(key, content, maxTokens) {

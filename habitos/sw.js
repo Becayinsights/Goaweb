@@ -1,5 +1,5 @@
 // Offline: la app abre sin red; la IA y la sincronización necesitan conexión.
-const C = 'habitos-v37';
+const C = 'habitos-v38';
 const FILES = ['/', '/manifest.json', '/icon-192.png', '/icon-180.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(C).then(c => c.addAll(FILES))); self.skipWaiting(); });
 self.addEventListener('activate', e => {
@@ -9,7 +9,7 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const u = new URL(e.request.url);
   const fonts = /fonts\.(googleapis|gstatic)\.com$/.test(u.hostname);
-  if (e.request.method !== 'GET' || u.pathname.startsWith('/api/') || (u.origin !== location.origin && !fonts)) return;
+  if (e.request.method !== 'GET' || u.pathname.startsWith('/api/') || u.pathname === '/version.json' || (u.origin !== location.origin && !fonts)) return;
   // la página se guarda siempre como «/»: así no quedan en caché enlaces con invitaciones o tokens
   const key = e.request.mode === 'navigate' ? '/' : e.request;
   const cached = () => caches.match(key).then(r => r || caches.match('/'));

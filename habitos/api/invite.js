@@ -2,7 +2,7 @@
 // POST {reset:id}: enlace para que esa persona elija contraseña nueva.
 // DELETE ?user= o ?invite=: quita a alguien o anula una invitación.
 import { randomBytes } from 'node:crypto';
-import { auth, readJSON, users, getUser, deleteUser, invites, saveInvite, deleteInvite, resetFor, removeBlob, newId, origin, pub, fail, bad } from './_lib.js';
+import { auth, users, getUser, saveUser, deleteUser, invites, saveInvite, deleteInvite, inviteExpired, INVITE_DAYS, lastSeen, resetFor, removeBlob, origin, pub, fail, bad } from './_lib.js';
 
 export default async function handler(req, res) {
   try {
@@ -13,6 +13,17 @@ export default async function handler(req, res) {
       const u = await getUser(req.body.reset);
       if (!u) throw bad('No existe', 404);
       return res.status(200).json({ link: `${base}/?r=${encodeURIComponent(await resetFor(u))}`, name: u.name });
+    }
+    // POST {suspend:id, on}: pausa o devuelve el acceso (sus datos se quedan). POST {signout:id}: cierra todas sus sesiones
+    if (req.method === 'POST' && (req.body?.suspend || req.body?.signout)) {
+      const id = req.body.suspend || req.body.signout;
+      if (id === me.id) throw bad('Esto no se puede hacer contigo');
+      const u = await getUser(id);
+      if (!u) throw bad('No existe', 404);
+      if (req.body.suspend) { if (req.body.on) u.disabled = true; else delete u.disabled; }
+      u.sv = (u.sv || 0) + 1;
+      await saveUser(u);
+      return res.status(200).json({ ok: true });
     }
     if (req.method === 'POST') {
       const name = String(req.body?.name || '').trim().slice(0, 40);
@@ -31,12 +42,12 @@ export default async function handler(req, res) {
       }
       return res.status(200).json({ ok: true });
     }
-    // cuándo se unió cada persona y cuándo usó la app por última vez
-    const list = await users();
-    const seen = await Promise.all(list.map(u => readJSON(`data/${u.id}.json`, {}).then(d => d._at || null)));
+    // cuándo se unió cada persona, cuándo usó la app por última vez y quién la invitó
+    const [list, seen, inv] = await Promise.all([users(), lastSeen(), invites()]);
     res.status(200).json({
-      users: list.map((u, i) => ({ ...pub(u), created: u.created || null, seen: seen[i] })),
-      invites: (await invites()).map(i => ({ ...i, link: `${base}/?i=${i.token}` })),
+      users: list.map(u => ({ ...pub(u), created: u.created || null, seen: seen[u.id] || null, via: u.via || null, disabled: !!u.disabled })),
+      invites: inv.map(i => ({ ...i, link: `${base}/?i=${i.token}`, expired: inviteExpired(i),
+        expires: i.created ? new Date(Date.parse(i.created) + INVITE_DAYS * 864e5).toISOString() : null })),
     });
   } catch (e) { fail(res, e); }
 }

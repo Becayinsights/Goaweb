@@ -345,6 +345,34 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
 .dayhead{display:flex;align-items:center;gap:10px}
 .week span{cursor:pointer}.week span.sel i{outline:1.5px solid var(--ink);outline-offset:2px}
 
+/* panel de admin: entra desde la derecha, como una pantalla de iOS */
+.panel{position:fixed;inset:0;z-index:12;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+  max-width:540px;margin:0 auto;padding:calc(var(--st) + 14px) 20px calc(var(--sb) + 48px);transform:translateX(104%);visibility:hidden;
+  transition:transform .6s var(--spring),visibility 0s .6s;box-shadow:-30px 0 60px rgba(0,0,0,.4)}
+.panel.on{transform:none;visibility:visible;transition:transform .6s var(--spring),visibility 0s}
+body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
+.pnl-top{display:flex;align-items:center;justify-content:space-between;height:40px}
+.back{display:flex;align-items:center;gap:8px;font-size:16px;color:var(--ink-2);padding:8px 8px 8px 0}
+.kpis b{font-size:30px}
+.chart{position:relative;margin-top:16px;height:150px;touch-action:pan-y}
+.chart svg{display:block;width:100%;height:100%;overflow:visible}
+.chart .tip{position:absolute;top:-6px;transform:translateX(-50%);background:var(--bg-3);border-radius:10px;padding:7px 10px;white-space:nowrap;
+  font:500 12px/1.2 var(--sans);color:var(--ink);pointer-events:none;opacity:0;transition:opacity .2s}
+.chart.hov .tip{opacity:1}
+.admbtn .lbl{color:var(--ink-2)}
+.admbtn.fresh b::after{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--acc);margin-left:9px;vertical-align:3px}
+.tag{font:500 9.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--warn);margin-left:8px;vertical-align:2px}
+.row .more{display:flex;flex-wrap:wrap;gap:8px;padding:0 0 16px;border-bottom:1px solid var(--rule)}
+.row .more .chip.dng{color:var(--warn)}
+.row.mem>.in{cursor:pointer}
+.row.mem.open>.in{border-bottom-color:transparent}
+/* aviso de versión nueva */
+.upd{position:fixed;inset:0;z-index:40;display:grid;place-items:end center;background:rgba(0,0,0,.55);padding:16px 16px calc(var(--sb) + 16px);animation:fadeIn .3s both}
+.upd-c{width:100%;max-width:440px;background:var(--bg-2);border-radius:28px;padding:26px 22px 20px;animation:rise .6s var(--spring) both}
+.upd-c h2{margin:10px 0 2px;font-size:24px}
+.upd-c .btn{margin-top:20px}
+.upd-h{margin-top:12px;text-align:center;font-size:12.5px;color:var(--ink-3)}
+@keyframes fadeIn{from{opacity:0}}
 .toast{position:fixed;left:50%;top:calc(var(--st) + 12px);transform:translate(-50%,calc(-100% - var(--st) - 60px)) scale(.9);opacity:0;visibility:hidden;pointer-events:none;background:rgba(242,239,232,.96);color:var(--bg);
   padding:12px 18px;border-radius:99px;font:600 13.5px/1 var(--sans);letter-spacing:-.01em;transition:transform .6s var(--spring);z-index:30;display:flex;gap:14px;align-items:center;white-space:nowrap;
   box-shadow:0 10px 30px rgba(0,0,0,.4)}
@@ -511,12 +539,7 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
     <div class="who"><i class="dot" id="syncDot"></i><span class="lbl" id="syncTx"></span></div>
 
     <div class="sec" id="invSec" hidden>
-      <div class="sec-h"><h2>Personas</h2><span class="lbl" id="memCount"></span></div>
-      <form class="add" id="invForm">
-        <input type="text" id="invIn" placeholder="Invitar a… (nombre)" autocomplete="off" enterkeyhint="send">
-        <button class="chip">Invitar</button>
-      </form>
-      <ul class="rows" id="members"></ul>
+      <button class="teaser press admbtn" id="admBtn"><b>Panel de personas</b><span class="lbl" id="admCnt">→</span></button>
     </div>
 
     <div class="sec" id="bodySec">
@@ -562,14 +585,47 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
         <input class="field" id="pwNew" type="password" placeholder="Nueva contraseña" autocomplete="new-password">
         <button class="btn w" style="margin-top:16px">Guardar</button>
       </form>
+      <button class="teaser press" id="allBtn"><b>Cerrar sesión en otros dispositivos</b><span class="lbl">→</span></button>
       <button class="teaser press" id="logBtn"><b>Cerrar sesión</b><span class="lbl">→</span></button>
     </div>
     <footer class="credit">
       <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
-      <div class="lbl">Hábitos · 2026 · v37</div>
+      <div class="lbl">Hábitos · 2026 · v38</div>
     </footer>
   </section>
 </div>
+
+<!-- panel de admin: pantalla aparte para no mezclarlo con la app -->
+<section class="panel" id="adm" aria-hidden="true">
+  <div class="pnl-top"><button class="back" id="admBack"><svg width="10" height="16" viewBox="0 0 10 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2 2 8l6 6"/></svg>Cuenta</button><span class="lbl">Admin</span></div>
+  <h1>Personas</h1>
+  <div class="target kpis" id="kpis"></div>
+  <div class="sec">
+    <div class="sec-h"><h2>Crecimiento</h2><span class="lbl" id="grLbl"></span></div>
+    <div class="chart" id="growth"></div>
+  </div>
+  <div class="sec">
+    <div class="sec-h"><h2>Invitar</h2><span class="lbl">Caduca en 14 días</span></div>
+    <form class="add" id="invForm">
+      <input type="text" id="invIn" placeholder="Nombre de la persona" autocomplete="off" enterkeyhint="send">
+      <button class="chip">Invitar</button>
+    </form>
+    <ul class="rows" id="invList"></ul>
+  </div>
+  <div class="sec">
+    <div class="sec-h"><h2>Cuentas</h2><span class="lbl" id="memCount"></span></div>
+    <ul class="rows" id="members"></ul>
+  </div>
+</section>
+
+<!-- aviso de versión nueva (solo cuando version.json lo pide) -->
+<div class="upd" id="upd" hidden><div class="upd-c">
+  <span class="lbl">Nueva versión</span>
+  <h2>Hay una versión nueva de Hábitos</h2>
+  <p class="note">Actualiza para tener las mejoras. Tus datos se quedan como están.</p>
+  <button class="btn w" id="updGo">Actualizar ahora</button>
+  <p class="upd-h">Si no cambia, cierra la app del todo y vuelve a abrirla.</p>
+</div></div>
 
 <nav class="tabs" id="tabs">
   <i class="ind" id="ind"></i>
@@ -694,7 +750,11 @@ async function api(path,opt={}){const r=await fetch(path,{...opt,headers:hdr()})
 const born=new Set();   // lo recién creado por voz se ilumina un momento en su lista
 let pushT=null,syncState='local',pulled=false,syncing=null;
 const J=JSON.stringify,clean=o=>{const c={};for(const k in o)if(k[0]!=='_')c[k]=o[k];return c};
-function save(){S.updated=Date.now();LS.set('state',S);if(AUTH){clearTimeout(pushT);pushT=setTimeout(()=>pulled?push():pull(),700)}}
+// Se espera a que pares de tocar (2,5 s) y se sube una sola vez: el almacenamiento cuenta cada escritura.
+// Al salir de la app se sube lo pendiente al momento, y si no da tiempo, la próxima vez se fusiona.
+function save(){S.updated=Date.now();LS.set('state',S);if(AUTH){clearTimeout(pushT);pushT=setTimeout(()=>{pushT=null;pulled?push():pull()},2500)}}
+function flush(){if(!pushT)return;clearTimeout(pushT);pushT=null;if(pulled)push(true)}
+addEventListener('pagehide',flush);
 function byId(b,l,s){const bm=new Map(b.map(x=>[x.id,x])),lm=new Map(l.map(x=>[x.id,x])),sm=new Set(s.map(x=>x.id)),out=[];
   for(const x of s){const bx=bm.get(x.id),lx=lm.get(x.id);if(!lx){if(!bx)out.push(x);continue}out.push(J(lx)!==J(bx)?lx:x)}
   for(const x of l)if(!bm.has(x.id)&&!sm.has(x.id))out.push(x);return out}
@@ -708,8 +768,9 @@ function merge(b,l,s){const out={...s};
     else out[k]=lv}
   return out}
 function adopt(doc){S=doc;S.goals=S.goals||{kcal:0,prot:0};S.tasks=S.tasks||[];S.log=S.log||{};S.food=S.food||{};S.habits=S.habits||[];LS.set('state',S)}
-async function push(){if(!AUTH||!pulled)return;const base=LS.get('base',null),snap=clean(S);
-  try{await api('/api/data',{method:'PUT',body:J({...snap,_base:base?base.updated:null})});LS.set('base',snap);setSync('ok')}
+async function push(keep){if(!AUTH||!pulled)return;const base=LS.get('base',null),snap=clean(S),body=J({...snap,_base:base?base.updated:null});
+  // keepalive deja terminar la subida aunque la app se cierre (máx. 64 KB)
+  try{await api('/api/data',{method:'PUT',body,keepalive:!!keep&&body.length<60000});LS.set('base',snap);setSync('ok')}
   catch(e){if(e.status===409){pulled=false;return pull()}setSync('off')}}
 async function pull(){if(!AUTH)return;if(syncing)return syncing;
   return syncing=(async()=>{try{const r=clean(await api('/api/data')),base=LS.get('base',null),loc=clean(S);pulled=true;
@@ -936,7 +997,7 @@ function renderCuenta(){
   $('cName').textContent=ME?.name||'Cuenta';$('cMail').textContent=ME?.email||'';
   $('syncDot').classList.toggle('on',syncState==='ok');
   $('syncTx').textContent=syncState==='ok'?'Sincronizado':syncState==='off'?'Sin conexión · guardado en el móvil':'Guardado en el móvil';
-  $('invSec').hidden=!ME?.admin;
+  $('invSec').hidden=!ME?.admin;$('allBtn').hidden=!AUTH;
   if(document.activeElement!==$('pName'))$('pName').value=ME?.name||S.name||'';
   $('pwBtn').hidden=$('logBtn').hidden=!AUTH;if(!AUTH)$('pwForm').hidden=true;
   renderBody();
@@ -980,8 +1041,10 @@ $('pwForm').onsubmit=async e=>{e.preventDefault();
   try{const r=await api('/api/auth',{method:'POST',body:JSON.stringify({action:'password',current:$('pwOld').value,password:$('pwNew').value})});
     setAuth(r);$('pwForm').reset();$('pwForm').hidden=true;toast('Contraseña cambiada')}catch(x){toast(x.message)}};
 $('logBtn').onclick=()=>{if(confirm('¿Cerrar sesión?'))logout()};
+$('allBtn').onclick=async()=>{if(!confirm('Se cerrará la sesión en todos tus otros móviles y ordenadores. Este se queda dentro.'))return;
+  try{const r=await api('/api/auth',{method:'POST',body:J({action:'logoutAll'})});setAuth({token:r.token,user:r.user});toast('Sesión cerrada en los demás dispositivos')}catch(x){toast(x.message)}};
 function setAuth(a){AUTH=a;ME=a?.user||null;if(a){LS.set('auth',a);LS.set('owner',a.user.id)}else LS.del('auth');renderCuenta()}
-function logout(){setAuth(null);LS.del('state');LS.del('base');LS.del('owner');pulled=false;S=fresh();renderAll();showGate('login')}
+function logout(){flush();setAuth(null);LS.del('state');LS.del('base');LS.del('owner');pulled=false;S=fresh();renderAll();showGate('login')}
 // sesión caducada (p. ej. cambió la contraseña en otro móvil): se pide entrar otra vez sin borrar lo de este móvil
 function expire(){setAuth(null);pulled=false;showGate('login')}
 
@@ -990,20 +1053,69 @@ function ago(t){if(!t)return'';const m=(Date.now()-new Date(t))/6e4;if(m<2)retur
   if(m<1440)return`hace ${Math.round(m/60)} h`;const d=Math.round(m/1440);return d===1?'ayer':d<30?`hace ${d} días`:new Date(t).toLocaleDateString('es-ES',{day:'numeric',month:'short'})}
 // Personas nuevas desde la última vez que el admin miró Cuenta: punto en la pestaña y aviso una sola vez
 const isNew=u=>!u.admin&&u.created&&Date.parse(u.created)>LS.get('peopleSeen',0);
+let ADM=null;   // última respuesta de /api/invite
+const admOn=()=>$('adm').classList.contains('on');
+function markFresh(us){const n=us.filter(isNew).length;
+  document.querySelector('.tb[data-v=cue]').classList.toggle('fresh',!!n&&!$('v-cue').classList.contains('on'));
+  $('admBtn').classList.toggle('fresh',!!n);$('admCnt').textContent=n?`${n} nueva${n>1?'s':''} →`:`${us.length} →`}
+// Personas nuevas desde la última vez que el admin abrió el panel: punto en Cuenta y aviso una sola vez
 async function checkPeople(){if(!ME?.admin||!AUTH)return;
-  try{const {users:us}=await api('/api/invite'),fresh=us.filter(isNew),told=LS.get('peopleTold',[]);
-    document.querySelector('.tb[data-v=cue]').classList.toggle('fresh',!!fresh.length&&!$('v-cue').classList.contains('on'));
-    const nu=fresh.filter(u=>!told.includes(u.id));
-    if(nu.length){LS.set('peopleTold',[...told,...nu.map(u=>u.id)]);toast(`${nu.map(u=>u.name.split(' ')[0]).join(' y ')} ${nu.length>1?'se han unido':'se ha unido'}`)}}catch{}}
+  try{ADM=await api('/api/invite');const us=ADM.users,told=LS.get('peopleTold',[]);markFresh(us);
+    const nu=us.filter(isNew).filter(u=>!told.includes(u.id));
+    if(nu.length){LS.set('peopleTold',[...told,...nu.map(u=>u.id)]);toast(`${nu.map(u=>u.name.split(' ')[0]).join(' y ')} ${nu.length>1?'se han unido':'se ha unido'}`)}
+    if(admOn())renderAdm()}catch{}}
 async function loadMembers(){if(!ME?.admin)return;
-  try{const {users:us,invites:iv}=await api('/api/invite');$('memCount').textContent=`${us.length}`;
-    $('members').innerHTML=us.map((u,i)=>`<li class="row" data-id="${u.id}" data-name="${esc(u.name)}" style="--i:${i}"><div class="in"><div class="tx"><div class="t">${esc(u.name)}</div>${isNew(u)?'<span class="new">Nuevo</span>':''}
-      <div class="s">${u.admin?esc(u.email)+' · admin':`Se unió ${ago(u.created)||'—'} · ${u.seen?'activo '+ago(u.seen):'aún sin usarla'}`}</div></div>${u.admin?'':`<button class="chip" data-a="reset">Contraseña</button><button class="x" style="display:grid" data-a="del">${XS}</button>`}</div></li>`).join('')
-    +iv.map(v=>`<li class="row" data-inv="${v.token}" data-name="${esc(v.name)}" data-link="${v.link}"><div class="in"><div class="tx"><div class="t" style="color:var(--ink-2)">${esc(v.name)}</div>
-      <div class="s">Invitación pendiente${v.created?' · '+ago(v.created):''}</div></div><button class="chip" data-a="send">Enviar</button><button class="x" style="display:grid" data-a="cancel">${XS}</button></div></li>`).join('');
-    // solo cuenta como «visto» si Cuenta está abierta
-    if($('v-cue').classList.contains('on')){LS.set('peopleSeen',Date.now());document.querySelector('.tb[data-v=cue]').classList.remove('fresh')}}
-  catch(e){$('members').innerHTML=`<li class="empty">${esc(e.message)}</li>`}}
+  try{ADM=await api('/api/invite');markFresh(ADM.users);if(admOn())renderAdm()}
+  catch(e){if(admOn())$('members').innerHTML=`<li class="empty">${esc(e.message)}</li>`}}
+function openAdm(){$('adm').classList.add('on');$('adm').setAttribute('aria-hidden','false');document.body.classList.add('adm');$('adm').scrollTo(0,0);buzz(6);
+  if(ADM)renderAdm();loadMembers()}
+function closeAdm(){$('adm').classList.remove('on');$('adm').setAttribute('aria-hidden','true');document.body.classList.remove('adm');
+  // lo nuevo deja de ser «nuevo» al salir del panel (dentro sigue marcado para que lo veas)
+  LS.set('peopleSeen',Date.now());if(ADM)markFresh(ADM.users)}
+$('admBtn').onclick=openAdm;$('admBack').onclick=closeAdm;
+const DAY=864e5,dShort=t=>new Date(t).toLocaleDateString('es-ES',{day:'numeric',month:'short'});
+function renderAdm(){const {users:us,invites:iv}=ADM,now=Date.now();
+  const n30=us.filter(u=>u.created&&now-Date.parse(u.created)<30*DAY).length,a7=us.filter(u=>u.seen&&now-u.seen<7*DAY).length,
+    a1=us.filter(u=>u.seen&&new Date(u.seen).toDateString()===new Date().toDateString()).length;
+  $('kpis').innerHTML=[[us.length,'personas'],[n30,'nuevas · 30 días'],[a7,'activas · 7 días'],[a1,'activas hoy']]
+    .map(([v,l])=>`<div><b class="num">${v}</b><span class="lbl">${l}</span></div>`).join('');
+  drawGrowth(us);
+  $('memCount').textContent=us.length;
+  const open=new Set([...document.querySelectorAll('#members .row.open')].map(x=>x.dataset.id));
+  $('members').innerHTML=us.map((u,i)=>`<li class="row mem st${open.has(u.id)?' open':''}" data-id="${u.id}" data-name="${esc(u.name)}" style="--i:${i}"><div class="in"><div class="tx">
+      <div class="t">${esc(u.name)}</div>${isNew(u)?'<span class="new">Nueva</span>':''}${u.disabled?'<span class="tag">Pausada</span>':''}
+      <div class="s">${u.admin?esc(u.email)+' · admin':`${esc(u.email)}`}</div>
+      <div class="s">${u.admin?'':`Se unió ${ago(u.created)||'—'} · `}${u.seen?'activa '+ago(u.seen):'aún sin usarla'}</div></div></div>
+    ${u.admin?'':`<div class="more"${open.has(u.id)?'':' hidden'}><button class="chip" data-a="reset">Nueva contraseña</button><button class="chip" data-a="signout">Cerrar sus sesiones</button>
+      <button class="chip" data-a="${u.disabled?'resume':'pause'}">${u.disabled?'Reactivar acceso':'Pausar acceso'}</button><button class="chip dng" data-a="del">Eliminar</button></div>`}</li>`).join('');
+  const live=iv.filter(v=>!v.expired),old=iv.filter(v=>v.expired);
+  $('invList').innerHTML=[...live,...old].map(v=>{const d=Math.ceil((Date.parse(v.expires)-now)/DAY);
+    return`<li class="row" data-inv="${v.token}" data-name="${esc(v.name)}" data-link="${v.link}"><div class="in"><div class="tx"><div class="t" style="color:var(--ink-2)">${esc(v.name)}</div>
+      <div class="s">${v.expired?'Caducada · ya no sirve':`Pendiente · caduca en ${d} día${d>1?'s':''}`}</div></div>${v.expired?'':'<button class="chip" data-a="send">Enviar</button>'}<button class="x" style="display:grid" data-a="cancel">${XS}</button></div></li>`}).join('')}
+// gráfica de personas acumuladas por día (una serie: el título la nombra, sin leyenda). Tocar o arrastrar muestra el valor
+function drawGrowth(us){const el=$('growth'),ds=us.map(u=>Date.parse(u.created)).filter(Boolean).sort((a,b)=>a-b);
+  if(ds.length<1){el.innerHTML='<p class="empty">Aún no hay datos</p>';return}
+  const day=t=>{const d=new Date(t);d.setHours(0,0,0,0);return+d},t0=day(ds[0]),t1=Math.max(day(Date.now()),t0+6*DAY),pts=[];
+  for(let t=t0,i=0;t<=t1;t+=DAY){while(i<ds.length&&day(ds[i])<=t)i++;pts.push([t,i])}
+  const W=el.clientWidth||340,H=150,T=26,B=22,max=Math.max(2,ds.length),x=t=>(t-t0)/(t1-t0)*W,y=v=>T+(H-T-B)*(1-v/max);
+  const line=pts.map((p,i)=>`${i?'L':'M'}${x(p[0]).toFixed(1)} ${y(p[1]).toFixed(1)}`).join(''),last=pts[pts.length-1];
+  $('grLbl').textContent=`desde ${dShort(t0)}`;
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Personas en total por día: de 1 a ${ds.length}">
+    <line x1="0" x2="${W}" y1="${H-B}" y2="${H-B}" stroke="var(--rule-2)" stroke-width="1"/>
+    <path d="${line}L${W} ${H-B}L0 ${H-B}Z" fill="var(--acc)" fill-opacity=".12"/>
+    <path d="${line}" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+    <circle cx="${x(last[0])}" cy="${y(last[1])}" r="4" fill="var(--acc)" stroke="var(--bg)" stroke-width="2"/>
+    <text x="${x(last[0])-8}" y="${y(last[1])-10}" text-anchor="end" fill="var(--ink)" font-family="var(--disp)" font-size="15" font-weight="600">${last[1]}</text>
+    <text x="0" y="${H-4}" fill="var(--ink-3)" font-family="var(--mono)" font-size="10">${dShort(t0).toUpperCase()}</text>
+    <text x="${W}" y="${H-4}" text-anchor="end" fill="var(--ink-3)" font-family="var(--mono)" font-size="10">HOY</text>
+    <line class="cx" x1="0" x2="0" y1="${T-6}" y2="${H-B}" stroke="var(--ink-3)" stroke-width="1" visibility="hidden"/>
+    <circle class="cd" r="5" fill="var(--ink)" stroke="var(--bg)" stroke-width="2" visibility="hidden"/></svg><div class="tip"></div>`;
+  const svg=el.querySelector('svg'),cx=svg.querySelector('.cx'),cd=svg.querySelector('.cd'),tip=el.querySelector('.tip');
+  const show=e=>{const r=el.getBoundingClientRect(),px=Math.min(Math.max(e.clientX-r.left,0),r.width),i=Math.round(px/r.width*(pts.length-1)),p=pts[i],X=x(p[0]);
+    cx.setAttribute('x1',X);cx.setAttribute('x2',X);cx.setAttribute('visibility','visible');cd.setAttribute('cx',X);cd.setAttribute('cy',y(p[1]));cd.setAttribute('visibility','visible');
+    tip.textContent=`${p[1]} persona${p[1]===1?'':'s'} · ${dShort(p[0])}`;tip.style.left=Math.min(Math.max(X/W*r.width,70),r.width-70)+'px';el.classList.add('hov')};
+  const hide=()=>{cx.setAttribute('visibility','hidden');cd.setAttribute('visibility','hidden');el.classList.remove('hov')};
+  el.onpointerdown=el.onpointermove=show;el.onpointerleave=el.onpointerup=el.onpointercancel=hide}
 async function share(text,url){
   try{if(navigator.share){await navigator.share(url?{title:'Hábitos',text,url}:{text});return}}catch{return}
   const all=url?text+'\n'+url:text;try{await navigator.clipboard.writeText(all);toast('Mensaje copiado')}catch{prompt('Copia el mensaje',all)}}
@@ -1019,12 +1131,19 @@ ${link}
 $('invForm').onsubmit=async e=>{e.preventDefault();const n=$('invIn').value.trim();if(!n)return;
   try{const v=await api('/api/invite',{method:'POST',body:JSON.stringify({name:n})});$('invIn').value='';buzz([10,30,10]);
     await loadMembers();share(inviteMsg(v.name,v.link))}catch(x){toast(x.message)}};
-$('members').onclick=async e=>{const b=e.target.closest('[data-a]');if(!b)return;const li=b.closest('.row'),n=li.dataset.name,a=b.dataset.a;
-  try{
-    if(a==='send')return share(inviteMsg(n,li.dataset.link));
-    if(a==='reset'){const r=await api('/api/invite',{method:'POST',body:JSON.stringify({reset:li.dataset.id})});return share(`${n}, entra aquí para elegir una contraseña nueva:`,r.link)}
-    if(a==='cancel'){await api('/api/invite?invite='+encodeURIComponent(li.dataset.inv),{method:'DELETE'});return collapse(li,loadMembers)}
-    if(a==='del'&&confirm(`¿Quitar a ${n}? Se borrarán sus datos.`)){await api('/api/invite?user='+encodeURIComponent(li.dataset.id),{method:'DELETE'});collapse(li,loadMembers)}
+$('invList').onclick=async e=>{const b=e.target.closest('[data-a]');if(!b)return;const li=b.closest('.row'),n=li.dataset.name;
+  try{if(b.dataset.a==='send')return share(inviteMsg(n,li.dataset.link));
+    await api('/api/invite?invite='+encodeURIComponent(li.dataset.inv),{method:'DELETE'});collapse(li,loadMembers)}catch(x){toast(x.message)}};
+$('members').onclick=async e=>{const li=e.target.closest('.row');if(!li)return;const b=e.target.closest('[data-a]'),n=li.dataset.name,id=li.dataset.id,first=n.split(' ')[0];
+  // tocar una persona abre sus acciones
+  if(!b){const m=li.querySelector('.more');if(m){m.hidden=!m.hidden;li.classList.toggle('open',!m.hidden);buzz(4)}return}
+  const post=body=>api('/api/invite',{method:'POST',body:J(body)});
+  try{const a=b.dataset.a;
+    if(a==='reset'){const r=await post({reset:id});return share(`${n}, entra aquí para elegir una contraseña nueva:`,r.link)}
+    if(a==='signout'&&confirm(`¿Cerrar la sesión de ${first} en todos sus dispositivos? Tendrá que volver a entrar con su contraseña.`)){await post({signout:id});toast(`Sesiones de ${first} cerradas`)}
+    if(a==='pause'&&confirm(`¿Pausar el acceso de ${first}? No podrá entrar hasta que lo reactives. Sus datos se guardan.`)){await post({suspend:id,on:true});toast(`Acceso de ${first} pausado`);loadMembers()}
+    if(a==='resume'){await post({suspend:id,on:false});toast(`${first} puede volver a entrar`);loadMembers()}
+    if(a==='del'&&confirm(`¿Eliminar a ${n}? Se borrarán su cuenta y todos sus datos. No se puede deshacer.`)){await api('/api/invite?user='+encodeURIComponent(id),{method:'DELETE'});collapse(li,loadMembers)}
   }catch(x){toast(x.message)}};
 
 /* ---------------- acceso: entrar, crear cuenta, olvidé, restablecer ---------------- */
@@ -1254,7 +1373,14 @@ $('stepsGoalIn').onchange=()=>{const v=parseInt($('stepsGoalIn').value.replace(/
 function renderAll(anim){renderHab(anim);renderTasks();renderMac();renderCuenta();
   for(const[id,k]of[['calG','g'],['calA','a']])if(document.activeElement!==$(id))$(id).value=(S.cals||{})[k]||'';renderAgenda();
   if(document.activeElement!==$('stepsGoalIn'))$('stepsGoalIn').value=S.stepsGoal||'';renderSteps()}
-document.addEventListener('visibilitychange',()=>{if(!document.hidden){renderAll();Promise.resolve(pull()).then(()=>loadAgenda());checkPeople();loadSteps()}});
+// Aviso de versión nueva: version.json dice desde qué versión hay que actualizar («aviso»).
+// Solo se sube «aviso» en cambios importantes; el resto llega solo al abrir la app.
+const APP_V=38;let verAt=0;
+async function checkVersion(){if(Date.now()-verAt<5*6e4)return;verAt=Date.now();
+  try{const j=await(await fetch('/version.json',{cache:'no-store'})).json();if(j.aviso>APP_V&&$('upd').hidden){$('upd').hidden=false;buzz([10,40,10])}}catch{}}
+$('updGo').onclick=async()=>{$('updGo').textContent='Actualizando…';flush();try{await(await navigator.serviceWorker?.getRegistration())?.update()}catch{}
+  setTimeout(()=>location.reload(),400)};
+document.addEventListener('visibilitychange',()=>{if(document.hidden)return flush();checkVersion();if(!document.hidden){renderAll();Promise.resolve(pull()).then(()=>loadAgenda());checkPeople();loadSteps()}});
 
 /* ---------------- arranque ---------------- */
 // objetivos siempre al día con el método actual, aunque se guardaran con una versión anterior
@@ -1276,7 +1402,7 @@ renderAll(true);requestAnimationFrame(moveInd);
       if(AUTH&&j.user)setAuth({...AUTH,user:j.user});
       if(!AUTH)return showGate(j.setup?'setup':'login')}
   }catch{}
-  renderAll();Promise.resolve(pull()).then(()=>loadAgenda());checkPeople();loadSteps();
+  renderAll();Promise.resolve(pull()).then(()=>loadAgenda());checkPeople();loadSteps();checkVersion();
 })();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');
 </script>
