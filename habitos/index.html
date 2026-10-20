@@ -348,6 +348,45 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
 .priv{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:26px;font:500 10.5px/1 var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3)}
 .priv svg{color:var(--acc);flex:none}
 .privl{list-style:none}
+/* selector de fecha */
+.dp{position:fixed;z-index:35;width:296px;background:var(--bg-2);border:1px solid var(--rule-2);border-radius:20px;padding:14px;box-shadow:0 24px 70px rgba(0,0,0,.6);
+  animation:dpIn .35s var(--spring) both;transform-origin:var(--ox,50%) var(--oy,0)}
+@keyframes dpIn{from{opacity:0;transform:scale(.94) translateY(-4px)}}
+.dp-q{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.dp-q button{font:500 12px/1 var(--sans);color:var(--ink-2);background:var(--bg-3);border-radius:10px;padding:9px 0}
+.dp-h{display:flex;align-items:center;justify-content:space-between;margin:14px 2px 8px}
+.dp-h b{font:600 15px/1 var(--disp);letter-spacing:-.01em;text-transform:capitalize}
+.dp-n{width:30px;height:30px;border-radius:50%;color:var(--ink-2);font-size:20px;line-height:1}
+.dp-w,.dp-g{display:grid;grid-template-columns:repeat(7,1fr);text-align:center}
+.dp-w span{font:500 10px/1 var(--mono);color:var(--ink-3);padding:6px 0}
+.dp-g button{height:36px;border-radius:50%;font:450 14px/1 var(--sans);font-variant-numeric:tabular-nums;color:var(--ink)}
+.dp-g button.out{color:var(--ink-3)}.dp-g button.past{color:var(--ink-3)}
+.dp-g button.t{box-shadow:inset 0 0 0 1.5px var(--ink-3)}
+.dp-g button.on{background:var(--ink);color:var(--bg);font-weight:600}
+.dp-f{display:flex;justify-content:flex-end;margin-top:8px;padding-top:10px;border-top:1px solid var(--rule)}
+.dp-f button{font-size:13px;color:var(--ink-2);padding:6px 4px}
+/* calendario */
+.cal-nav{display:flex;align-items:center;gap:8px;margin-top:6px}
+#cTitle{text-transform:capitalize}
+.cal-dow{display:grid;grid-template-columns:repeat(7,1fr);margin-top:24px;padding-bottom:8px;border-bottom:1px solid var(--rule)}
+.cal-dow span{font:500 10.5px/1 var(--mono);color:var(--ink-3);text-align:center}
+.cal-g{display:grid;grid-template-columns:repeat(7,1fr)}
+.cc{min-height:58px;padding:6px 2px 6px;border-bottom:1px solid var(--rule);display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;min-width:0;position:relative}
+.cc .cn{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:450 14px/1 var(--sans);font-variant-numeric:tabular-nums}
+.cc.out .cn{color:var(--ink-3)}
+.cc.t .cn{box-shadow:inset 0 0 0 1.5px var(--ink-2)}
+.cc.sel .cn{background:var(--ink);color:var(--bg);font-weight:600}
+.cc .dots{display:flex;gap:3px;height:5px}
+.cc .dots i{width:5px;height:5px;border-radius:50%;background:var(--ink-2)}
+.cc .dots i.ev{background:var(--acc)}.cc .dots i.late{background:var(--warn)}.cc .dots i.done{background:var(--ink-4)}
+.cc .ci{display:none}
+.cc.drop{background:rgba(156,195,180,.08)}
+.cal-day{margin-top:26px}
+.cal-day .add{margin-top:12px}
+.cal-day .row.ev .n{color:var(--acc)}
+/* pestañas: hay 5, en el móvil se estrechan un poco */
+@media (max-width:959px){.tabs .tb{width:52px}.tabs .tb span{letter-spacing:-.02em}.mic{margin:0 4px}}
+
 .four{grid-template-columns:repeat(4,1fr)}
 .manf{margin-top:6px}
 .fbf textarea{width:100%;min-height:110px;margin-top:14px;padding:14px;border-radius:16px;background:var(--bg-2);font:400 16px/1.45 var(--sans);resize:none}
@@ -409,8 +448,8 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
   .mic{margin:10px 0}
   /* nota de voz y recordatorio: ventana centrada en vez de hoja desde abajo */
   .sheet{left:50%;right:auto;top:50%;bottom:auto;width:min(580px,92vw);max-width:none;margin:0;border-radius:28px;padding:18px 30px 28px;
-    transform:translate(-50%,-46%) scale(.96);opacity:0;pointer-events:none;transition:transform .5s var(--spring),opacity .25s;box-shadow:0 40px 120px rgba(0,0,0,.6)}
-  .sheet.on{transform:translate(-50%,-50%);opacity:1;pointer-events:auto}
+    transform:translate(-50%,-46%) scale(.96);opacity:0;visibility:hidden;pointer-events:none;transition:transform .5s var(--spring),opacity .25s,visibility 0s .5s;box-shadow:0 40px 120px rgba(0,0,0,.6)}
+  .sheet.on{transform:translate(-50%,-50%);opacity:1;visibility:visible;pointer-events:auto;transition:transform .5s var(--spring),opacity .25s,visibility 0s}
   .grabzone{display:none}
   body.modal .app{transform:scale(.97);border-radius:0}
   /* panel de admin: cajón a la derecha, la app se queda quieta detrás */
@@ -419,14 +458,28 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
   .upd{place-items:center}
   .gate{max-width:520px;border-left:1px solid var(--rule);border-right:1px solid var(--rule)}
   .toast{top:24px}
+  body.wide .app{max-width:1120px}
+  .cal-g{border-left:1px solid var(--rule)}
+  .cc{min-height:112px;align-items:stretch;padding:6px;border-right:1px solid var(--rule);gap:3px}
+  .cc .cn{width:26px;height:26px;font-size:13px;align-self:flex-end}
+  .cc .dots{display:none}
+  .cc .ci{display:flex;flex-direction:column;gap:3px;min-width:0}
+  .cc .it{font:450 12px/1.25 var(--sans);padding:3px 6px;border-radius:6px;background:var(--bg-3);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:grab}
+  .cc .it.ev{background:rgba(156,195,180,.12);color:var(--ink-2);cursor:pointer}
+  .cc .it.late{color:var(--warn)}.cc .it.done{color:var(--ink-3);text-decoration:line-through;background:none}
+  .cc .more{font:500 10.5px/1 var(--mono);color:var(--ink-3);padding:2px 6px}
+  .cc.sel{background:rgba(242,239,232,.03)}
+  .cal-day{display:grid;grid-template-columns:1fr 1fr;gap:0 40px}
+  .cal-day>h2,.cal-day>.add{grid-column:1/-1}
 }
 @media (hover:hover) and (pointer:fine){
   .tabs .tb:hover{color:var(--ink-2)}.tabs .tb.on:hover{color:var(--ink)}
   .btn,.chip,.teaser,.lnk,.back{transition:opacity .2s,background-color .2s,color .2s}
   .btn:hover{opacity:.88}.chip:hover{background:var(--ink-4);color:var(--ink)}
   .teaser:hover b,.lnk:hover,.back:hover{color:var(--ink)}
-  .row>.in{transition:background-color .2s}
-  .row:hover>.in{background:linear-gradient(90deg,transparent,rgba(242,239,232,.025) 12%,rgba(242,239,232,.025) 88%,transparent)}
+  .row>.in{transition:transform .5s var(--spring),background .2s}
+  /* el fondo sigue siendo opaco: debajo está la capa roja de «Borrar» */
+  .row:hover>.in{background:linear-gradient(90deg,transparent,rgba(242,239,232,.03) 12%,rgba(242,239,232,.03) 88%,transparent),var(--bg)}
   .mic:hover{transform:scale(1.06)}
   ::-webkit-scrollbar{width:10px}::-webkit-scrollbar-thumb{background:var(--bg-3);border-radius:10px;border:3px solid #000}::-webkit-scrollbar-track{background:#000}
 }
@@ -505,6 +558,19 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
     </form>
     <div id="agenda"></div>
     <div id="taskList"></div>
+  </section>
+
+  <!-- CALENDARIO: mes con tareas y eventos; el día elegido debajo -->
+  <section class="view" id="v-cal">
+    <div class="top">
+      <div><div class="lbl" id="cLbl">Calendario</div><h1 id="cTitle"></h1></div>
+      <div class="cal-nav"><button class="chip" id="cToday">Hoy</button>
+        <button class="ibtn" id="cPrev" aria-label="Mes anterior"><svg width="9" height="14" viewBox="0 0 10 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2 2 8l6 6"/></svg></button>
+        <button class="ibtn" id="cNext" aria-label="Mes siguiente"><svg width="9" height="14" viewBox="0 0 10 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 2 6 6-6 6"/></svg></button></div>
+    </div>
+    <div class="cal-dow"><span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
+    <div class="cal-g" id="calG"></div>
+    <div class="cal-day" id="calDay"></div>
   </section>
 
   <!-- MACROS -->
@@ -671,7 +737,7 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
     </div>
     <footer class="credit">
       <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
-      <div class="lbl">Hábitos · 2026 · v43</div>
+      <div class="lbl">Hábitos · 2026 · v44</div>
     </footer>
   </section>
 </div>
@@ -712,10 +778,20 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
   <p class="upd-h">Si no cambia, cierra la app del todo y vuelve a abrirla.</p>
 </div></div>
 
+<!-- selector de fecha: atajos, mes y «sin fecha» -->
+<div class="dp" id="dp" hidden>
+  <div class="dp-q"><button data-q="0">Hoy</button><button data-q="1">Mañana</button><button data-q="mon">Lunes</button><button data-q="7">+1 sem</button></div>
+  <div class="dp-h"><button class="dp-n" data-m="-1" aria-label="Mes anterior">‹</button><b id="dpM"></b><button class="dp-n" data-m="1" aria-label="Mes siguiente">›</button></div>
+  <div class="dp-w"><span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
+  <div class="dp-g" id="dpG"></div>
+  <div class="dp-f"><button id="dpClr">Quitar fecha</button></div>
+</div>
+
 <nav class="tabs" id="tabs">
   <i class="ind" id="ind"></i>
   <button class="tb on" data-v="hab"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8.5"/><path d="m8.5 12 2.5 2.5 4.5-5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Hábitos</span></button>
   <button class="tb" data-v="tar"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg><span>Tareas</span></button>
+  <button class="tb" data-v="cal"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Calendario</span></button>
   <button class="mic" id="micBtn" aria-label="Nota de voz"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></button>
   <button class="tb" data-v="mac"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16"/><circle cx="12" cy="12" r="3"/></svg><span>Macros</span></button>
   <button class="tb" data-v="cue"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c1-3.6 3.8-5.5 7-5.5s6 1.9 7 5.5"/></svg><span>Cuenta</span></button>
@@ -982,6 +1058,7 @@ function setWhen(w){when=w;document.querySelectorAll('#when .chip').forEach(c=>c
 // los chips no roban el foco: el teclado sigue abierto mientras eliges cuándo
 $('when').addEventListener('pointerdown',e=>{if(e.target.closest('[data-w]'))e.preventDefault()});
 $('when').onclick=e=>{const c=e.target.closest('[data-w]');if(c){setWhen(c.dataset.w);buzz(4)}};
+$('wPick').addEventListener('click',e=>{e.preventDefault();openDP($('wPick'),pickDate,k=>{pickDate=k;setWhen(k?'fecha':'hoy');$('taskIn').focus()})});
 $('taskDate').onchange=e=>{pickDate=e.target.value||null;setWhen(pickDate?'fecha':'hoy');$('taskIn').focus()};
 $('taskIn').oninput=()=>$('taskForm').classList.toggle('has',!!$('taskIn').value.trim());
 $('taskIn').addEventListener('keydown',e=>{if(e.key==='Enter'||e.keyCode===13){e.preventDefault();$('taskForm').requestSubmit?$('taskForm').requestSubmit():$('taskForm').onsubmit(e)}});
@@ -1005,11 +1082,33 @@ function renderTasks(fresh){
       ${x.done?'':`<button class="bell ${x.rem?'on':''}" data-a="rem" aria-label="Recordatorio"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>${x.rem?`<span>${x.rem.h}</span>`:''}</button><button class="pill ${x.date&&x.date<t?'late':''}" data-a="when">${x.date?fmtDay(x.date):'Sin fecha'}</button>`}
     </div></li>`).join(''):`<li class="empty">Nada para hoy. Escribe arriba y pulsa Intro.</li>`}</ul></div>`).join('');
 }
+/* ---------------- selector de fecha (tipo Asana) ---------------- */
+let dpCb=null,dpCur=null,dpM=null;
+const MONL=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+function openDP(anchor,cur,cb){dpCb=cb;dpCur=cur||null;const b=parse(cur||today());dpM=new Date(b.getFullYear(),b.getMonth(),1);renderDP();
+  const dp=$('dp');dp.hidden=false;const r=anchor.getBoundingClientRect(),W=dp.offsetWidth,H=dp.offsetHeight;
+  let x=Math.min(Math.max(8,r.right-W),innerWidth-W-8),y=r.bottom+8;if(y+H>innerHeight-8)y=Math.max(8,r.top-H-8);
+  dp.style.left=x+'px';dp.style.top=y+'px';dp.style.setProperty('--ox',(r.left+r.width/2-x)+'px');dp.style.setProperty('--oy',y>r.top?'0':'100%');buzz(4)}
+function closeDP(){$('dp').hidden=true;dpCb=null}
+function renderDP(){const y=dpM.getFullYear(),m=dpM.getMonth(),t=today();$('dpM').textContent=`${MONL[m]} ${y}`;
+  const start=new Date(y,m,1-((new Date(y,m,1).getDay()+6)%7));let h='';
+  for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);const k=key(d);
+    h+=`<button data-k="${k}" class="${d.getMonth()!==m?'out':''} ${k<t?'past':''} ${k===t?'t':''} ${k===dpCur?'on':''}">${d.getDate()}</button>`}
+  $('dpG').innerHTML=h}
+const pickDP=k=>{const cb=dpCb;closeDP();cb&&cb(k)};
+$('dp').onclick=e=>{const n=e.target.closest('[data-m]');if(n){dpM.setMonth(dpM.getMonth()+ +n.dataset.m);return renderDP()}
+  const g=e.target.closest('[data-k]');if(g)return pickDP(g.dataset.k);
+  const q=e.target.closest('[data-q]');if(q){const t=today(),v=q.dataset.q;
+    if(v==='mon'){const d=parse(t);return pickDP(addDays(t,((8-d.getDay())%7)||7))}return pickDP(addDays(t,+v))}
+  if(e.target.closest('#dpClr'))pickDP(null)};
+document.addEventListener('pointerdown',e=>{if(!$('dp').hidden&&!e.target.closest('#dp')&&!e.target.closest('[data-a=when],#wPick,.cal-day .pill'))closeDP()},true);
+addEventListener('resize',closeDP);
+function setTaskDate(x,k){x.date=k;save();buzz(5);renderTasks();renderProg();if($('v-cal').classList.contains('on'))renderCal()}
+
 $('taskList').onclick=e=>{const li=e.target.closest('.row');if(!li||li._swiped)return;const x=S.tasks.find(y=>y.id===li.dataset.id);if(!x)return;
-  // la fecha rota con un toque: hoy → mañana → sin fecha
   if(e.target.closest('[data-a=rem]'))return openRem(x);
-  if(e.target.closest('[data-a=when]')){const t=today();x.date=x.date===t?addDays(t,1):x.date===addDays(t,1)?null:t;save();buzz(5);
-    e.target.closest('.pill').textContent=x.date?fmtDay(x.date):'Sin fecha';clearTimeout(li._t);li._t=setTimeout(()=>{renderTasks();renderProg()},900);return}
+  // la fecha abre el selector (atajos + mes), como en Asana
+  const pl=e.target.closest('[data-a=when]');if(pl)return openDP(pl,x.date,k=>setTaskDate(x,k));
   // tocar el texto lo edita en el sitio
   const tt=e.target.closest('.t');if(tt&&!x.done){tt.contentEditable='true';tt.focus();
     const r=document.createRange();r.selectNodeContents(tt);r.collapse(false);const s=getSelection();s.removeAllRanges();s.addRange(r);
@@ -1021,6 +1120,53 @@ $('taskList').onclick=e=>{const li=e.target.closest('.row');if(!li||li._swiped)r
 swipeable($('taskList'),li=>{const x=S.tasks.find(y=>y.id===li.dataset.id);if(!x)return;const i=S.tasks.indexOf(x);
   collapse(li,()=>{S.tasks.splice(i,1);save();renderTasks();renderProg()});buzz(12);
   toast('Tarea borrada',()=>{S.tasks.splice(i,0,x);save();renderTasks();renderProg()})});
+
+/* ---------------- calendario ---------------- */
+let calM=null,calSel=null,calmAt={};
+const calStart=()=>{const y=calM.getFullYear(),m=calM.getMonth();return key(new Date(y,m,1-((new Date(y,m,1).getDay()+6)%7)))};
+const DOWL=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+// eventos de Google/Apple para las 6 semanas visibles (se piden como mucho cada 5 min por mes)
+async function loadCalMonth(force){if(!AUTH||!calUrls().length)return;const from=calStart();
+  if(!force&&Date.now()-(calmAt[from]||0)<5*6e4)return;calmAt[from]=Date.now();
+  try{const r=await api('/api/cal',{method:'POST',body:J({urls:calUrls(),tz:Intl.DateTimeFormat().resolvedOptions().timeZone,from,days:42})});
+    const c=LS.get('calm',{});c[from]={ev:r.events||[]};const ks=Object.keys(c).sort();while(ks.length>4)delete c[ks.shift()];LS.set('calm',c);renderCal()}catch{}}
+function calEvents(){const c=LS.get('calm',{})[calStart()];return c?.ev||[]}
+function renderCal(){if(!calM){const t=parse(today());calM=new Date(t.getFullYear(),t.getMonth(),1);calSel=today()}
+  const m=calM.getMonth(),t=today(),st=calStart(),ev=calEvents();
+  $('cTitle').textContent=`${MONL[m]} ${calM.getFullYear()}`;
+  const open=S.tasks.filter(x=>x.date);$('cLbl').textContent=`${S.tasks.filter(x=>!x.done&&x.date&&x.date<t).length?S.tasks.filter(x=>!x.done&&x.date&&x.date<t).length+' atrasadas · ':''}Calendario`;
+  let h='';
+  for(let i=0;i<42;i++){const k=addDays(st,i),d=parse(k),ts=open.filter(x=>x.date===k),es=ev.filter(e=>e.d===k);
+    const items=[...es.map(e=>({ev:1,e})),...ts.filter(x=>!x.done).map(x=>({x})),...ts.filter(x=>x.done).map(x=>({x}))];
+    const it=items.slice(0,3).map(o=>o.ev?`<div class="it ev" title="${esc(o.e.t)}">${o.e.h?o.e.h+' ':''}${esc(o.e.t)}</div>`
+      :`<div class="it ${o.x.done?'done':''} ${!o.x.done&&k<t?'late':''}" draggable="true" data-id="${o.x.id}" title="${esc(o.x.t)}">${esc(o.x.t)}</div>`).join('');
+    const dots=items.slice(0,4).map(o=>`<i class="${o.ev?'ev':o.x.done?'done':k<t?'late':''}"></i>`).join('');
+    h+=`<div class="cc ${d.getMonth()!==m?'out':''} ${k===t?'t':''} ${k===calSel?'sel':''}" data-k="${k}"><span class="cn">${d.getDate()}</span><div class="dots">${dots}</div><div class="ci">${it}${items.length>3?`<span class="more">+${items.length-3} más</span>`:''}</div></div>`}
+  $('calG').innerHTML=h;renderCalDay()}
+function renderCalDay(){const k=calSel,d=parse(k),t=today(),ts=S.tasks.filter(x=>x.date===k),es=calEvents().filter(e=>e.d===k);
+  const h0=`${k===t?'Hoy · ':k===addDays(t,1)?'Mañana · ':''}${DOWL[d.getDay()]} ${d.getDate()} de ${MONL[d.getMonth()]}`,head=h0[0].toUpperCase()+h0.slice(1);
+  const row=x=>`<li class="row ${x.done?'done':''}" data-id="${x.id}"><div class="in"><span class="ck">${CHECK}</span><div class="tx"><div class="t">${esc(x.t)}</div></div>${x.done?'':`<button class="pill ${k<t?'late':''}" data-a="move">${fmtDay(k)}</button>`}</div></li>`;
+  const none=S.tasks.filter(x=>!x.done&&!x.date);
+  $('calDay').innerHTML=`<h2>${head}</h2>
+    <form class="add" id="calAdd"><input type="text" id="calIn" placeholder="Añadir tarea para este día" autocomplete="off" enterkeyhint="send"><button class="chip">Añadir</button></form>
+    <div class="grp"><span class="lbl"><span>Tareas</span><span>${ts.length||''}</span></span><ul class="rows" id="calTasks">${ts.length?ts.map(row).join(''):'<li class="empty">Nada este día.</li>'}</ul></div>
+    <div>${es.length?`<div class="grp"><span class="lbl"><span>Eventos</span><span>${es.length}</span></span><ul class="rows">${es.map(e=>`<li class="row ev"><div class="in"><span class="n">${e.h||'Día'}</span><div class="tx"><div class="t">${esc(e.t)}</div></div><i class="src ${e.src==='g'?'g':''}"></i></div></li>`).join('')}</ul></div>`:''}
+    ${none.length?`<div class="grp"><span class="lbl"><span>Sin fecha · arrastra o pon fecha</span><span>${none.length}</span></span><ul class="rows" id="calNone">${none.map(x=>`<li class="row" data-id="${x.id}" draggable="true"><div class="in"><span class="ck">${CHECK}</span><div class="tx"><div class="t">${esc(x.t)}</div></div><button class="pill" data-a="move">Sin fecha</button></div></li>`).join('')}</ul></div>`:''}</div>`;
+  $('calAdd').onsubmit=e=>{e.preventDefault();const v=$('calIn').value.trim();if(!v)return;S.tasks.push({id:uid(),t:v,date:k,done:false});save();buzz(8);renderCal();renderTasks();renderProg();$('calIn').focus()}}
+$('calG').onclick=e=>{const c=e.target.closest('.cc');if(!c)return;calSel=c.dataset.k;const d=parse(calSel);
+  if(d.getMonth()!==calM.getMonth()){calM=new Date(d.getFullYear(),d.getMonth(),1);loadCalMonth()}buzz(4);renderCal()};
+$('calDay').onclick=e=>{const li=e.target.closest('.row[data-id]');if(!li)return;const x=S.tasks.find(y=>y.id===li.dataset.id);if(!x)return;
+  const pl=e.target.closest('[data-a=move]');if(pl)return openDP(pl,x.date,k=>setTaskDate(x,k));
+  if(e.target.closest('.ck')){x.done=!x.done;x.doneAt=x.done?today():null;buzz(x.done?[10,30,10]:6);save();renderCal();renderTasks();renderProg()}};
+$('cPrev').onclick=()=>{calM.setMonth(calM.getMonth()-1);renderCal();loadCalMonth()};
+$('cNext').onclick=()=>{calM.setMonth(calM.getMonth()+1);renderCal();loadCalMonth()};
+$('cToday').onclick=()=>{const t=parse(today());calM=new Date(t.getFullYear(),t.getMonth(),1);calSel=today();renderCal();loadCalMonth()};
+// escritorio: arrastrar una tarea a otro día
+document.addEventListener('dragstart',e=>{const it=e.target.closest?.('[draggable][data-id]');if(it)e.dataTransfer.setData('text/x-task',it.dataset.id)});
+$('calG').addEventListener('dragover',e=>{const c=e.target.closest('.cc');if(!c)return;e.preventDefault();document.querySelectorAll('.cc.drop').forEach(x=>x!==c&&x.classList.remove('drop'));c.classList.add('drop')});
+$('calG').addEventListener('dragleave',e=>{const c=e.target.closest('.cc');if(c&&!c.contains(e.relatedTarget))c.classList.remove('drop')});
+$('calG').addEventListener('drop',e=>{const c=e.target.closest('.cc'),id=e.dataTransfer.getData('text/x-task');if(!c||!id)return;e.preventDefault();
+  const x=S.tasks.find(y=>y.id===id);if(x){calSel=c.dataset.k;setTaskDate(x,c.dataset.k);toast(`Movida a ${fmtDay(c.dataset.k)}`)}});
 
 /* ---------------- macros ---------------- */
 let current=null;
@@ -1374,7 +1520,11 @@ async function organize(){const btn=$('vGo');if(btn.disabled)return;btn.disabled
   finally{$('sheet').classList.remove('thinking');btn.textContent='Listo';btn.disabled=false}}
 $('micBtn').onclick=openVoice;$('veil').onclick=()=>{closeVoice();closeRem()};
 // teclado (escritorio): Esc cierra lo que esté abierto
-addEventListener('keydown',e=>{if(e.key!=='Escape')return;
+// atajos: 1-5 pestañas, N nueva tarea (si no estás escribiendo)
+addEventListener('keydown',e=>{if(e.metaKey||e.ctrlKey||e.altKey||/INPUT|TEXTAREA/.test(document.activeElement?.tagName)||document.activeElement?.isContentEditable)return;
+  if(!$('gate').classList.contains('on')&&!document.body.classList.contains('modal')){const v={1:'hab',2:'tar',3:'cal',4:'mac',5:'cue'}[e.key];if(v)return go(v);
+    if(e.key==='n'||e.key==='N'){e.preventDefault();go('tar');setTimeout(()=>$('taskIn').focus(),60)}}});
+addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!$('dp').hidden)return closeDP();
   if($('sheet').classList.contains('on'))return closeVoice();if($('rSheet').classList.contains('on'))return closeRem();if(admOn())closeAdm()});
 
 /* ---------------- recordatorios: evento con aviso en el calendario de cada persona ---------------- */
@@ -1443,7 +1593,8 @@ function moveInd(){const on=document.querySelector('.tb.on'),ind=$('ind');if(!on
 function go(v){if(document.querySelector('.view.on')?.id==='v-'+v)return;
   document.querySelectorAll('.tb').forEach(x=>x.classList.toggle('on',x.dataset.v===v));moveInd();
   document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v));window.scrollTo(0,0);buzz(4);
-  if(v==='hab')renderHab(true);if(v==='tar'){renderTasks();loadAgenda()}if(v==='mac')renderMac();if(v==='cue')loadMembers()}
+  if(v==='hab')renderHab(true);if(v==='tar'){renderTasks();loadAgenda()}if(v==='mac')renderMac();if(v==='cue')loadMembers();
+  if(v==='cal'){renderCal();loadCalMonth()}document.body.classList.toggle('wide',v==='cal');closeDP()}
 document.querySelectorAll('.tb').forEach(b=>b.onclick=()=>go(b.dataset.v));
 addEventListener('resize',moveInd);
 /* ---------------- calendarios de Google / Apple (solo lectura) ---------------- */
@@ -1492,12 +1643,12 @@ async function runSteps(){
 $('stepsBtn').onclick=()=>{if(LS.get('stepsSC',false))return runSteps();$('stepsSetup').hidden=!$('stepsSetup').hidden;buzz(6)};
 $('stepsOk').onclick=()=>{LS.set('stepsSC',true);$('stepsSetup').hidden=true;runSteps()};
 $('stepsGoalIn').onchange=()=>{const v=parseInt($('stepsGoalIn').value.replace(/\D/g,''),10);S.stepsGoal=v>0?Math.min(v,100000):null;save();renderSteps()};
-function renderAll(anim){renderHab(anim);renderTasks();renderMac();renderCuenta();
+function renderAll(anim){renderHab(anim);renderTasks();renderMac();renderCuenta();if($('v-cal').classList.contains('on'))renderCal();
   for(const[id,k]of[['calG','g'],['calA','a']])if(document.activeElement!==$(id))$(id).value=(S.cals||{})[k]||'';renderAgenda();
   if(document.activeElement!==$('stepsGoalIn'))$('stepsGoalIn').value=S.stepsGoal||'';renderSteps()}
 // Aviso de versión nueva: version.json dice desde qué versión hay que actualizar («aviso»).
 // Solo se sube «aviso» en cambios importantes; el resto llega solo al abrir la app.
-const APP_V=43;let verAt=0;
+const APP_V=44;let verAt=0;
 async function checkVersion(){if(Date.now()-verAt<5*6e4)return;verAt=Date.now();
   try{const j=await(await fetch('/version.json',{cache:'no-store'})).json();if(j.aviso>APP_V&&$('upd').hidden){$('upd').hidden=false;buzz([10,40,10])}}catch{}}
 $('updGo').onclick=async()=>{$('updGo').textContent='Actualizando…';flush();try{await(await navigator.serviceWorker?.getRegistration())?.update()}catch{}

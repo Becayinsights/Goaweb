@@ -1,6 +1,6 @@
 // Lee los calendarios de la persona (enlace iCal de Google o calendario público de iCloud)
 // y devuelve sus eventos de los próximos días, con los repetidos ya desplegados. Solo lectura.
-// POST { urls: [..], tz: 'Europe/Madrid', from: 'YYYY-MM-DD', days: 2 }
+// POST { urls: [..], tz: 'Europe/Madrid', from: 'YYYY-MM-DD', days: 2 (máx. 42) }
 import { auth, fail, bad } from './_lib.js';
 export const config = { maxDuration: 20 };
 
@@ -158,7 +158,7 @@ export default async function handler(req, res) {
     const b = req.body || {};
     const tz = validTz(b.tz) ? b.tz : 'Europe/Madrid';
     const from = /^\d{4}-\d{2}-\d{2}$/.test(b.from) ? b.from : new Date().toISOString().slice(0, 10);
-    const days = Math.min(14, Math.max(1, +b.days || 2));
+    const days = Math.min(42, Math.max(1, +b.days || 2));   // hasta 6 semanas: la vista de mes
     const to = ymd(Date.parse(from + 'T00:00:00Z') + days * DAY);
     const urls = (Array.isArray(b.urls) ? b.urls : []).map(u => String(u).trim()).filter(u => OK.test(u)).slice(0, 4);
     const results = await Promise.all(urls.map(async u => {
