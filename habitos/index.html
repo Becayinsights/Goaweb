@@ -397,6 +397,39 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
 .toast button{font:600 13.5px/1 var(--sans);color:#1d6b55}
 .toast.long{white-space:normal;max-width:calc(100vw - 32px);width:max-content;border-radius:20px;line-height:1.35;text-align:center}
 
+/* ---------------- escritorio: barra lateral, columna más ancha y hojas centradas ---------------- */
+@media (min-width:960px){
+  .app{max-width:760px;padding:64px 56px 96px;min-height:100vh;box-shadow:0 0 0 1px var(--rule)}
+  h1{font-size:40px}
+  /* la barra de pestañas pasa a ser una columna fija a la izquierda */
+  .tabs{left:28px;top:50%;bottom:auto;transform:translateY(-50%);flex-direction:column;padding:8px;border-radius:34px}
+  .tabs .tb{width:68px;height:60px}
+  .tabs .tb span{font-size:10px}
+  .tabs .ind{transition:transform .6s var(--spring),width .6s var(--spring),top .6s var(--spring)}
+  .mic{margin:10px 0}
+  /* nota de voz y recordatorio: ventana centrada en vez de hoja desde abajo */
+  .sheet{left:50%;right:auto;top:50%;bottom:auto;width:min(580px,92vw);max-width:none;margin:0;border-radius:28px;padding:18px 30px 28px;
+    transform:translate(-50%,-46%) scale(.96);opacity:0;pointer-events:none;transition:transform .5s var(--spring),opacity .25s;box-shadow:0 40px 120px rgba(0,0,0,.6)}
+  .sheet.on{transform:translate(-50%,-50%);opacity:1;pointer-events:auto}
+  .grabzone{display:none}
+  body.modal .app{transform:scale(.97);border-radius:0}
+  /* panel de admin: cajón a la derecha, la app se queda quieta detrás */
+  .panel{left:auto;right:0;width:600px;max-width:100vw;margin:0;padding:40px 44px 60px;border-left:1px solid var(--rule)}
+  body.adm .app{transform:none;filter:brightness(.5)}
+  .upd{place-items:center}
+  .gate{max-width:520px;border-left:1px solid var(--rule);border-right:1px solid var(--rule)}
+  .toast{top:24px}
+}
+@media (hover:hover) and (pointer:fine){
+  .tabs .tb:hover{color:var(--ink-2)}.tabs .tb.on:hover{color:var(--ink)}
+  .btn,.chip,.teaser,.lnk,.back{transition:opacity .2s,background-color .2s,color .2s}
+  .btn:hover{opacity:.88}.chip:hover{background:var(--ink-4);color:var(--ink)}
+  .teaser:hover b,.lnk:hover,.back:hover{color:var(--ink)}
+  .row>.in{transition:background-color .2s}
+  .row:hover>.in{background:linear-gradient(90deg,transparent,rgba(242,239,232,.025) 12%,rgba(242,239,232,.025) 88%,transparent)}
+  .mic:hover{transform:scale(1.06)}
+  ::-webkit-scrollbar{width:10px}::-webkit-scrollbar-thumb{background:var(--bg-3);border-radius:10px;border:3px solid #000}::-webkit-scrollbar-track{background:#000}
+}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
@@ -638,7 +671,7 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
     </div>
     <footer class="credit">
       <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
-      <div class="lbl">Hábitos · 2026 · v42</div>
+      <div class="lbl">Hábitos · 2026 · v43</div>
     </footer>
   </section>
 </div>
@@ -1340,6 +1373,9 @@ async function organize(){const btn=$('vGo');if(btn.disabled)return;btn.disabled
   catch(x){$('vErr').textContent=x.message;$('sheet').classList.add('typing');$('vTitle').textContent='¿Lo intentamos otra vez?';$('vMic').textContent='Grabar'}
   finally{$('sheet').classList.remove('thinking');btn.textContent='Listo';btn.disabled=false}}
 $('micBtn').onclick=openVoice;$('veil').onclick=()=>{closeVoice();closeRem()};
+// teclado (escritorio): Esc cierra lo que esté abierto
+addEventListener('keydown',e=>{if(e.key!=='Escape')return;
+  if($('sheet').classList.contains('on'))return closeVoice();if($('rSheet').classList.contains('on'))return closeRem();if(admOn())closeAdm()});
 
 /* ---------------- recordatorios: evento con aviso en el calendario de cada persona ---------------- */
 let remTask=null,remBefore=0;
@@ -1461,7 +1497,7 @@ function renderAll(anim){renderHab(anim);renderTasks();renderMac();renderCuenta(
   if(document.activeElement!==$('stepsGoalIn'))$('stepsGoalIn').value=S.stepsGoal||'';renderSteps()}
 // Aviso de versión nueva: version.json dice desde qué versión hay que actualizar («aviso»).
 // Solo se sube «aviso» en cambios importantes; el resto llega solo al abrir la app.
-const APP_V=42;let verAt=0;
+const APP_V=43;let verAt=0;
 async function checkVersion(){if(Date.now()-verAt<5*6e4)return;verAt=Date.now();
   try{const j=await(await fetch('/version.json',{cache:'no-store'})).json();if(j.aviso>APP_V&&$('upd').hidden){$('upd').hidden=false;buzz([10,40,10])}}catch{}}
 $('updGo').onclick=async()=>{$('updGo').textContent='Actualizando…';flush();try{await(await navigator.serviceWorker?.getRegistration())?.update()}catch{}
