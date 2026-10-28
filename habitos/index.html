@@ -391,7 +391,16 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
 .dp-f{gap:10px;align-items:center}
 .dp-t{display:flex;align-items:center;gap:8px;margin-right:auto}
 .dp-t input{font:500 14px/1 var(--sans);color:var(--ink);background:var(--bg-3);border-radius:8px;padding:6px 8px;color-scheme:light dark}
-.caladd{display:block}
+.qa{width:300px}
+.qa h3{font:600 15px/1.2 var(--disp);letter-spacing:-.01em;margin:2px 2px 0}
+.qa .kseg{margin:10px 0;background:var(--bg-3)}
+.qa input[type=text]{width:100%;font:450 16px/1.3 var(--sans);color:var(--ink);background:var(--bg-3);border-radius:12px;padding:11px 12px}
+.qa .qf{display:flex;align-items:center;gap:8px;margin-top:10px}
+.qa input[type=time]{font:500 14px/1 var(--sans);color:var(--ink-2);background:var(--bg-3);border-radius:10px;padding:8px;width:104px;color-scheme:light dark;margin-right:auto}
+.qa .qf .chip:last-child{background:var(--ink);color:var(--bg);font-weight:600}
+.qa #qaX{background:none;color:var(--ink-2)}
+.cc{cursor:pointer}
+.qadd{margin:4px 0 2px}
 .caladd .kseg{margin:6px 0 4px;max-width:260px}
 .caline{display:flex;align-items:center;gap:8px}
 .caline #calIn{flex:1;min-width:0}
@@ -496,7 +505,8 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
   .cc .dots{display:none}
   .cc .ci{display:flex;flex-direction:column;gap:3px;min-width:0}
   .cc .it{font:450 12px/1.25 var(--sans);padding:3px 6px;border-radius:6px;background:var(--bg-3);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:grab}
-  .cc .it.ev{background:var(--ev-bg);color:var(--ink);cursor:pointer;border-left:3px solid var(--ev);border-radius:4px 6px 6px 4px}
+  .cc .it.ev{background:var(--ev-bg);color:var(--ink);cursor:pointer}
+  .cc .it.ev b{color:var(--ev)}
   .cc .it b{font-weight:600;font-variant-numeric:tabular-nums}
   .cc .it.tk{background:none;padding-left:2px;display:flex;align-items:center;gap:5px}
   .cc .it.tk i{flex:none;width:9px;height:9px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--ink-3)}
@@ -780,7 +790,7 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
     </div>
     <footer class="credit">
       <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
-      <div class="lbl">Hábitos · 2026 · v46</div>
+      <div class="lbl">Hábitos · 2026 · v47</div>
     </footer>
   </section>
 </div>
@@ -829,6 +839,13 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
   <div class="dp-g" id="dpG"></div>
   <div class="dp-f"><label class="dp-t"><span class="lbl">Hora</span><input type="time" id="dpTime"></label><button id="dpNoT">Sin hora</button><button id="dpClr">Quitar fecha</button></div>
 </div>
+
+<form class="dp qa" id="qa" hidden autocomplete="off">
+  <h3 id="qaH"></h3>
+  <div class="seg kseg" id="qaKind"><button type="button" data-v="task">Tarea</button><button type="button" data-v="event">Evento</button><i></i></div>
+  <input type="text" id="qaIn" enterkeyhint="send" aria-label="Qué">
+  <div class="qf"><input type="time" id="qaTime" aria-label="Hora"><button type="button" class="chip" id="qaX">Cancelar</button><button class="chip">Añadir</button></div>
+</form>
 
 <nav class="tabs" id="tabs">
   <i class="ind" id="ind"></i>
@@ -1216,20 +1233,33 @@ function renderCalDay(){const k=calSel,d=parse(k),t=today(),ts=tasksOn(k),es=day
     ${e.own?`<button class="pill" data-a="evmove">Cambiar</button><button class="x" style="display:grid" data-a="evdel" aria-label="Borrar evento">${XS}</button>`:''}</div></li>`;
   const none=S.tasks.filter(x=>!x.done&&!x.date);
   $('calDay').innerHTML=`<h2>${head}</h2>
-    <form class="add caladd" id="calAdd">
-      <div class="seg kseg" id="calKind"><button type="button" data-v="task">Tarea</button><button type="button" data-v="event">Evento</button><i></i></div>
-      <div class="caline"><input type="text" id="calIn" placeholder="${KPH[calKind]}" autocomplete="off" enterkeyhint="send">
-      <input type="time" id="calTime" aria-label="Hora"><button class="chip">Añadir</button></div></form>
+    <button class="chip qadd" id="calPlus">+ Añadir tarea o evento</button>
     <div class="grp"><span class="lbl"><span>Eventos</span><span>${es.length||''}</span></span><ul class="rows">${es.length?es.map(evRow).join(''):'<li class="empty">Sin eventos.</li>'}</ul></div>
     <div><div class="grp"><span class="lbl"><span>Tareas</span><span>${ts.length||''}</span></span><ul class="rows" id="calTasks">${ts.length?ts.map(row).join(''):'<li class="empty">Nada este día.</li>'}</ul></div>
     ${none.length?`<div class="grp"><span class="lbl"><span>Sin fecha · arrastra o pon fecha</span><span>${none.length}</span></span><ul class="rows" id="calNone">${none.map(x=>`<li class="row" data-id="${x.id}" draggable="true"><div class="in"><span class="ck">${CHECK}</span><div class="tx"><div class="t">${esc(x.t)}</div></div><button class="pill" data-a="move">Sin fecha</button></div></li>`).join('')}</ul></div>`:''}</div>`;
-  segSet('calKind',calKind);
-  $('calKind').onclick=e=>{const b=e.target.closest('button');if(!b)return;calKind=b.dataset.v;segSet('calKind',calKind);$('calIn').placeholder=KPH[calKind];$('calIn').focus();buzz(4)};
-  $('calAdd').onsubmit=e=>{e.preventDefault();const v=$('calIn').value.trim(),h=$('calTime').value||null;if(!v)return;
-    if(calKind==='event')S.events.push({id:uid(),t:v,date:k,time:h});else S.tasks.push({id:uid(),t:v,date:k,time:h,done:false});
-    save();buzz(8);renderCal();renderTasks();renderProg();renderAgenda();$('calIn').focus()}}
-$('calG').onclick=e=>{const c=e.target.closest('.cc');if(!c)return;calSel=c.dataset.k;const d=parse(calSel);
-  if(d.getMonth()!==calM.getMonth()){calM=new Date(d.getFullYear(),d.getMonth(),1);loadCalMonth()}buzz(4);renderCal()};
+  $('calPlus').onclick=()=>openQA(k)}
+// añadir rápido: tocar un día del calendario abre esta tarjeta encima del día
+const fine=matchMedia('(pointer:fine)').matches;
+function openQA(k){const qa=$('qa'),c=document.querySelector(`.cc[data-k="${k}"]`)||$('calPlus'),d=parse(k),t=today();
+  const h0=`${k===t?'Hoy · ':k===addDays(t,1)?'Mañana · ':''}${DOWL[d.getDay()]} ${d.getDate()} de ${MONL[d.getMonth()]}`;
+  qa.dataset.k=k;$('qaH').textContent=h0[0].toUpperCase()+h0.slice(1);$('qaIn').value='';$('qaTime').value='';
+  qa.hidden=false;segSet('qaKind',calKind);$('qaIn').placeholder=KPH[calKind];
+  const r=c.getBoundingClientRect(),W=qa.offsetWidth,H=qa.offsetHeight;
+  let x=Math.min(Math.max(8,r.left+r.width/2-W/2),innerWidth-W-8),y=r.bottom+6;if(y+H>innerHeight-90)y=Math.max(8,r.top-H-6);
+  qa.style.left=x+'px';qa.style.top=y+'px';qa.style.setProperty('--ox',(r.left+r.width/2-x)+'px');qa.style.setProperty('--oy',y>r.top?'0':'100%');
+  $('qaIn').focus({preventScroll:true})}
+const closeQA=()=>{$('qa').hidden=true};
+$('qaKind').onclick=e=>{const b=e.target.closest('button');if(!b)return;calKind=b.dataset.v;segSet('qaKind',calKind);$('qaIn').placeholder=KPH[calKind];$('qaIn').focus();buzz(4)};
+$('qaX').onclick=closeQA;
+$('qa').onsubmit=e=>{e.preventDefault();const k=$('qa').dataset.k,v=$('qaIn').value.trim(),h=$('qaTime').value||null;if(!v)return $('qaIn').focus();
+  if(calKind==='event')S.events.push({id:uid(),t:v,date:k,time:h});else S.tasks.push({id:uid(),t:v,date:k,time:h,done:false});
+  closeQA();save();buzz(8);renderCal();renderTasks();renderProg();renderAgenda();
+  toast(`${calKind==='event'?'Evento':'Tarea'} · ${fmtWhen(k,h)}`)};
+$('qa').addEventListener('keydown',e=>{if(e.key==='Escape')closeQA()});
+document.addEventListener('pointerdown',e=>{if(!$('qa').hidden&&!e.target.closest('#qa,#calG,#calPlus'))closeQA()},true);
+addEventListener('resize',()=>{if(fine)closeQA()});
+$('calG').onclick=e=>{const c=e.target.closest('.cc');if(!c)return;const k=c.dataset.k,again=!$('qa').hidden&&$('qa').dataset.k===k;calSel=k;const d=parse(k);
+  if(d.getMonth()!==calM.getMonth()){calM=new Date(d.getFullYear(),d.getMonth(),1);loadCalMonth()}buzz(4);renderCal();again?closeQA():openQA(k)};
 $('calDay').onclick=e=>{
   const er=e.target.closest('.row[data-ev]');if(er){const ev=S.events.find(y=>y.id===er.dataset.ev);if(!ev)return;
     if(e.target.closest('[data-a=evdel]')){const i=S.events.indexOf(ev);S.events.splice(i,1);save();renderCal();renderAgenda();buzz(10);
@@ -1238,9 +1268,9 @@ $('calDay').onclick=e=>{
   const li=e.target.closest('.row[data-id]');if(!li)return;const x=S.tasks.find(y=>y.id===li.dataset.id);if(!x)return;
   const pl=e.target.closest('[data-a=move]');if(pl)return openDP(pl,x.date,(k,h)=>setTaskDate(x,k,h),x.time);
   if(e.target.closest('.ck')){x.done=!x.done;x.doneAt=x.done?today():null;buzz(x.done?[10,30,10]:6);save();renderCal();renderTasks();renderProg()}};
-$('cPrev').onclick=()=>{calM.setMonth(calM.getMonth()-1);renderCal();loadCalMonth()};
-$('cNext').onclick=()=>{calM.setMonth(calM.getMonth()+1);renderCal();loadCalMonth()};
-$('cToday').onclick=()=>{const t=parse(today());calM=new Date(t.getFullYear(),t.getMonth(),1);calSel=today();renderCal();loadCalMonth()};
+$('cPrev').onclick=()=>{closeQA();calM.setMonth(calM.getMonth()-1);renderCal();loadCalMonth()};
+$('cNext').onclick=()=>{closeQA();calM.setMonth(calM.getMonth()+1);renderCal();loadCalMonth()};
+$('cToday').onclick=()=>{closeQA();const t=parse(today());calM=new Date(t.getFullYear(),t.getMonth(),1);calSel=today();renderCal();loadCalMonth()};
 // escritorio: arrastrar una tarea a otro día
 document.addEventListener('dragstart',e=>{const it=e.target.closest?.('[draggable][data-id]');if(it)e.dataTransfer.setData('text/x-task',it.dataset.id)});
 $('calG').addEventListener('dragover',e=>{const c=e.target.closest('.cc');if(!c)return;e.preventDefault();document.querySelectorAll('.cc.drop').forEach(x=>x!==c&&x.classList.remove('drop'));c.classList.add('drop')});
@@ -1740,7 +1770,7 @@ function renderAll(anim){renderHab(anim);renderTasks();renderMac();renderCuenta(
   if(document.activeElement!==$('stepsGoalIn'))$('stepsGoalIn').value=S.stepsGoal||'';renderSteps()}
 // Aviso de versión nueva: version.json dice desde qué versión hay que actualizar («aviso»).
 // Solo se sube «aviso» en cambios importantes; el resto llega solo al abrir la app.
-const APP_V=46;let verAt=0;
+const APP_V=47;let verAt=0;
 async function checkVersion(){if(Date.now()-verAt<5*6e4)return;verAt=Date.now();
   try{const j=await(await fetch('/version.json',{cache:'no-store'})).json();if(j.aviso>APP_V&&$('upd').hidden){$('upd').hidden=false;buzz([10,40,10])}}catch{}}
 $('updGo').onclick=async()=>{$('updGo').textContent='Actualizando…';flush();try{await(await navigator.serviceWorker?.getRegistration())?.update()}catch{}
