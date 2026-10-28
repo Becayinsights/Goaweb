@@ -1,4 +1,4 @@
-// Convierte una nota de voz en hábitos y tareas. Llega el audio grabado (Gemini lo escucha,
+// Convierte una nota de voz en hábitos, tareas y eventos. Llega el audio grabado (Gemini lo escucha,
 // lo transcribe y lo organiza en un solo paso) y/o texto escrito a mano.
 import { auth, claude, fail } from './_lib.js';
 export const config = { maxDuration: 60 };
@@ -21,21 +21,24 @@ Primero transcribe el audio tal cual en "transcript" (sin inventar; si no se oye
 Separa lo que dice en elementos:
 - "habit": algo que se repite (todos los días, ciertos días de la semana) o una rutina de salud/deporte/bienestar para un día concreto.
 - "task": algo puntual que se hace una vez y se tacha (recados, llamadas, compras, trabajo).
+- "event": una cita o plan en un momento concreto al que se va o se asiste, no se "tacha" (cena, comida con alguien, reunión, médico, dentista, cumpleaños, viaje, partido, clase).
 Campos:
 - title: corto, en español, empezando por mayúscula, con cantidades si las dijo ("5 km andando", "Llamar al dentista").
 - days: para hábitos repetidos, días de la semana como números (0=domingo … 6=sábado). null si es todos los días.
 - dates: lista de fechas YYYY-MM-DD si el hábito es solo para días concretos; si no, null.
-- date: para tareas, fecha YYYY-MM-DD si dijo cuándo ("mañana", "el viernes" = el próximo viernes); null si no.
+- date: para tareas y eventos, fecha YYYY-MM-DD si dijo cuándo ("mañana", "el viernes" = el próximo viernes); null si no. Un evento sin día dicho es para hoy.
+- time: para tareas y eventos, hora HH:MM en 24 h si la dijo ("a las 9 de la noche" = "21:00", "a mediodía" = "14:00"); null si no.
 Si dice "hoy" para un hábito puntual, usa dates:["${today}"].
-Responde SOLO con JSON: {"transcript":"","items":[{"kind":"habit","title":"","days":null,"dates":null},{"kind":"task","title":"","date":null}]}`;
+Responde SOLO con JSON: {"transcript":"","items":[{"kind":"habit","title":"","days":null,"dates":null},{"kind":"task","title":"","date":null,"time":null},{"kind":"event","title":"","date":null,"time":null}]}`;
   try {
     const content = a
       ? [{ type: 'audio', source: { type: 'base64', media_type: a[1], data: a[2] } }, { type: 'text', text: prompt }]
       : [{ type: 'text', text: prompt }];
     const out = await claude(await auth(req), content, 1200);
     const ok = d => /^\d{4}-\d{2}-\d{2}$/.test(d);
-    const items = (out.items || []).filter(i => i && i.title).slice(0, 30).map(i => i.kind === 'task'
-      ? { kind: 'task', title: String(i.title).slice(0, 120), date: ok(i.date) ? i.date : null }
+    const hm = h => /^([01]\d|2[0-3]):[0-5]\d$/.test(h) ? h : null;
+    const items = (out.items || []).filter(i => i && i.title).slice(0, 30).map(i => i.kind === 'task' || i.kind === 'event'
+      ? { kind: i.kind, title: String(i.title).slice(0, 120), date: ok(i.date) ? i.date : (i.kind === 'event' ? today : null), time: hm(i.time) }
       : { kind: 'habit', title: String(i.title).slice(0, 120),
           days: Array.isArray(i.days) && i.days.length && i.days.length < 7 ? [...new Set(i.days.map(Number).filter(n => n >= 0 && n <= 6))] : null,
           dates: Array.isArray(i.dates) && i.dates.filter(ok).length ? i.dates.filter(ok) : null });
