@@ -146,6 +146,10 @@ h2{font:600 22px/1.2 var(--disp);letter-spacing:-.01em}
 /* tareas: compositor rápido */
 .compose{margin-top:24px;background:var(--bg-2);border-radius:18px;padding:6px 6px 10px;transition:box-shadow .4s}
 .compose:focus-within{box-shadow:0 0 0 1px var(--rule-2)}
+.kinds{display:inline-flex;gap:2px;margin:4px 8px 0;padding:3px;border-radius:99px;background:var(--bg-3)}
+.kinds button{font:500 12.5px/1 var(--sans);color:var(--ink-3);padding:7px 12px;border-radius:99px;transition:background .25s,color .25s}
+.kinds button.on{background:var(--bg);color:var(--ink);box-shadow:0 1px 3px rgba(var(--sh-rgb),calc(.25*var(--sh-k)))}
+.kinds button[data-kind=event].on{color:var(--ev)}
 .compose .line{display:flex;align-items:center;gap:12px;padding:8px 10px}
 .compose .plus{width:26px;height:26px;border-radius:50%;border:1.5px dashed var(--rule-2);display:grid;place-items:center;color:var(--ink-3);flex:none}
 .compose input{flex:1;font-size:17px;padding:6px 0;letter-spacing:-.015em}
@@ -576,6 +580,8 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
   <section class="view" id="v-tar">
     <div class="lbl" id="tDate">Lista</div><h1>Tareas</h1>
     <form class="compose" id="taskForm">
+      <!-- tarea (se tacha) o evento (va al calendario con su hora) -->
+      <div class="kinds" id="kinds"><button type="button" class="on" data-kind="task">Tarea</button><button type="button" data-kind="event">Evento</button></div>
       <div class="line">
         <span class="plus"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
         <input type="text" id="taskIn" placeholder="Nueva tarea" autocomplete="off" enterkeyhint="send">
@@ -585,6 +591,7 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
         <button type="button" class="chip on" data-w="hoy">Hoy</button>
         <button type="button" class="chip" data-w="man">Mañana</button>
         <label class="chip" id="wPick">Fecha…<input type="date" id="taskDate"></label>
+        <button type="button" class="chip" id="wTime">Hora…</button>
       </div>
     </form>
     <div id="agenda"></div>
@@ -773,7 +780,7 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
     </div>
     <footer class="credit">
       <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
-      <div class="lbl">Hábitos · 2026 · v45</div>
+      <div class="lbl">Hábitos · 2026 · v46</div>
     </footer>
   </section>
 </div>
@@ -1090,17 +1097,27 @@ function whenDate(){const t=today(),d=parse(t);
   if(when==='fin'){const dw=d.getDay();return dw===6||dw===0?t:addDays(t,6-dw)}
   if(when==='fecha')return pickDate;return null}
 function setWhen(w){when=w;document.querySelectorAll('#when .chip').forEach(c=>c.classList.toggle('on',(c.dataset.w||'fecha')===w));
-  $('wPick').firstChild.nodeValue=w==='fecha'&&pickDate?fmtWhen(pickDate,pickTime):'Fecha…'}
+  $('wPick').firstChild.nodeValue=w==='fecha'&&pickDate?fmtWhen(pickDate,pickTime):'Fecha…';
+  $('wTime').textContent=w==='fecha'&&pickTime?pickTime:'Hora…';$('wTime').classList.toggle('on',w==='fecha'&&!!pickTime)}
 // los chips no roban el foco: el teclado sigue abierto mientras eliges cuándo
 $('when').addEventListener('pointerdown',e=>{if(e.target.closest('[data-w]'))e.preventDefault()});
 $('when').onclick=e=>{const c=e.target.closest('[data-w]');if(c){setWhen(c.dataset.w);buzz(4)}};
-let pickTime=null;
+let pickTime=null,kind='task';
+const KHOLD={task:'Nueva tarea',event:'Nuevo evento · cena, médico, reunión…'};
+$('kinds').addEventListener('pointerdown',e=>{if(e.target.closest('[data-kind]'))e.preventDefault()});
+$('kinds').onclick=e=>{const b=e.target.closest('[data-kind]');if(!b)return;kind=b.dataset.kind;
+  $('kinds').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));$('taskIn').placeholder=KHOLD[kind];buzz(4);$('taskIn').focus()};
+// «Hora…»: el mismo selector, sobre el día elegido (o hoy)
+$('wTime').addEventListener('click',()=>openDP($('wTime'),whenDate()||today(),(k,h)=>{pickDate=k;pickTime=k?h:null;setWhen(k?'fecha':'hoy');$('taskIn').focus()},pickTime));
 $('wPick').addEventListener('click',e=>{e.preventDefault();openDP($('wPick'),pickDate,(k,h)=>{pickDate=k;pickTime=k?h:null;setWhen(k?'fecha':'hoy');$('taskIn').focus()},pickTime)});
 $('taskDate').onchange=e=>{pickDate=e.target.value||null;setWhen(pickDate?'fecha':'hoy');$('taskIn').focus()};
 $('taskIn').oninput=()=>$('taskForm').classList.toggle('has',!!$('taskIn').value.trim());
 $('taskIn').addEventListener('keydown',e=>{if(e.key==='Enter'||e.keyCode===13){e.preventDefault();$('taskForm').requestSubmit?$('taskForm').requestSubmit():$('taskForm').onsubmit(e)}});
-$('taskForm').onsubmit=e=>{e.preventDefault();const v=$('taskIn').value.trim();if(!v)return;
-  const x={id:uid(),t:v,date:whenDate(),time:when==='fecha'?pickTime:null,done:false};S.tasks.push(x);save();
+$('taskForm').onsubmit=e=>{e.preventDefault();const v=$('taskIn').value.trim();if(!v)return;const h=when==='fecha'?pickTime:null;
+  if(kind==='event'){const d=whenDate()||today();S.events.push({id:uid(),t:v,date:d,time:h});save();
+    $('taskIn').value='';$('taskForm').classList.remove('has');buzz(8);renderAgenda();if($('v-cal').classList.contains('on'))renderCal();
+    toast(`Evento en el calendario · ${fmtWhen(d,h)}`);$('taskIn').focus();return}
+  const x={id:uid(),t:v,date:whenDate(),time:h,done:false};S.tasks.push(x);save();
   $('taskIn').value='';$('taskForm').classList.remove('has');buzz(8);renderTasks(x.id);renderProg();$('taskIn').focus()};
 function renderTasks(fresh){
   const t=today();
@@ -1143,7 +1160,7 @@ $('dp').onclick=e=>{const n=e.target.closest('[data-m]');if(n){dpM.setMonth(dpM.
   const q=e.target.closest('[data-q]');if(q){const t=today(),v=q.dataset.q;
     if(v==='mon'){const d=parse(t);return pickDP(addDays(t,((8-d.getDay())%7)||7))}return pickDP(addDays(t,+v))}
   if(e.target.closest('#dpClr'))pickDP(null)};
-document.addEventListener('pointerdown',e=>{if(!$('dp').hidden&&!e.target.closest('#dp')&&!e.target.closest('[data-a=when],#wPick,.cal-day .pill'))closeDP()},true);
+document.addEventListener('pointerdown',e=>{if(!$('dp').hidden&&!e.target.closest('#dp')&&!e.target.closest('[data-a=when],#wPick,#wTime,.cal-day .pill'))closeDP()},true);
 addEventListener('resize',closeDP);
 const fmtWhen=(k,h)=>k?fmtDay(k)+(h?' · '+h:''):'Sin fecha';
 function setTaskDate(x,k,h){x.date=k;x.time=k?(h===undefined?x.time||null:h):null;save();buzz(5);renderTasks();renderProg();if($('v-cal').classList.contains('on'))renderCal()}
@@ -1723,7 +1740,7 @@ function renderAll(anim){renderHab(anim);renderTasks();renderMac();renderCuenta(
   if(document.activeElement!==$('stepsGoalIn'))$('stepsGoalIn').value=S.stepsGoal||'';renderSteps()}
 // Aviso de versión nueva: version.json dice desde qué versión hay que actualizar («aviso»).
 // Solo se sube «aviso» en cambios importantes; el resto llega solo al abrir la app.
-const APP_V=45;let verAt=0;
+const APP_V=46;let verAt=0;
 async function checkVersion(){if(Date.now()-verAt<5*6e4)return;verAt=Date.now();
   try{const j=await(await fetch('/version.json',{cache:'no-store'})).json();if(j.aviso>APP_V&&$('upd').hidden){$('upd').hidden=false;buzz([10,40,10])}}catch{}}
 $('updGo').onclick=async()=>{$('updGo').textContent='Actualizando…';flush();try{await(await navigator.serviceWorker?.getRegistration())?.update()}catch{}
