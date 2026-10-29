@@ -396,6 +396,33 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
 .dp-f{gap:10px;align-items:center}
 .dp-t{display:flex;align-items:center;gap:8px;margin-right:auto}
 .dp-t input{font:500 14px/1 var(--sans);color:var(--ink);background:var(--bg-3);border-radius:8px;padding:6px 8px;color-scheme:light dark}
+/* diario: cierre del día */
+.jcard{display:block;width:100%;text-align:left;margin-top:28px;padding:18px 18px 20px;border-radius:20px;background:var(--bg-2)}
+.jcard .jh{display:flex;justify-content:space-between;align-items:baseline}
+.jcard .jt{font:550 19px/1.25 var(--disp);letter-spacing:-.015em;margin-top:8px}
+.jcard .js{font-size:14.5px;color:var(--ink-2);margin-top:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.jcard .jn{font:500 12px/1 var(--mono);color:var(--ink-3)}
+.jmini{height:4px;border-radius:4px;background:var(--bg-3);margin-top:14px;overflow:hidden}
+.jmini b{display:block;height:100%;background:var(--ink);border-radius:4px;transition:width .8s var(--out)}
+#jSheet{max-height:94vh}
+#jSheet h2{margin-bottom:4px}
+.jsec{margin-top:26px}
+.jsec>.lbl{display:flex;gap:10px;margin-bottom:12px}.jsec>.lbl b{font-weight:500;color:var(--ink)}
+.jscore{display:flex;align-items:center;gap:16px}
+.jscore .num{font:600 34px/1 var(--disp);letter-spacing:-.02em;width:64px;font-variant-numeric:tabular-nums}
+.jscore .num small{font-size:15px;color:var(--ink-3);font-weight:500}
+.jseg{flex:1;display:grid;grid-template-columns:repeat(10,1fr);gap:4px;height:34px;touch-action:none;cursor:pointer}
+.jseg i{border-radius:6px;background:var(--bg-3);transition:background .25s,transform .4s var(--bounce)}
+.jseg i.on{background:var(--ink)}
+.jseg i.cur{transform:scaleY(1.18)}
+.jln{display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--rule)}
+.jln span{font:500 11px/1 var(--mono);color:var(--ink-3);width:14px;flex:none}
+.jln input{flex:1;min-width:0;font:400 17px/1.3 var(--sans);color:var(--ink);padding:13px 0;background:none}
+.jmood{display:flex;flex-wrap:wrap;gap:8px}
+.jmood button{font:500 14px/1 var(--sans);color:var(--ink-2);background:var(--bg-3);border-radius:99px;padding:10px 14px;transition:background .25s,color .25s,transform .4s var(--bounce)}
+.jmood button.on{background:var(--ink);color:var(--bg)}
+.jmood button:active{transform:scale(.93)}
+#jText{min-height:110px;margin-top:14px;font-size:17px;background:var(--bg-3);border-radius:14px;padding:12px 14px}
 .vsw{display:flex;gap:16px;align-items:baseline}
 .vsw button{font:inherit;letter-spacing:inherit;color:var(--ink-3);opacity:.55;transition:color .3s,opacity .3s}
 .vsw button.on{color:var(--ink);opacity:1}
@@ -598,6 +625,7 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
       </div>
     </div>
     <button class="teaser press" id="teaser" hidden></button>
+    <button class="jcard press" id="jCard"></button>
   </section>
 
   <!-- TAREAS -->
@@ -814,7 +842,7 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
     </div>
     <footer class="credit">
       <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
-      <div class="lbl">Hábitos · 2026 · v48</div>
+      <div class="lbl">Hábitos · 2026 · v49</div>
     </footer>
   </section>
 </div>
@@ -942,6 +970,20 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
   </div>
 </section>
 
+<section class="sheet" id="jSheet">
+  <div class="grabzone"><div class="grab"></div></div>
+  <span class="lbl" id="jDate"></span>
+  <h2>Cierre del día</h2>
+  <div class="jsec"><span class="lbl"><b>01</b>Puntúa tu día</span>
+    <div class="jscore"><div class="num" id="jNum">–<small>/10</small></div><div class="jseg" id="jSeg"></div></div></div>
+  <div class="jsec"><span class="lbl"><b>02</b>Doy gracias por</span><div id="jGrat"></div></div>
+  <div class="jsec"><span class="lbl"><b>03</b>Hoy he hecho bien</span><div id="jGood"></div></div>
+  <div class="jsec"><span class="lbl"><b>04</b>Cómo ha sido el día</span>
+    <div class="jmood" id="jMood"></div>
+    <textarea id="jText" placeholder="Qué ha pasado, cómo te has sentido…"></textarea></div>
+  <div class="acts"><button class="btn" id="jOk">Listo</button></div>
+</section>
+
 <section class="sheet" id="nSheet">
   <div class="grabzone"><div class="grab"></div></div>
   <span class="lbl" id="nWhen"></span>
@@ -988,11 +1030,11 @@ $('toastBtn').onclick=()=>{toastUndo&&toastUndo();$('toast').classList.remove('o
 /* ---------------- estado + sincronización ---------------- */
 function fresh(){const t=today();return{
   habits:['Ejercicios de cuello','5 km andando','10 min de cardio','Suplementación'].map(x=>({id:uid(),t:x,days:null,dates:null,from:t})),
-  log:{},tasks:[],events:[],notes:[],food:{},goals:{kcal:0,prot:0},updated:0}}
+  log:{},tasks:[],events:[],notes:[],journal:{},food:{},goals:{kcal:0,prot:0},updated:0}}
 let S=LS.get('state',null);
 if(!S){S=fresh();const oh=LS.get('habits',null);
   if(oh){S.habits=oh.map(h=>({id:h.id,t:h.t,days:null,dates:null,from:'2000-01-01'}));S.log=LS.get('log',{});S.food=LS.get('food',{})}}
-S.goals=S.goals||{kcal:0,prot:0};S.tasks=S.tasks||[];S.events=S.events||[];S.notes=S.notes||[];
+S.goals=S.goals||{kcal:0,prot:0};S.tasks=S.tasks||[];S.events=S.events||[];S.notes=S.notes||[];S.journal=S.journal||{};
 let AUTH=LS.get('auth',null);     // {token,user}
 let ME=AUTH?.user||null;
 let SRV={store:true,setup:false};
@@ -1024,7 +1066,7 @@ function merge(b,l,s){const out={...s};
     else if(lv&&sv&&typeof lv==='object'&&!Array.isArray(lv))out[k]=merge(bv||{},lv,sv);
     else out[k]=lv}
   return out}
-function adopt(doc){S=doc;S.goals=S.goals||{kcal:0,prot:0};S.tasks=S.tasks||[];S.events=S.events||[];S.notes=S.notes||[];S.log=S.log||{};S.food=S.food||{};S.habits=S.habits||[];LS.set('state',S)}
+function adopt(doc){S=doc;S.goals=S.goals||{kcal:0,prot:0};S.tasks=S.tasks||[];S.events=S.events||[];S.notes=S.notes||[];S.journal=S.journal||{};S.log=S.log||{};S.food=S.food||{};S.habits=S.habits||[];LS.set('state',S)}
 async function push(keep){if(!AUTH||!pulled)return;const base=LS.get('base',null),snap=clean(S),body=J({...snap,_base:base?base.updated:null});
   // keepalive deja terminar la subida aunque la app se cierre (máx. 64 KB)
   try{await api('/api/data',{method:'PUT',body,keepalive:!!keep&&body.length<60000});LS.set('base',snap);setSync('ok')}
@@ -1090,6 +1132,7 @@ function renderHab(anim){
           :(x.days||x.dates?`<div class="s">${esc(sched(x))}</div>`:'')}</div>
       <span class="ck">${CHECK}</span><button class="x" aria-label="Borrar">${XS}</button>
     </div></li>`).join(''):`<li class="empty">Hoy no tienes hábitos programados.</li>`;
+  $('jCard').hidden=editing;if(!editing)renderJCard();
   renderProg();
 }
 function renderProg(){
@@ -1230,6 +1273,51 @@ $('taskList').onclick=e=>{const li=e.target.closest('.row');if(!li||li._swiped)r
 swipeable($('taskList'),li=>{const x=S.tasks.find(y=>y.id===li.dataset.id);if(!x)return;const i=S.tasks.indexOf(x);
   collapse(li,()=>{S.tasks.splice(i,1);save();renderTasks();renderProg()});buzz(12);
   toast('Tarea borrada',()=>{S.tasks.splice(i,0,x);save();renderTasks();renderProg()})});
+
+/* ---------------- diario: cierre del día ---------------- */
+// por día: nota del 1 al 10, 3 gracias, 2 cosas bien hechas, estados y texto libre. Sigue al día elegido en Hábitos.
+const MOODS=['Alegre','Calma','Agradecido','Con energía','Motivado','Cansado','Ansiedad','Preocupado','Tristeza','Enfado','Inseguro','Aburrido'];
+let jDay=null;
+function jGet(k){return S.journal[k]||{score:0,grat:['','',''],good:['',''],moods:[],text:''}}
+function jEmpty(j){return !j.score&&!j.text&&!j.moods.length&&![...j.grat,...j.good].some(Boolean)}
+function renderJCard(){const k=curDay(),j=S.journal[k],past=k!==today(),d=parse(k);
+  const when=past?`${d.getDate()} ${MON[d.getMonth()]}`:'hoy';
+  if(!j||jEmpty(j)){$('jCard').innerHTML=`<div class="jh"><span class="lbl">Diario · ${when}</span><span class="jn">2 min</span></div>
+    <div class="jt">${past?'¿Qué tal fue ese día?':new Date().getHours()<17?'Cierra el día cuando acabe':'¿Qué tal ha ido el día?'}</div>
+    <div class="js">Puntúalo, da las gracias por 3 cosas y apunta 2 que hiciste bien.</div>`;return}
+  const g=j.grat.filter(Boolean);
+  $('jCard').innerHTML=`<div class="jh"><span class="lbl">Diario · ${when}</span><span class="jn">${j.score?j.score+'/10':''}</span></div>
+    <div class="jt">${j.moods.length?esc(j.moods.join(' · ')):g.length?'Gracias por '+esc(g[0]):'Día apuntado'}</div>
+    ${j.text?`<div class="js">${esc(j.text)}</div>`:g.length>1?`<div class="js">${esc(g.slice(1).join(' · '))}</div>`:''}
+    <div class="jmini"><b style="width:${j.score*10}%"></b></div>`}
+function jCur(){return S.journal[jDay]||jGet(jDay)}
+function jSet(f){const j=S.journal[jDay]||(S.journal[jDay]=jGet(jDay));f(j);j.upd=Date.now();save()}
+function jPaint(){const j=jCur();$('jNum').innerHTML=`${j.score||'–'}<small>/10</small>`;
+  [...$('jSeg').children].forEach((i,n)=>{i.classList.toggle('on',n<j.score);i.classList.toggle('cur',n===j.score-1)});
+  [...$('jMood').children].forEach(b=>b.classList.toggle('on',j.moods.includes(b.textContent)))}
+function openJ(){jDay=curDay();const j=jCur(),d=parse(jDay),DN=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  $('jDate').textContent=`${jDay===today()?'Hoy · ':''}${DN[d.getDay()]} ${d.getDate()} ${MON[d.getMonth()]}`;
+  $('jSeg').innerHTML='<i></i>'.repeat(10);
+  const lines=(id,arr,ph)=>$(id).innerHTML=arr.map((v,n)=>`<label class="jln"><span>${n+1}</span><input data-n="${n}" value="${esc(v)}" placeholder="${ph[n]}" enterkeyhint="next" autocomplete="off"></label>`).join('');
+  lines('jGrat',j.grat,['Algo que te ha pasado hoy','Alguien','Algo pequeño']);lines('jGood',j.good,['Algo que hiciste bien','Otra cosa, por pequeña que sea']);
+  $('jMood').innerHTML=MOODS.map(m=>`<button type="button">${m}</button>`).join('');$('jText').value=j.text;jPaint();
+  document.body.classList.add('modal');$('veil').classList.add('on');$('jSheet').scrollTop=0;$('jSheet').classList.add('on');buzz(6)}
+function closeJ(){if(!$('jSheet').classList.contains('on'))return;$('jSheet').classList.remove('on');document.body.classList.remove('modal');$('veil').classList.remove('on');
+  const j=S.journal[jDay];if(j&&jEmpty(j)){delete S.journal[jDay];save()}renderJCard()}
+$('jCard').onclick=openJ;$('jOk').onclick=()=>{const was=!!S.journal[jDay]&&!jEmpty(S.journal[jDay]);closeJ();if(was){buzz([10,30,10]);toast('Día guardado')}};
+// la barra se marca tocando o arrastrando el dedo
+(()=>{const seg=$('jSeg');let down=false;
+  const at=e=>{const r=seg.getBoundingClientRect(),v=Math.max(1,Math.min(10,Math.ceil((e.clientX-r.left)/r.width*10)));
+    if(v!==jCur().score){jSet(j=>j.score=v);jPaint();buzz(4)}};
+  seg.addEventListener('pointerdown',e=>{down=true;seg.setPointerCapture(e.pointerId);at(e)});
+  seg.addEventListener('pointermove',e=>{if(down)at(e)});
+  seg.addEventListener('pointerup',()=>down=false);seg.addEventListener('pointercancel',()=>down=false)})();
+for(const [id,key] of [['jGrat','grat'],['jGood','good']]){
+  $(id).addEventListener('input',e=>{const n=+e.target.dataset.n;jSet(j=>j[key][n]=e.target.value)});
+  $(id).addEventListener('keydown',e=>{if(e.key!=='Enter')return;e.preventDefault();const ins=[...$('jSheet').querySelectorAll('.jln input')],i=ins.indexOf(e.target);(ins[i+1]||$('jText')).focus()})}
+$('jMood').onclick=e=>{const b=e.target.closest('button');if(!b)return;const m=b.textContent;
+  jSet(j=>j.moods=j.moods.includes(m)?j.moods.filter(x=>x!==m):[...j.moods,m]);jPaint();buzz(4)};
+$('jText').oninput=()=>jSet(j=>j.text=$('jText').value);
 
 /* ---------------- notas ---------------- */
 // una nota es texto libre; la primera línea hace de título. Se guarda sola mientras escribes.
@@ -1694,14 +1782,14 @@ async function organize(){const btn=$('vGo');if(btn.disabled)return;btn.disabled
     $('vSaid').textContent=r.transcript?`«${r.transcript}»`:'';renderPlan();$('vStep1').hidden=true;$('vStep2').hidden=false;buzz([8,30,8])}
   catch(x){$('vErr').textContent=x.message;$('sheet').classList.add('typing');$('vTitle').textContent='¿Lo intentamos otra vez?';$('vMic').textContent='Grabar'}
   finally{$('sheet').classList.remove('thinking');btn.textContent='Listo';btn.disabled=false}}
-$('micBtn').onclick=openVoice;$('veil').onclick=()=>{closeVoice();closeRem();closeNote()};
+$('micBtn').onclick=openVoice;$('veil').onclick=()=>{closeVoice();closeRem();closeNote();closeJ()};
 // teclado (escritorio): Esc cierra lo que esté abierto
 // atajos: 1-5 pestañas, N nueva tarea (si no estás escribiendo)
 addEventListener('keydown',e=>{if(e.metaKey||e.ctrlKey||e.altKey||/INPUT|TEXTAREA/.test(document.activeElement?.tagName)||document.activeElement?.isContentEditable)return;
   if(!$('gate').classList.contains('on')&&!document.body.classList.contains('modal')){const v={1:'hab',2:'tar',3:'cal',4:'mac',5:'cue'}[e.key];if(v)return go(v);
     if(e.key==='n'||e.key==='N'){e.preventDefault();go('tar');setTimeout(()=>$('taskIn').focus(),60)}}});
 addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!$('dp').hidden)return closeDP();
-  if($('sheet').classList.contains('on'))return closeVoice();if($('rSheet').classList.contains('on'))return closeRem();if($('nSheet').classList.contains('on'))return closeNote();if(admOn())closeAdm()});
+  if($('sheet').classList.contains('on'))return closeVoice();if($('rSheet').classList.contains('on'))return closeRem();if($('nSheet').classList.contains('on'))return closeNote();if($('jSheet').classList.contains('on'))return closeJ();if(admOn())closeAdm()});
 
 /* ---------------- recordatorios: evento con aviso en el calendario de cada persona ---------------- */
 let remTask=null,remBefore=0;
@@ -1845,7 +1933,7 @@ function renderAll(anim){renderHab(anim);renderTasks();renderMac();renderCuenta(
   if(document.activeElement!==$('stepsGoalIn'))$('stepsGoalIn').value=S.stepsGoal||'';renderSteps()}
 // Aviso de versión nueva: version.json dice desde qué versión hay que actualizar («aviso»).
 // Solo se sube «aviso» en cambios importantes; el resto llega solo al abrir la app.
-const APP_V=48;let verAt=0;
+const APP_V=49;let verAt=0;
 async function checkVersion(){if(Date.now()-verAt<5*6e4)return;verAt=Date.now();
   try{const j=await(await fetch('/version.json',{cache:'no-store'})).json();if(j.aviso>APP_V&&$('upd').hidden){$('upd').hidden=false;buzz([10,40,10])}}catch{}}
 $('updGo').onclick=async()=>{$('updGo').textContent='Actualizando…';flush();try{await(await navigator.serviceWorker?.getRegistration())?.update()}catch{}
