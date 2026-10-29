@@ -17,7 +17,7 @@
 <title>Hábitos</title>
 <script>(function(){var t='light';try{t=JSON.parse(localStorage.getItem('theme'))||'light'}catch(e){}
   if(t==='auto')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
-  document.documentElement.dataset.theme=t;document.querySelector('meta[name=theme-color]').content=t==='dark'?'#060707':'#F8F6F1';
+  document.documentElement.dataset.theme=t;document.querySelector('meta[name=theme-color]').content=t==='dark'?'#060707':'#FDFCFA';
   document.querySelector('meta[name=apple-mobile-web-app-status-bar-style]').content=t==='dark'?'black-translucent':'default'})()</script>
 <style>
 :root{
@@ -39,10 +39,10 @@
 }
 /* tema claro: el de por defecto */
 :root[data-theme=light]{
-  --bg:#F8F6F1; --bg-2:#EDEAE2; --bg-3:#E2DED4; --page:#E9E6DF; --ink-rgb:20,22,21;
+  --bg:#FDFCFA; --bg-2:#F2F1ED; --bg-3:#E7E5DF; --page:#EFEEEA; --ink-rgb:20,22,21;
   --ink:#141615; --ink-2:rgba(20,22,21,.74); --ink-3:rgba(20,22,21,.57); --ink-4:rgba(20,22,21,.14);
   --rule:rgba(20,22,21,.12); --rule-2:rgba(20,22,21,.24);
-  --acc:#24694F; --warn:#B8361F; --glass:rgba(250,248,244,.6); --lens:rgba(255,255,255,.62); --spec:rgba(255,255,255,.85); --del-bg:#F6D9D3; --del-ink:#9C2F1F; --over:#B5651D; --toast-acc:#9CC3B4; --tag-bg:rgba(247,245,240,.8);
+  --acc:#24694F; --warn:#B8361F; --glass:rgba(255,255,253,.62); --lens:rgba(255,255,255,.62); --spec:rgba(255,255,255,.85); --del-bg:#F6D9D3; --del-ink:#9C2F1F; --over:#B5651D; --toast-acc:#9CC3B4; --tag-bg:rgba(247,245,240,.8);
   --ev:#24694F; --ev-bg:rgba(36,105,79,.12); --sh-rgb:70,60,40; --sh-k:.32;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -576,7 +576,7 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
 
 /* ---------------- escritorio: barra lateral, columna más ancha y hojas centradas ---------------- */
 @media (min-width:960px){
-  .app{max-width:760px;padding:64px 56px 96px;min-height:100vh;box-shadow:0 0 0 1px var(--rule)}
+  .app{max-width:860px;padding:64px 56px 96px;min-height:100vh;box-shadow:0 0 0 1px var(--rule);margin-left:max(136px,calc(50vw - 430px));margin-right:auto}
   h1{font-size:40px}
   /* la barra de pestañas pasa a ser una columna fija a la izquierda */
   .tabs{left:28px;top:50%;bottom:auto;transform:translateY(-50%);flex-direction:column;padding:8px;border-radius:34px}
@@ -596,7 +596,9 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
   .upd{place-items:center}
   .gate{max-width:520px;border-left:1px solid var(--rule);border-right:1px solid var(--rule)}
   .toast{top:24px}
-  body.wide .app{max-width:1120px}
+  body.wide .app{max-width:min(1200px,calc(100vw - 160px));margin-left:max(136px,calc(50vw - 600px))}
+  /* diario en dos columnas cuando hay sitio */
+
   .cal-g{border-left:1px solid var(--rule)}
   .cc{min-height:112px;align-items:stretch;padding:6px;border-right:1px solid var(--rule);gap:3px}
   .cc .cn{width:26px;height:26px;font-size:13px;align-self:flex-end}
@@ -614,6 +616,11 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
   .cc.sel{background:rgba(var(--ink-rgb),.03)}
   .cal-day{display:grid;grid-template-columns:1fr 1fr;gap:0 40px}
   .cal-day>h2,.cal-day>.add{grid-column:1/-1}
+}
+@media (min-width:1200px){
+  #v-dia.on{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);column-gap:56px;align-items:start}
+  #v-dia>.lbl,#v-dia>h1,#v-dia>#jCard,#v-dia>#dListSec{grid-column:1/-1}
+  #v-dia .dchart{height:150px}
 }
 @media (hover:hover) and (pointer:fine){
   .tabs .tb:hover{color:var(--ink-2)}.tabs .tb.on:hover{color:var(--ink)}
@@ -919,7 +926,7 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
     </div>
     <footer class="credit">
       <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
-      <div class="lbl">Hábitos · 2026 · v51</div>
+      <div class="lbl">Hábitos · 2026 · v52</div>
     </footer>
   </section>
 </div>
@@ -1711,7 +1718,7 @@ $('pwForm').onsubmit=async e=>{e.preventDefault();
     setAuth(r);$('pwForm').reset();$('pwForm').hidden=true;toast('Contraseña cambiada')}catch(x){toast(x.message)}};
 // tema: claro por defecto; oscuro o automático (sigue al iPhone) en Cuenta → Apariencia
 function applyTheme(v){const t=v==='auto'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):v;document.documentElement.dataset.theme=t;
-  document.querySelector('meta[name=theme-color]').content=t==='dark'?'#060707':'#F8F6F1';
+  document.querySelector('meta[name=theme-color]').content=t==='dark'?'#060707':'#FDFCFA';
   document.querySelector('meta[name=apple-mobile-web-app-status-bar-style]').content=t==='dark'?'black-translucent':'default'}
 $('themeSeg').onclick=e=>{const b=e.target.closest('button');if(!b)return;LS.set('theme',b.dataset.v);applyTheme(b.dataset.v);segSet('themeSeg',b.dataset.v);buzz(5)};
 matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',()=>{if(LS.get('theme','light')==='auto')applyTheme('auto')});
@@ -2040,7 +2047,7 @@ function go(v){if(document.querySelector('.view.on')?.id==='v-'+v)return;
   document.querySelectorAll('.tb').forEach(x=>x.classList.toggle('on',x.dataset.v===v));moveInd();
   document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v));window.scrollTo(0,0);buzz(4);
   if(v==='hab')renderHab(true);if(v==='tar'){renderTasks();loadAgenda();if(tPane==='n')renderNotes()}if(v==='mac')renderMac();if(v==='cue')loadMembers();if(v==='dia')renderDia();
-  if(v==='cal'){renderCal();loadCalMonth()}document.body.classList.toggle('wide',v==='cal');closeDP()}
+  if(v==='cal'){renderCal();loadCalMonth()}document.body.classList.toggle('wide',v==='cal'||v==='dia');closeDP()}
 document.querySelectorAll('.tb').forEach(b=>b.onclick=()=>{if(Date.now()-($('tabs')._skip||0)>80)go(b.dataset.v)});
 addEventListener('resize',moveInd);
 /* ---------------- calendarios de Google / Apple (solo lectura) ---------------- */
@@ -2095,7 +2102,7 @@ function renderAll(anim){renderHab(anim);renderTasks();renderMac();renderCuenta(
   if(document.activeElement!==$('stepsGoalIn'))$('stepsGoalIn').value=S.stepsGoal||'';renderSteps()}
 // Aviso de versión nueva: version.json dice desde qué versión hay que actualizar («aviso»).
 // Solo se sube «aviso» en cambios importantes; el resto llega solo al abrir la app.
-const APP_V=51;let verAt=0;
+const APP_V=52;let verAt=0;
 async function checkVersion(){if(Date.now()-verAt<5*6e4)return;verAt=Date.now();
   try{const j=await(await fetch('/version.json',{cache:'no-store'})).json();if(j.aviso>APP_V&&$('upd').hidden){$('upd').hidden=false;buzz([10,40,10])}}catch{}}
 $('updGo').onclick=async()=>{$('updGo').textContent='Actualizando…';flush();try{await(await navigator.serviceWorker?.getRegistration())?.update()}catch{}
