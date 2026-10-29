@@ -396,6 +396,35 @@ body.modal .tabs{transform:translate(-50%,140%);opacity:0}
 .dp-f{gap:10px;align-items:center}
 .dp-t{display:flex;align-items:center;gap:8px;margin-right:auto}
 .dp-t input{font:500 14px/1 var(--sans);color:var(--ink);background:var(--bg-3);border-radius:8px;padding:6px 8px;color-scheme:light dark}
+/* diario: evolución (rango, píxeles del año, qué influye, días de la semana) */
+.dseg{margin:0 0 18px;max-width:220px}
+.dstats b em{font:500 11px/1 var(--mono);font-style:normal;margin-left:6px;vertical-align:4px}
+.up{color:var(--acc)}.dn{color:var(--warn)}
+.dpix{display:grid;grid-template-columns:22px repeat(31,1fr);gap:2px;margin-top:22px;align-items:center}
+.dpix span{font:500 9px/1 var(--mono);color:var(--ink-3);text-transform:uppercase}
+.dpix i{aspect-ratio:1;border-radius:2.5px;background:var(--bg-3);display:block;cursor:pointer}
+.dpix i.nd{background:none;cursor:default}
+.dpix i.t{box-shadow:0 0 0 1.5px var(--ink)}
+.dlegend{display:flex;align-items:center;gap:6px;margin-top:10px;font:500 10px/1 var(--mono);color:var(--ink-3)}
+.dlegend i{width:10px;height:10px;border-radius:2.5px;display:block}
+.dinf{display:grid;grid-template-columns:minmax(0,1fr) 120px 40px;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--rule)}
+.dinf .nm{font-size:15.5px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dinf .nm small{display:block;font:500 10.5px/1.3 var(--mono);color:var(--ink-3);letter-spacing:.03em;margin-top:3px;text-transform:uppercase}
+.dinf .br{position:relative;height:8px;border-radius:8px;background:var(--bg-3)}
+.dinf .br::after{content:'';position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--rule-2)}
+.dinf .br b{position:absolute;top:0;bottom:0;border-radius:8px}
+.dinf .br b.p{left:50%;background:var(--acc)}.dinf .br b.n{right:50%;background:var(--warn)}
+.dinf .v{font:600 15px/1 var(--disp);text-align:right;font-variant-numeric:tabular-nums}
+.dinf.low{opacity:.6}
+.dwk{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end;height:110px;margin-top:14px}
+.dwk div{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:6px}
+.dwk i{width:100%;max-width:30px;border-radius:6px;background:var(--ink);display:block}
+.dwk i.no{background:var(--bg-3);height:4px!important}
+.dwk b{font:600 12px/1 var(--disp);font-variant-numeric:tabular-nums}
+.dwk span{font:500 10px/1 var(--mono);color:var(--ink-3)}
+.dmem{margin-top:14px;padding:16px 18px;border-radius:18px;background:var(--bg-2)}
+.dmem .t{font:500 18px/1.35 var(--disp);letter-spacing:-.01em;margin-top:8px}
+.dhint{font-size:14.5px;color:var(--ink-2);margin-top:4px}
 /* diario: evolución */
 .dnav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
 .dnav b{font:600 17px/1 var(--disp);letter-spacing:-.01em;text-transform:capitalize}
@@ -661,12 +690,19 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
     <div class="lbl" id="dLbl">Diario</div><h1>Diario</h1>
     <button class="jcard press" id="jCard"></button>
     <div class="sec">
-      <div class="dnav"><b id="dMon"></b><div class="nb"><button id="dPrev" aria-label="Mes anterior">‹</button><button id="dNext" aria-label="Mes siguiente">›</button></div></div>
-      <div class="dstats"><div><b id="dAvg">–</b><span class="lbl">Media</span></div><div><b id="dDays">0</b><span class="lbl">Días</span></div><div><b id="dStreak">0</b><span class="lbl">Racha</span></div></div>
-      <div class="dchart" id="dChart"></div><div class="dax" id="dAx"></div>
+      <div class="seg dseg" id="dRange"><button data-v="m">Mes</button><button data-v="y">Año</button><i></i></div>
+      <div class="dnav"><b id="dMon"></b><div class="nb"><button id="dPrev" aria-label="Anterior">‹</button><button id="dNext" aria-label="Siguiente">›</button></div></div>
+      <div class="dstats"><div><b id="dAvg">–</b><span class="lbl">Media</span></div><div><b id="dDays">0</b><span class="lbl">Días</span></div><div><b id="dStreak">0</b><span class="lbl" id="dStreakL">Racha</span></div></div>
+      <div id="dMonth"><div class="dchart" id="dChart"></div><div class="dax" id="dAx"></div></div>
+      <div id="dYear" hidden><div class="dpix" id="dPix"></div>
+        <div class="dlegend"><span>1</span><i style="background:rgba(var(--ink-rgb),.15)"></i><i style="background:rgba(var(--ink-rgb),.4)"></i><i style="background:rgba(var(--ink-rgb),.7)"></i><i style="background:var(--ink)"></i><span>10</span></div></div>
     </div>
+    <div class="sec" id="dInfSec"><span class="lbl" style="display:block">Qué influye en tu nota</span>
+      <p class="dhint" id="dInfHint"></p><div id="dInf"></div></div>
+    <div class="sec" id="dWkSec"><span class="lbl" style="display:block">Por día de la semana</span><div class="dwk" id="dWk"></div></div>
     <div class="sec" id="dMoodSec"><span class="lbl" style="display:block;margin-bottom:8px">Cómo te has sentido</span><div id="dMoods"></div></div>
-    <div class="sec"><span class="lbl" style="display:block">Días escritos</span><ul class="rows" id="dList"></ul></div>
+    <div class="sec" id="dMemSec"><span class="lbl" style="display:block">Para releer</span><div class="dmem" id="dMem"></div></div>
+    <div class="sec" id="dListSec"><span class="lbl" style="display:block">Días escritos</span><ul class="rows" id="dList"></ul></div>
   </section>
 
   <!-- TAREAS -->
@@ -883,7 +919,7 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
     </div>
     <footer class="credit">
       <div class="credit-mark"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5Z" fill="currentColor"/></svg>By Luisalonsov</div>
-      <div class="lbl">Hábitos · 2026 · v50</div>
+      <div class="lbl">Hábitos · 2026 · v51</div>
     </footer>
   </section>
 </div>
@@ -1022,6 +1058,8 @@ body.adm .app{transform:translateX(-22%);filter:brightness(.55)}
   <div class="jsec"><span class="lbl"><b>03</b>Hoy he hecho bien</span><div id="jGood"></div></div>
   <div class="jsec"><span class="lbl"><b>04</b>Cómo ha sido el día</span>
     <div class="jmood" id="jMood"></div>
+    <span class="lbl" style="display:block;margin:18px 0 10px">Ha habido</span>
+    <div class="jmood" id="jTags"></div>
     <textarea id="jText" placeholder="Qué ha pasado, cómo te has sentido…"></textarea></div>
   <div class="acts"><button class="btn" id="jOk">Listo</button></div>
 </section>
@@ -1317,10 +1355,11 @@ swipeable($('taskList'),li=>{const x=S.tasks.find(y=>y.id===li.dataset.id);if(!x
 
 /* ---------------- diario: cierre del día ---------------- */
 // por día: nota del 1 al 10, 3 gracias, 2 cosas bien hechas, estados y texto libre. Sigue al día elegido en Hábitos.
+const TAGS=['Familia','Pareja','Amigos','Trabajo','Deporte','Naturaleza','Ocio','Buen descanso','Comer bien','Mucho móvil'];
 const MOODS=['Alegre','Calma','Agradecido','Con energía','Motivado','Cansado','Ansiedad','Preocupado','Tristeza','Enfado','Inseguro','Aburrido'];
 let jDay=null;
-function jGet(k){return S.journal[k]||{score:0,grat:['','',''],good:['',''],moods:[],text:''}}
-function jEmpty(j){return !j.score&&!j.text&&!j.moods.length&&![...j.grat,...j.good].some(Boolean)}
+function jGet(k){const j=S.journal[k]||{score:0,grat:['','',''],good:['',''],moods:[],tags:[],text:''};j.tags=j.tags||[];return j}
+function jEmpty(j){return !j.score&&!j.text&&!j.moods.length&&!(j.tags||[]).length&&![...j.grat,...j.good].some(Boolean)}
 function renderJCard(){const k=today(),j=S.journal[k],past=false,d=parse(k);
   const when=past?`${d.getDate()} ${MON[d.getMonth()]}`:'hoy';
   if(!j||jEmpty(j)){$('jCard').innerHTML=`<div class="jh"><span class="lbl">${past?when:'Hoy'}</span><span class="jn">2 min</span></div>
@@ -1331,17 +1370,18 @@ function renderJCard(){const k=today(),j=S.journal[k],past=false,d=parse(k);
     <div class="jt">${j.moods.length?esc(j.moods.join(' · ')):g.length?'Gracias por '+esc(g[0]):'Día apuntado'}</div>
     ${j.text?`<div class="js">${esc(j.text)}</div>`:g.length>1?`<div class="js">${esc(g.slice(1).join(' · '))}</div>`:''}
     <div class="jmini"><b style="width:${j.score*10}%"></b></div>`}
-function jCur(){return S.journal[jDay]||jGet(jDay)}
+function jCur(){return jGet(jDay)}
 function jSet(f){const j=S.journal[jDay]||(S.journal[jDay]=jGet(jDay));f(j);j.upd=Date.now();save()}
 function jPaint(){const j=jCur();$('jNum').innerHTML=`${j.score||'–'}<small>/10</small>`;
   [...$('jSeg').children].forEach((i,n)=>{i.classList.toggle('on',n<j.score);i.classList.toggle('cur',n===j.score-1)});
-  [...$('jMood').children].forEach(b=>b.classList.toggle('on',j.moods.includes(b.textContent)))}
+  [...$('jMood').children].forEach(b=>b.classList.toggle('on',j.moods.includes(b.textContent)));
+  [...$('jTags').children].forEach(b=>b.classList.toggle('on',j.tags.includes(b.textContent)))}
 function openJ(k){jDay=k||today();const j=jCur(),d=parse(jDay),DN=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
   $('jDate').textContent=`${jDay===today()?'Hoy · ':''}${DN[d.getDay()]} ${d.getDate()} ${MON[d.getMonth()]}`;
   $('jSeg').innerHTML='<i></i>'.repeat(10);
   const lines=(id,arr,ph)=>$(id).innerHTML=arr.map((v,n)=>`<label class="jln"><span>${n+1}</span><input data-n="${n}" value="${esc(v)}" placeholder="${ph[n]}" enterkeyhint="next" autocomplete="off"></label>`).join('');
   lines('jGrat',j.grat,['Algo que te ha pasado hoy','Alguien','Algo pequeño']);lines('jGood',j.good,['Algo que hiciste bien','Otra cosa, por pequeña que sea']);
-  $('jMood').innerHTML=MOODS.map(m=>`<button type="button">${m}</button>`).join('');$('jText').value=j.text;jPaint();
+  $('jMood').innerHTML=MOODS.map(m=>`<button type="button">${m}</button>`).join('');$('jTags').innerHTML=TAGS.map(m=>`<button type="button">${m}</button>`).join('');$('jText').value=j.text;jPaint();
   document.body.classList.add('modal');$('veil').classList.add('on');$('jSheet').scrollTop=0;$('jSheet').classList.add('on');buzz(6)}
 function closeJ(){if(!$('jSheet').classList.contains('on'))return;$('jSheet').classList.remove('on');document.body.classList.remove('modal');$('veil').classList.remove('on');
   const j=S.journal[jDay];if(j&&jEmpty(j)){delete S.journal[jDay];save()}renderDia()}
@@ -1359,30 +1399,82 @@ for(const [id,key] of [['jGrat','grat'],['jGood','good']]){
 $('jMood').onclick=e=>{const b=e.target.closest('button');if(!b)return;const m=b.textContent;
   jSet(j=>j.moods=j.moods.includes(m)?j.moods.filter(x=>x!==m):[...j.moods,m]);jPaint();buzz(4)};
 $('jText').oninput=()=>jSet(j=>j.text=$('jText').value);
+$('jTags').onclick=e=>{const b=e.target.closest('button');if(!b)return;const m=b.textContent;
+  jSet(j=>{j.tags=j.tags||[];j.tags=j.tags.includes(m)?j.tags.filter(x=>x!==m):[...j.tags,m]});jPaint();buzz(4)};
 
 /* ---------------- diario: evolución por meses ---------------- */
 let dM=null;
 const MONL0=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 const jHas=k=>S.journal[k]&&!jEmpty(S.journal[k]);
 function jStreak(){let k=today(),n=0;if(!jHas(k))k=addDays(k,-1);while(jHas(k)){n++;k=addDays(k,-1)}return n}
+let dRange='m';
+const fmt1=v=>v.toFixed(1).replace('.',','),avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
+// días con nota dentro de [from,to]
+function jDays(from,to){return Object.keys(S.journal).filter(k=>k>=from&&k<=to&&jHas(k)).sort()}
+function jBest(){const ks=Object.keys(S.journal).filter(jHas).sort();let best=0,run=0,prev=null;
+  for(const k of ks){run=prev&&addDays(prev,1)===k?run+1:1;best=Math.max(best,run);prev=k}return best}
+// qué influye: nota media los días con X frente a los días sin X (como «Influence on mood» de Daylio).
+// Solo sale con al menos 2 días de cada lado; con menos de 5 se marca como dato flojo.
+function influences(ks){const sc=ks.filter(k=>S.journal[k].score),out=[];
+  const test=(name,sub,has,applies=()=>true)=>{const pool=sc.filter(applies),w=pool.filter(has),wo=pool.filter(k=>!has(k));
+    if(w.length<2||wo.length<2)return;const d=avg(w.map(k=>S.journal[k].score))-avg(wo.map(k=>S.journal[k].score));
+    out.push({name,sub,d,n:Math.min(w.length,wo.length),w:w.length})};
+  for(const t of TAGS)test(t,'',k=>(S.journal[k].tags||[]).includes(t));
+  for(const h of S.habits)test(h.t,'hábito',k=>(S.log[k]||[]).includes(h.id),k=>activeOn({...h,from:null},k));
+  test('Hábitos al 100 %','todos hechos',k=>{const r=ratio(k);return r!=null&&r>=1});
+  test('3 o más tareas cerradas','tareas',k=>S.tasks.filter(x=>x.done&&x.doneAt===k).length>=3);
+  return out.filter(x=>Math.abs(x.d)>=.3).sort((a,b)=>Math.abs(b.d)-Math.abs(a.d)).slice(0,7)}
 function renderDia(){if(!dM){const t=parse(today());dM=new Date(t.getFullYear(),t.getMonth(),1)}
   renderJCard();{const n=new Date();$('dLbl').textContent=`${['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'][n.getDay()]} ${n.getDate()} ${MON[n.getMonth()]}`}
-  const y=dM.getFullYear(),m=dM.getMonth(),nd=new Date(y,m+1,0).getDate(),t=today();
-  $('dMon').textContent=`${MONL0[m]} ${y}`;const ks=[...Array(nd)].map((_,i)=>key(new Date(y,m,i+1)));
-  const es=ks.filter(jHas).map(k=>[k,S.journal[k]]),sc=es.map(([,j])=>j.score).filter(Boolean);
-  $('dAvg').innerHTML=sc.length?`${(sc.reduce((a,b)=>a+b,0)/sc.length).toFixed(1).replace('.',',')}<small>/10</small>`:'–';
-  $('dDays').innerHTML=`${es.length}<small>/${nd}</small>`;$('dStreak').innerHTML=`${jStreak()}<small> día${jStreak()===1?'':'s'}</small>`;
-  $('dChart').innerHTML=ks.map(k=>{const j=S.journal[k],v=j&&j.score;return `<button data-k="${k}" class="${k===t?'t':''}" aria-label="${k}" ${k>t?'disabled':''}><i class="${v?'':'no'}" style="height:${v*10}%"></i></button>`}).join('');
-  $('dAx').innerHTML=ks.map((k,i)=>`<span>${i===0||(i+1)%5===0?i+1:''}</span>`).join('');
-  const c={};es.forEach(([,j])=>j.moods.forEach(x=>c[x]=(c[x]||0)+1));const top=Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,5),mx=top[0]?.[1]||1;
-  $('dMoodSec').hidden=!top.length;$('dMoods').innerHTML=top.map(([x,n])=>`<div class="dmood"><span style="text-align:left;font:inherit;color:var(--ink)">${x}</span><i><b style="width:${n/mx*100}%"></b></i><span>${n}</span></div>`).join('');
-  $('dList').innerHTML=es.length?es.reverse().map(([k,j])=>{const d=parse(k),g=j.grat.filter(Boolean);
+  segSet('dRange',dRange);const yr=dRange==='y',y=dM.getFullYear(),m=dM.getMonth(),t=today();
+  const from=yr?`${y}-01-01`:key(new Date(y,m,1)),to=yr?`${y}-12-31`:key(new Date(y,m+1,0));
+  const pf=yr?`${y-1}-01-01`:key(new Date(y,m-1,1)),pt=yr?`${y-1}-12-31`:key(new Date(y,m,0));
+  const ks=jDays(from,to),sc=ks.map(k=>S.journal[k].score).filter(Boolean),a=avg(sc),pa=avg(jDays(pf,pt).map(k=>S.journal[k].score).filter(Boolean));
+  const total=yr?(y===parse(t).getFullYear()?Math.round((parse(t)-new Date(y,0,1))/864e5)+1:365):new Date(y,m+1,0).getDate();
+  $('dMon').textContent=yr?String(y):`${MONL0[m]} ${y}`;
+  const dl=a!=null&&pa!=null?a-pa:null;
+  $('dAvg').innerHTML=a!=null?`${fmt1(a)}<small>/10</small>${dl!=null&&Math.abs(dl)>=.1?`<em class="${dl>0?'up':'dn'}">${dl>0?'+':'−'}${fmt1(Math.abs(dl))}</em>`:''}`:'–';
+  $('dDays').innerHTML=`${ks.length}<small>/${total}</small>`;
+  const st=jStreak(),bs=jBest();$('dStreak').innerHTML=`${st}<small> / ${bs}</small>`;$('dStreakL').textContent='Racha / mejor';
+  $('dMonth').hidden=yr;$('dYear').hidden=!yr;
+  if(!yr){const days=[...Array(new Date(y,m+1,0).getDate())].map((_,i)=>key(new Date(y,m,i+1)));
+    $('dChart').innerHTML=days.map(k=>{const j=S.journal[k],v=j&&j.score;return `<button data-k="${k}" class="${k===t?'t':''}" aria-label="${k}" ${k>t?'disabled':''}><i class="${v?'':'no'}" style="height:${v*10}%"></i></button>`}).join('');
+    $('dAx').innerHTML=days.map((k,i)=>`<span>${i===0||(i+1)%5===0?i+1:''}</span>`).join('')}
+  else{const ML='EFMAMJJASOND';let h='';
+    for(let mm=0;mm<12;mm++){h+=`<span>${ML[mm]}</span>`;const nd=new Date(y,mm+1,0).getDate();
+      for(let d=1;d<=31;d++){if(d>nd){h+='<i class="nd"></i>';continue}const k=key(new Date(y,mm,d)),j=S.journal[k],v=j&&j.score;
+        h+=`<i data-k="${k}" class="${k===t?'t':''}" ${v?`style="background:rgba(var(--ink-rgb),${(.1+v*.09).toFixed(2)})"`:''}></i>`}}
+    $('dPix').innerHTML=h}
+  // qué influye
+  const inf=influences(ks),mx=Math.max(1,...inf.map(x=>Math.abs(x.d)));
+  $('dInfHint').textContent=sc.length<6?`Con unos días más de diario (${sc.length} de 6) verás qué cosas te suben o bajan la nota. Marca también lo que «ha habido» cada día.`
+    :inf.length?'Diferencia de nota los días que lo hay frente a los que no.':'Aún no se ve ninguna diferencia clara. Sigue apuntando lo que ha habido cada día.';
+  $('dInf').innerHTML=sc.length<6?'':inf.map(x=>`<div class="dinf ${x.n<5?'low':''}"><div class="nm">${esc(x.name)}<small>${x.sub?x.sub+' · ':''}${x.w} día${x.w===1?'':'s'}${x.n<5?' · pocos datos':''}</small></div>
+    <div class="br"><b class="${x.d>0?'p':'n'}" style="width:${Math.abs(x.d)/mx*50}%"></b></div><div class="v ${x.d>0?'up':'dn'}">${x.d>0?'+':'−'}${fmt1(Math.abs(x.d))}</div></div>`).join('');
+  // por día de la semana (lunes primero)
+  const wk=[1,2,3,4,5,6,0].map(d=>avg(ks.filter(k=>parse(k).getDay()===d).map(k=>S.journal[k].score).filter(Boolean)));
+  $('dWkSec').hidden=sc.length<4;
+  $('dWk').innerHTML=wk.map((v,i)=>`<div>${v!=null?`<b>${fmt1(v)}</b>`:''}<i class="${v!=null?'':'no'}" style="height:${(v||0)*8}px"></i><span>${'LMXJVSD'[i]}</span></div>`).join('');
+  // estados más repetidos
+  const c={};ks.forEach(k=>S.journal[k].moods.forEach(x=>c[x]=(c[x]||0)+1));const top=Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,5),mm=top[0]?.[1]||1;
+  $('dMoodSec').hidden=!top.length;$('dMoods').innerHTML=top.map(([x,n])=>`<div class="dmood"><span style="text-align:left;font:inherit;color:var(--ink)">${x}</span><i><b style="width:${n/mm*100}%"></b></i><span>${n}</span></div>`).join('');
+  // para releer: un agradecimiento o algo bien hecho de otro día (cambia cada día)
+  const pool=Object.keys(S.journal).filter(k=>k<t&&jHas(k)).flatMap(k=>[...S.journal[k].grat.filter(Boolean).map(v=>[k,'Diste gracias por',v]),...S.journal[k].good.filter(Boolean).map(v=>[k,'Hiciste bien',v])]);
+  $('dMemSec').hidden=!pool.length;
+  if(pool.length){const [k,l,v]=pool[(parse(t).getDate()*7+pool.length)%pool.length],d=parse(k);
+    $('dMem').innerHTML=`<span class="lbl">${d.getDate()} ${MON[d.getMonth()]} · ${l}</span><div class="t">${esc(v)}</div>`;$('dMem').dataset.k=k}
+  // lista (solo en vista de mes)
+  $('dListSec').hidden=yr;
+  if(!yr)$('dList').innerHTML=ks.length?[...ks].reverse().map(k=>{const j=S.journal[k],d=parse(k),g=j.grat.filter(Boolean);
     return `<li class="row dent" data-k="${k}"><div class="in"><span class="dd">${['dom','lun','mar','mié','jue','vie','sáb'][d.getDay()]}<br>${d.getDate()}</span>
       <div class="tx"><div class="t">${esc(j.moods.length?j.moods.join(' · '):g[0]||j.text||'Día apuntado')}</div>${j.text&&j.moods.length?`<div class="s" style="text-transform:none;letter-spacing:0;font-family:var(--sans);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(j.text)}</div>`:''}</div>
       <span class="sc">${j.score||''}</span></div></li>`}).join(''):'<li class="empty">Aún no hay días escritos este mes.</li>';
   const late=new Date().getHours()>=20&&!jHas(t);document.querySelector('.tb[data-v=dia]').classList.toggle('fresh',late&&!$('v-dia').classList.contains('on'))}
-$('dPrev').onclick=()=>{dM.setMonth(dM.getMonth()-1);renderDia();buzz(4)};
-$('dNext').onclick=()=>{dM.setMonth(dM.getMonth()+1);renderDia();buzz(4)};
+$('dRange').onclick=e=>{const b=e.target.closest('button');if(!b||b.dataset.v===dRange)return;dRange=b.dataset.v;buzz(4);renderDia()};
+$('dPix').onclick=e=>{const i=e.target.closest('i[data-k]');if(i&&i.dataset.k<=today())openJ(i.dataset.k)};
+$('dMem').onclick=()=>{const k=$('dMem').dataset.k;if(k)openJ(k)};
+$('dPrev').onclick=()=>{dRange==='y'?dM.setFullYear(dM.getFullYear()-1):dM.setMonth(dM.getMonth()-1);renderDia();buzz(4)};
+$('dNext').onclick=()=>{dRange==='y'?dM.setFullYear(dM.getFullYear()+1):dM.setMonth(dM.getMonth()+1);renderDia();buzz(4)};
 $('dChart').onclick=e=>{const b=e.target.closest('button[data-k]');if(b&&!b.disabled)openJ(b.dataset.k)};
 $('dList').onclick=e=>{const r=e.target.closest('[data-k]');if(r)openJ(r.dataset.k)};
 
@@ -2003,7 +2095,7 @@ function renderAll(anim){renderHab(anim);renderTasks();renderMac();renderCuenta(
   if(document.activeElement!==$('stepsGoalIn'))$('stepsGoalIn').value=S.stepsGoal||'';renderSteps()}
 // Aviso de versión nueva: version.json dice desde qué versión hay que actualizar («aviso»).
 // Solo se sube «aviso» en cambios importantes; el resto llega solo al abrir la app.
-const APP_V=50;let verAt=0;
+const APP_V=51;let verAt=0;
 async function checkVersion(){if(Date.now()-verAt<5*6e4)return;verAt=Date.now();
   try{const j=await(await fetch('/version.json',{cache:'no-store'})).json();if(j.aviso>APP_V&&$('upd').hidden){$('upd').hidden=false;buzz([10,40,10])}}catch{}}
 $('updGo').onclick=async()=>{$('updGo').textContent='Actualizando…';flush();try{await(await navigator.serviceWorker?.getRegistration())?.update()}catch{}
